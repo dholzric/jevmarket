@@ -83,3 +83,64 @@ def test_noise_draw_is_stable_for_a_given_period():
 def test_rejects_negative_delay():
     with pytest.raises(ValueError):
         Signal(delay=-1, noise_sd=0.0, seed=1)
+
+
+# --- matched-jump design ----------------------------------------------------
+
+
+def test_matched_jumps_alternate_direction():
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=20, seed=1)
+    path = f.path(200)
+    deltas = [path[t] - path[t - 1] for t in f.jump_times]
+    signs = [1 if d > 0 else -1 for d in deltas]
+    assert signs == [(-1) ** i * signs[0] for i in range(len(signs))]
+
+
+def test_matched_jumps_have_identical_magnitude():
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=20, seed=1)
+    path = f.path(200)
+    magnitudes = {abs(path[t] - path[t - 1]) for t in f.jump_times}
+    assert magnitudes == {10.0}
+
+
+def test_equal_numbers_of_up_and_down_jumps():
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=20, seed=1)
+    path = f.path(200)
+    ups = sum(1 for t in f.jump_times if path[t] > path[t - 1])
+    downs = sum(1 for t in f.jump_times if path[t] < path[t - 1])
+    assert ups == downs
+
+
+def test_the_path_returns_to_where_it_started():
+    """Matched pairs mean no drift, so up and down windows see the same levels."""
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=20, seed=1)
+    path = f.path(200)
+    assert path[-1] in (100.0, 110.0)
+
+
+def test_jumps_are_evenly_spaced_so_every_window_is_the_same_length():
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=25, seed=1)
+    f.path(200)
+    gaps = {b - a for a, b in zip(f.jump_times, f.jump_times[1:])}
+    assert gaps == {25}
+
+
+def test_the_starting_direction_is_seeded_not_fixed():
+    from jevmarket.fundamental import MatchedJumpFundamental
+
+    def first_sign(seed):
+        f = MatchedJumpFundamental(initial=100.0, jump_size=10.0, period_gap=20, seed=seed)
+        path = f.path(200)
+        return 1 if path[f.jump_times[0]] > 100.0 else -1
+
+    assert {first_sign(s) for s in range(10)} == {1, -1}

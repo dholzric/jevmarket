@@ -72,9 +72,27 @@ ordinary, natural-sounding domain wording, not by the model.
 The effect is ~25x the model's own run-to-run noise (§2), so it is not
 measurement error.
 
-**Why it matters:** the argmax is correct on both sides at every edge. Anyone
-using the model the normal way — take `.choice` — sees nothing wrong. The bias
-exists only in the distribution, and only bites when you sample from it.
+**Why it matters — corrected after the market pilot.** On the probe grid
+(|edge| >= 2) the argmax is correct on both sides at every point, which led us
+to claim the bias is invisible to anyone reading only `.choice`. **That claim
+was wrong.** In a live market most states sit near edge 0, and there the
+elevated sell-side `pass` mass is large enough to flip the mode itself.
+Measured over 954 cached live decisions:
+
+| wording | mode is `pass`, buy side | mode is `pass`, sell side | gap |
+|---|---|---|---|
+| original | 0.7% | 8.3% | **+7.6pp** |
+| mirror | 0.0% | 2.4% | +2.4pp |
+
+| wording | mean mass on `pass`, buy side | sell side | gap |
+|---|---|---|---|
+| original | 0.067 | 0.254 | **+0.188** |
+| mirror | 0.013 | 0.028 | +0.015 |
+
+So the induced asymmetry reaches the market through **two** channels, not one:
+sampling (always), and mode-flipping to `pass` (often enough to matter). The
+direction is never wrong under argmax -- but the *abstention* is asymmetric,
+and abstention is what removes liquidity from one side of the book.
 
 ## 6. Labels outweigh the criteria they are attached to
 
@@ -108,3 +126,44 @@ cannot read criteria. Worth a cleaner follow-up before it goes in a paper.
    induced a 25-point asymmetry in `probabilities` between two mirror-image
    options; strict mirror wording removed it (§5). Worth documenting, since
    the effect is invisible to anyone reading only `.choice`.
+
+
+## 8. Market pilot — the prediction failed, and why that is useful
+
+One seed, 100 periods, 8 traders, 5 cells; stopped by the spend gate at 2,501
+live calls partway through the fifth.
+
+| cell | RMSE(up) | RMSE(down) | down − up | pass rate |
+|---|---|---|---|---|
+| `zi` | 4.31 | 3.49 | **−0.82** | 8.5% |
+| `jev_argmax/original` | 4.46 | 4.78 | +0.32 | 10.4% |
+| `jev_sample/original` | 3.54 | 3.93 | +0.39 | 22.5% |
+| `jev_argmax/mirror` | 4.45 | 4.48 | +0.03 | 8.3% |
+| `jev_sample/mirror` | — | — | gate tripped | — |
+
+**Two things went wrong with the prediction, one substantive and one fatal.**
+
+*Substantive:* we predicted a gap only in `jev_sample/original`. `jev_argmax/
+original` shows +0.32, nearly as large. The cache analysis in §5 explains it —
+the mode flips to `pass` asymmetrically — so the mechanism is real but has two
+channels rather than one. The wording contrast still behaves: +0.32 under
+original vs +0.03 under mirror, for the same decode rule.
+
+*Fatal:* **the pilot cannot distinguish any of this from noise.** `zi` is
+symmetric by construction and returned −0.82, larger in magnitude than every
+Jev effect. With random jumps, one seed gives different counts of up and down
+jumps, at different magnitudes, from different price levels. Per-seed noise on
+this statistic is at least ±0.8; the effects are ~0.3–0.4.
+
+**Fix: `MatchedJumpFundamental`.** Evenly spaced, identical magnitude, strictly
+alternating direction, even count. Every up window is matched by a down window
+of the same size between the same two price levels, so the comparison is paired
+within a run and most of the noise cancels instead of having to be averaged
+across seeds. Implemented and tested; costs nothing extra to run.
+
+**Cost, measured:** 2,501 live calls and 1.96M input tokens bought roughly four
+cell-seeds — about 625 calls each. Cache hit rate was only 8.9%, far below the
+31% the mock suggested, because live runs visit many more distinct book states.
+A 5-cell x 5-seed sweep on this design would be ~15,600 calls and ~12M input
+tokens. That is very likely beyond a $5 free tier, which is why the matched-jump
+redesign (more power per call) matters more than buying more seeds.

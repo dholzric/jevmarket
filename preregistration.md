@@ -38,31 +38,47 @@ quote at the trader's own private value, so a bad answer degrades to a bad
 trade, never to a broken run. That clamp is the reason the comparison is about
 judgement rather than about arithmetic slips.
 
-### 1.1 Design — FROZEN
+### 1.1 Design — FROZEN 2026-09-18 (revised after the Phase 3 wording probe)
 
-4 brains x 2 information treatments, between-run.
+**2x2: wording x decode**, plus two baselines. All six cells run on the same
+engine, the same seeds, and the same fundamental paths.
 
-| Brain | Description |
-|---|---|
-| `zi` | Zero-intelligence. Random direction, random aggressiveness, and a fixed policy distribution that never moves with the state -- the calibration null. Budget- and value-constrained (Gode & Sunder ZI-C in spirit). |
-| `nbr` | Noisy best-response. Best response to the book with logit noise. |
-| `jev_argmax` | Jev, taking the action System One chose (`answers.action.choice`). |
-| `jev_sample` | Jev, drawing from the same `answers.action.probabilities` map. |
+| Cell | Wording | Decode |
+|---|---|---|
+| `jev_argmax` / `original` | natural domain wording | take `answers.action.choice` |
+| `jev_sample` / `original` | natural domain wording | draw from `answers.action.probabilities` |
+| `jev_argmax` / `mirror` | direction-neutral control | take the choice |
+| `jev_sample` / `mirror` | direction-neutral control | draw from the distribution |
+| `zi` | — | random, symmetric by construction |
+| `nbr` | — | logit best-response |
 
-| Information treatment | Signal |
-|---|---|
-| `full` | `Signal(delay=0, noise_sd=0)` — the trader observes `F_t` exactly |
-| `delayed_noisy` | `Signal(delay=d>0, noise_sd=s>0)` — the trader observes `F_{t-d} + N(0, s)` |
+The two wordings are frozen in `schema_jev_v1.json` and
+`schema_jev_v1_mirror.json`, both hash-locked, and a test asserts they differ
+**only** in the `action` question.
 
-That 2x4 is the paper. `zi` and `nbr` exist so that the LLM arms have a floor
-and a ceiling a referee recognises.
+**Why this replaced the original 4-brain x 2-information design.** Two Phase 3
+measurements forced it. First, `zi` re-prices in about one period under full
+information (post-jump RMSE 1.78 vs steady-state 1.29), so the full-information
+arm had almost no headroom and H2 was at risk of being true by construction.
+Second, and decisively, the wording probe (`FINDINGS.md` §5) showed a +0.250
+buy/sell conviction asymmetry under our natural wording that fell to +0.005
+under mirror wording. That gave the project a manipulation *and* a control,
+which the original design never had.
 
-Jev has **no temperature or sampling parameter**, so the two Jev arms are not
-two decode settings but two rules applied locally to one returned distribution.
-For a given observation they are one API call, which makes H5 a *within-call*
-comparison with no between-call sampling noise. Across a whole run the shared
-cache saves only ~3%, because the arms take different actions and diverge into
-different books within a few periods.
+### 1.1.1 The prediction — stated before the market runs
+
+The induced asymmetry should reach the market **only where sampling transmits
+it**, and only under the wording that induces it:
+
+| | argmax | sample |
+|---|---|---|
+| **original** | no gap | **post-jump RMSE(down) > RMSE(up)** |
+| **mirror** | no gap | no gap |
+
+`jev_argmax` is the control that shows the mode is correct on both sides.
+`mirror` is the control that shows the asymmetry is in the wording, not the
+model. `zi` and `nbr` are symmetric by construction. A gap appearing anywhere
+other than `jev_sample`/`original` falsifies the mechanism.
 
 ### 1.2 CDA vs call market — DECIDED: continuous double auction
 
@@ -109,10 +125,12 @@ accuracy for honesty.
 Exactly three. Implemented in `src/jevmarket/metrics.py`, each pinned to a
 hand-worked test case in `tests/test_metrics.py`.
 
-1. **Post-jump RMSE.** `post_jump_rmse(prices, fundamental, jump_times,
-   window=20)`. Root mean squared deviation of the per-period VWAP from `F_t`
-   over the 20 periods following each jump, pooled across jumps. Periods with
-   no trade are dropped, not interpolated.
+1. **Post-jump RMSE, split by jump direction.**
+   `post_jump_rmse_by_sign(prices, fundamental, jump_times, window=20)`. Root
+   mean squared deviation of the per-period VWAP from `F_t` over the 20 periods
+   following each jump, pooled separately over up-jumps and down-jumps. The
+   headline statistic is the **gap**, `RMSE(down) - RMSE(up)`, per cell.
+   Periods with no trade are dropped, not interpolated.
 2. **Expected calibration error (ECE).** `expected_calibration_error`, 10
    equal-width bins over `confidence`, defined for every arm as
    `action_probabilities[action taken]`. Jev's own `confidence` scalar is

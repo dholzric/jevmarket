@@ -47,7 +47,11 @@ def parse_args(argv=None):
     parser.add_argument("--burn-in", type=int, default=5)
     parser.add_argument("--window", type=int, default=15)
     parser.add_argument("--max-calls", type=int, default=4000)
-    parser.add_argument("--arms", default="zi,jev_argmax,jev_sample")
+    parser.add_argument(
+        "--cells",
+        default="zi/-,jev_argmax/original,jev_sample/original,jev_argmax/mirror,jev_sample/mirror",
+        help="comma-separated arm/wording pairs",
+    )
     parser.add_argument("--cache", type=pathlib.Path, default=pathlib.Path("data/cache"))
     parser.add_argument("--out", type=pathlib.Path, default=pathlib.Path("data/market_asymmetry.json"))
     return parser.parse_args(argv)
@@ -58,8 +62,9 @@ def main(argv=None) -> int:
     gate = SpendGate(max_calls=args.max_calls)
     client = JevClient(HttpTransport(), cache=DecisionCache(args.cache), budget=gate)
 
+    cells = [c.split("/") for c in args.cells.split(",")]
     results = []
-    for arm in args.arms.split(","):
+    for arm, wording in cells:
         for seed in range(args.seeds):
             fundamental = Fundamental(
                 initial=100.0,
@@ -73,6 +78,7 @@ def main(argv=None) -> int:
                 seed=seed,
                 arm=arm,
                 burn_in_periods=args.burn_in if arm != "zi" else 0,
+                wording=wording if wording != "-" else "original",
                 fundamental=fundamental,
                 signal=Signal(delay=0, noise_sd=0.0, seed=seed),
                 jev_client=client if arm.startswith("jev") else None,
@@ -97,6 +103,8 @@ def main(argv=None) -> int:
             results.append(
                 {
                     "arm": arm,
+                    "wording": wording,
+                    "cell": f"{arm}/{wording}",
                     "seed": seed,
                     "jumps": len(result.jump_times),
                     "trades": result.exchange.trade_count,
@@ -111,21 +119,37 @@ def main(argv=None) -> int:
             )
             row = results[-1]
             print(
-                f"{arm:>11} seed {seed}  trades {row['trades']:>5}  "
+                f"{arm + '/' + wording:>22} seed {seed}  trades {row['trades']:>5}  "
                 f"RMSE {row['rmse']:>6.2f}  post-jump {row['post_jump']:>6.2f}  "
                 f"up {row['post_jump_up']:>6.2f}  down {row['post_jump_down']:>6.2f}  "
                 f"pass {row['pass_rate']:>5.1%}"
             )
 
-    print("\n=== the prediction ===")
-    print(f"{'arm':>11} {'up':>8} {'down':>8} {'down - up':>10} {'pass rate':>10}")
-    print("-" * 50)
-    for arm in args.arms.split(","):
-        rows = [r for r in results if r["arm"] == arm]
+    print("\n=== the prediction: a gap in exactly one cell ===")
+    print(f"{'cell':>22} {'up':>8} {'down':>8} {'down - up':>11} {'pass rate':>10}")
+    print("-" * 62)
+    gaps = {}
+    for arm, wording in cells:
+        name = f"{arm}/{wording}"
+        rows = [r for r in results if r["cell"] == name]
+        if not rows:
+            continue
         up = sum(r["post_jump_up"] for r in rows) / len(rows)
         down = sum(r["post_jump_down"] for r in rows) / len(rows)
         passes = sum(r["pass_rate"] for r in rows) / len(rows)
-        print(f"{arm:>11} {up:>8.2f} {down:>8.2f} {down - up:>+10.2f} {passes:>10.1%}")
+        gaps[name] = down - up
+        print(f"{name:>22} {up:>8.2f} {down:>8.2f} {down - up:>+11.2f} {passes:>10.1%}")
+
+    predicted = gaps.get("jev_sample/original")
+    controls = [v for k, v in gaps.items() if k != "jev_sample/original"]
+    if predicted is not None and controls:
+        print(f"\n  predicted cell (jev_sample/original) gap {predicted:+.2f}")
+        print(f"  largest control gap in magnitude          "
+              f"{max(controls, key=abs):+.2f}")
+        if predicted > max(abs(c) for c in controls):
+            print("  -> the gap is where the theory says it should be")
+        else:
+            print("  -> NOT cleanly isolated to the predicted cell")
 
     print("\n=== cost ===")
     print(json.dumps(gate.summary(), indent=2))

@@ -103,5 +103,8 @@ cannot read criteria. Worth a cleaner follow-up before it goes in a paper.
    variation with no way to pin it.
 6. **Do mixed questions in one call really not condition on each other?** The
    docs say "in parallel and in isolation". Our design depends on it.
-7. **Any guidance on writing symmetric criteria?** Given §5, this seems like a
-   footgun worth documenting on their side.
+7. **Any guidance on authoring symmetric criteria?** Writing criteria in
+   natural domain language ("underpriced/overpriced", "acquire/dispose")
+   induced a 25-point asymmetry in `probabilities` between two mirror-image
+   options; strict mirror wording removed it (§5). Worth documenting, since
+   the effect is invisible to anyone reading only `.choice`.

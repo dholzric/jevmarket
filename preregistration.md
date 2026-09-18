@@ -65,20 +65,55 @@ buy/sell conviction asymmetry under our natural wording that fell to +0.005
 under mirror wording. That gave the project a manipulation *and* a control,
 which the original design never had.
 
-### 1.1.1 The prediction — stated before the market runs
+### 1.1.1 The prediction — REVISED 2026-09-18 after the Phase 3 pilot
 
-The induced asymmetry should reach the market **only where sampling transmits
-it**, and only under the wording that induces it:
+**The original prediction was wrong and is recorded here as wrong**, not
+silently replaced. It said:
+
+> A gap appears only in `jev_sample`/`original`; `jev_argmax` is immune because
+> its mode is correct on both sides.
+
+The pilot falsified the second clause. `jev_argmax`/`original` returned a
++0.32 gap against +0.39 for sampling. Analysis of 954 cached live decisions
+(`FINDINGS.md` §5) found why: the induced asymmetry does not only shift mass,
+it **flips the mode to `pass`** on the sell side — 8.3% of sell-side states vs
+0.7% of buy-side ones under the original wording, against 2.4% vs 0.0% under
+mirror. Argmax never picks the wrong *direction*; it abstains asymmetrically,
+and abstention is what withdraws liquidity from one side of the book.
+
+**Revised prediction, to be tested on the matched-jump runs:**
 
 | | argmax | sample |
 |---|---|---|
-| **original** | no gap | **post-jump RMSE(down) > RMSE(up)** |
-| **mirror** | no gap | no gap |
+| **original** | gap > 0 (mode-flip channel only) | gap > 0, **larger** (mode-flip + sampling) |
+| **mirror** | ~0 | ~0 |
 
-`jev_argmax` is the control that shows the mode is correct on both sides.
-`mirror` is the control that shows the asymmetry is in the wording, not the
-model. `zi` and `nbr` are symmetric by construction. A gap appearing anywhere
-other than `jev_sample`/`original` falsifies the mechanism.
+- **Primary test.** The wording main effect on `RMSE(down) - RMSE(up)`:
+  original minus mirror, pooled over decode modes. Predicted positive.
+- **Secondary test.** Within the original wording, `jev_sample` gap exceeds
+  `jev_argmax` gap — the sampling channel adds to the mode-flip channel.
+- **Falsification.** A gap of comparable size under `mirror`, or in `zi`/`nbr`,
+  kills the mechanism.
+
+This revision is **exploratory-to-confirmatory**: it was informed by the pilot,
+so the pilot cannot also be its evidence. The matched-jump runs are the
+confirmatory test and the pilot is reported as the exploratory step that
+produced the hypothesis.
+
+### 1.1.2 Why the jump process is designed, not random — FROZEN
+
+The pilot's decisive failure was statistical, not substantive: `zi`, which is
+symmetric by construction, returned a **-0.82** up/down gap on one seed —
+larger than every effect being measured. With random jumps each run draws
+different counts of up and down jumps, at different magnitudes, from different
+price levels.
+
+`MatchedJumpFundamental` removes that by design: evenly spaced jumps, identical
+magnitude, strictly alternating direction, guaranteed even count. Every up
+window is paired with a down window of the same size between the same two price
+levels, so the comparison is within-run and matched, and the noise cancels
+instead of having to be averaged across seeds. `zi` and `nbr` returning ~0 under
+this design is the check that it worked.
 
 ### 1.2 CDA vs call market — DECIDED: continuous double auction
 

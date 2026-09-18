@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jevmarket"
+version = "0.1.0"
+description = "Continuous double auction testbed for comparing LLM traders against zero-intelligence and noisy best-response baselines"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "matplotlib>=3.8"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:asyncio"
+filterwarnings = ["ignore::DeprecationWarning:pytest_asyncio.*"]

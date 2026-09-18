@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "jev_decision_v1",
+  "description": "FROZEN 2026-09-18 (Phase 0). The complete set of things an LLM trader is allowed to decide. Prices, order sizes, budget checks, and matching are owned by code and are deliberately absent. Changing this file invalidates the preregistration; add schema_jev_v2.json and rerun instead.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "aggressiveness", "already_priced", "confidence"],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["buy", "sell", "pass"],
+      "description": "Direction only. 'pass' means submit no order this period."
+    },
+    "aggressiveness": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "0 = quote passively at the near touch, 1 = cross the spread and take. Code maps this to an integer tick price; the model never names a price."
+    },
+    "already_priced": {
+      "type": "boolean",
+      "description": "Does the current book already reflect the signal you were given? Recorded as a stated belief; it does not change order handling."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Probability that this call is the profitable one. For 'pass', the probability that 'already_priced' is correct. This field is the sole input to the calibration (ECE) and confidently-wrong outcomes."
+    },
+    "rationale": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Optional free text, logged for the qualitative appendix. Never scored, never parsed."
+    }
+  }
+}

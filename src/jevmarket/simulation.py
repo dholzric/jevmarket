@@ -12,7 +12,13 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .agents import JevArgmax, JevSample, Observation, ZeroIntelligence
+from .agents import (
+    JevArgmax,
+    JevSample,
+    NoisyBestResponse,
+    Observation,
+    ZeroIntelligence,
+)
 from .book import Side
 from .decision import DEFAULT_WORDING, Action, Decision
 from .exchange import Exchange, OrderRejected
@@ -21,6 +27,7 @@ from .quoting import quote_price
 
 ARMS = {
     "zi": ZeroIntelligence,
+    "nbr": NoisyBestResponse,
     "jev_argmax": JevArgmax,
     "jev_sample": JevSample,
 }

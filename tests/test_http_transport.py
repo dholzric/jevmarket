@@ -12,6 +12,7 @@ import pytest
 from jevmarket.jev.http import (
     HttpTransport,
     JevAuthError,
+    JevHttpError,
     JevOverloaded,
     JevValidationError,
 )
@@ -161,6 +162,48 @@ def test_gives_up_after_the_retry_budget():
     assert len(opener.sent) == 4
 
 
-def test_an_unexpected_status_is_not_silently_swallowed():
+def test_an_unexpected_client_status_is_not_silently_swallowed():
+    """418 is not documented, not 5xx, and not retryable -- it must surface."""
+    opener = FakeOpener((418, {}))
+    with pytest.raises(JevHttpError):
+        transport(opener).send(build_request(observation()))
+    assert len(opener.sent) == 1
+
+
+# --- undocumented transient failures ----------------------------------------
+
+
+def test_503_from_the_proxy_is_retried_not_fatal():
+    """Observed live, mid-sweep, and not in TypeSafe's documented status list:
+
+        503 'upstream connect error or disconnect/reset before headers ...
+             delayed connect error: Connection refused'
+
+    That is a transient infrastructure failure. Treating it as fatal killed a
+    20,000-call sweep after the first cell.
+    """
+    opener = FakeOpener((503, {"error": "upstream connect error"}), (200, OK_BODY))
+    response = transport(opener).send(build_request(observation()))
+    assert response.input_tokens == 314
+    assert len(opener.sent) == 2
+
+
+@pytest.mark.parametrize("status", [500, 502, 503, 504, 529])
+def test_every_server_side_status_is_retried(status):
+    opener = FakeOpener((status, {}), (200, OK_BODY))
+    assert transport(opener).send(build_request(observation())).input_tokens == 314
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404, 422])
+def test_client_side_statuses_are_never_retried(status):
+    """Retrying a request the server has rejected on its merits just burns money."""
+    opener = FakeOpener((status, {}))
     with pytest.raises(Exception):
-        transport(FakeOpener((500, {}))).send(build_request(observation()))
+        transport(opener).send(build_request(observation()))
+    assert len(opener.sent) == 1
+
+
+def test_a_long_sweep_survives_a_burst_of_transient_failures():
+    opener = FakeOpener((503, {}), (429, {}), (529, {}), (502, {}), (200, OK_BODY))
+    assert transport(opener, max_retries=6).send(build_request(observation())).model
+    assert len(opener.sent) == 5

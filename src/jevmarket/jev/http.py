@@ -3,12 +3,18 @@
     POST https://api.typesafe.ai/v1/systemone
     Authorization: Bearer $JEV_API_KEY
 
-Documented status codes, and what each one means for a sweep:
+Status handling, and what each means for a sweep:
 
-    401  missing or invalid key      -> fatal, stop now
-    422  request failed validation   -> fatal, the frozen questions are wrong
-    429  rate limited                -> retry with exponential backoff
-    529  TypeSafe overloaded         -> retry with exponential backoff
+    401       missing or invalid key     -> fatal, stop now
+    422       request failed validation  -> fatal, the frozen questions are wrong
+    429       rate limited               -> retry with exponential backoff
+    5xx       server or proxy failure    -> retry with exponential backoff
+    other 4xx                            -> fatal, surfaced rather than swallowed
+
+TypeSafe documents only 401/422/429/529. The 5xx rule is wider than their list
+because a live sweep died on an undocumented 503 from their edge proxy. Any 5xx
+is transient by definition; any 4xx is the server rejecting the request on its
+merits, where retrying only burns money.
 
 Retryable failures back off exponentially, per TypeSafe's own guidance. The
 `opener` and `sleep` arguments are injection seams so every path above is
@@ -25,8 +31,15 @@ import urllib.request
 
 from .transport import DEFAULT_BASE_URL, DEFAULT_ENDPOINT, JevRequest, JevResponse
 
-RETRYABLE = {429, 529}
-DEFAULT_MAX_RETRIES = 5
+# TypeSafe documents 401 / 422 / 429 / 529. In practice their edge also emits
+# bare 5xx: a live sweep died on
+#   503 "upstream connect error or disconnect/reset before headers ...
+#        delayed connect error: Connection refused"
+# which is a transient proxy failure, not a rejection of the request. Anything
+# 5xx is therefore retried; 4xx never is, because the server has rejected the
+# request on its merits and retrying only burns money.
+RETRYABLE_STATUSES = {429}
+DEFAULT_MAX_RETRIES = 8
 DEFAULT_BACKOFF_BASE = 0.5
 DEFAULT_TIMEOUT_S = 30.0
 
@@ -103,7 +116,7 @@ class HttpTransport:
                     f"422 from {self.url}; the frozen questions were rejected: "
                     f"{raw[:400]!r}"
                 )
-            if status in RETRYABLE:
+            if status in RETRYABLE_STATUSES or 500 <= status < 600:
                 if attempt == self.max_retries:
                     raise JevOverloaded(
                         f"{status} from {self.url} after {attempt + 1} attempts"

@@ -1,0 +1,44 @@
+{
+  "cache_key": "2280c2afaef285239a69a03d610066ea25233ff493164540981fd6d436c062b1",
+  "request": {
+    "model": "jev-latest",
+    "questions": {
+      "action": {
+        "criteria": {
+          "option_a": "The trader's private value is below the current market price. The trader should transact in the direction that profits from that gap.",
+          "option_b": "The trader's private value is above the current market price. The trader should transact in the direction that profits from that gap.",
+          "option_c": "The trader's private value is at the current market price. No action is implied."
+        },
+        "instructions": "A trader holds a private value for one unit of a good and faces a market with a current price. Select the option that describes the trader's situation and the action it implies.",
+        "type": "choice"
+      }
+    },
+    "schema_version": "wording:mirror_reversed",
+    "state": {
+      "best_ask": 101,
+      "best_bid": 99,
+      "last_trade_price": 100,
+      "spread": 2,
+      "your_private_value": 98,
+      "your_signal": 98
+    }
+  },
+  "response": {
+    "answers": {
+      "action": {
+        "choice": "option_a",
+        "confidence": 0.98,
+        "probabilities": {
+          "option_a": 0.99,
+          "option_b": 0.01,
+          "option_c": 0.0
+        },
+        "type": "choice"
+      }
+    },
+    "input_tokens": 467,
+    "latency_s": 0.39099999982863665,
+    "model": "jev-1.13.0",
+    "output_tokens": 42
+  }
+}

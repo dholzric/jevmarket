@@ -1,0 +1,571 @@
+{
+  "rows": [
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.76,
+      "p_hold": 0.23,
+      "probabilities": {
+        "hold": 0.23,
+        "dispose": 0.76,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.78,
+      "p_hold": 0.21,
+      "probabilities": {
+        "hold": 0.21,
+        "acquire": 0.01,
+        "dispose": 0.78
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.74,
+      "p_hold": 0.24,
+      "probabilities": {
+        "acquire": 0.02,
+        "dispose": 0.74,
+        "hold": 0.24
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.72,
+      "p_hold": 0.26,
+      "probabilities": {
+        "dispose": 0.72,
+        "hold": 0.26,
+        "acquire": 0.02
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.96,
+      "p_hold": 0.03,
+      "probabilities": {
+        "acquire": 0.96,
+        "hold": 0.03,
+        "dispose": 0.01
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.99,
+      "p_hold": 0.01,
+      "probabilities": {
+        "hold": 0.01,
+        "dispose": 0.0,
+        "acquire": 0.99
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "99/101",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "dispose": 0.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.82,
+      "p_hold": 0.18,
+      "probabilities": {
+        "dispose": 0.82,
+        "hold": 0.18,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.83,
+      "p_hold": 0.17,
+      "probabilities": {
+        "hold": 0.17,
+        "dispose": 0.83,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.77,
+      "p_hold": 0.22,
+      "probabilities": {
+        "hold": 0.22,
+        "dispose": 0.77,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.62,
+      "p_hold": 0.36,
+      "probabilities": {
+        "hold": 0.36,
+        "dispose": 0.62,
+        "acquire": 0.02
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.95,
+      "p_hold": 0.04,
+      "probabilities": {
+        "hold": 0.04,
+        "dispose": 0.01,
+        "acquire": 0.95
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.99,
+      "p_hold": 0.01,
+      "probabilities": {
+        "acquire": 0.99,
+        "dispose": 0.0,
+        "hold": 0.01
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "baseline",
+      "book": "149/151",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.8,
+      "p_hold": 0.2,
+      "probabilities": {
+        "dispose": 0.8,
+        "acquire": 0.0,
+        "hold": 0.2
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.8,
+      "p_hold": 0.2,
+      "probabilities": {
+        "hold": 0.2,
+        "dispose": 0.8,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.75,
+      "p_hold": 0.24,
+      "probabilities": {
+        "dispose": 0.75,
+        "hold": 0.24,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.66,
+      "p_hold": 0.32,
+      "probabilities": {
+        "acquire": 0.02,
+        "hold": 0.32,
+        "dispose": 0.66
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.96,
+      "p_hold": 0.03,
+      "probabilities": {
+        "hold": 0.03,
+        "acquire": 0.96,
+        "dispose": 0.01
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.99,
+      "p_hold": 0.01,
+      "probabilities": {
+        "hold": 0.01,
+        "acquire": 0.99,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "hold": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "order_reversed",
+      "book": "99/101",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "acquire": 1.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.86,
+      "p_hold": 0.14,
+      "probabilities": {
+        "dispose": 0.86,
+        "hold": 0.14,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.85,
+      "p_hold": 0.14,
+      "probabilities": {
+        "dispose": 0.85,
+        "hold": 0.14,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.77,
+      "p_hold": 0.22,
+      "probabilities": {
+        "dispose": 0.77,
+        "acquire": 0.01,
+        "hold": 0.22
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.71,
+      "p_hold": 0.27,
+      "probabilities": {
+        "dispose": 0.71,
+        "hold": 0.27,
+        "acquire": 0.02
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.94,
+      "p_hold": 0.05,
+      "probabilities": {
+        "dispose": 0.01,
+        "hold": 0.05,
+        "acquire": 0.94
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 0.99,
+      "p_hold": 0.01,
+      "probabilities": {
+        "hold": 0.01,
+        "dispose": 0.0,
+        "acquire": 0.99
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "acquire": 1.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "neutral_labels",
+      "book": "99/101",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct_side": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "acquire": 1.0,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.6,
+      "p_hold": 0.29,
+      "probabilities": {
+        "acquire": 0.11,
+        "dispose": 0.6,
+        "hold": 0.29
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.51,
+      "p_hold": 0.39,
+      "probabilities": {
+        "hold": 0.39,
+        "acquire": 0.1,
+        "dispose": 0.51
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.55,
+      "p_hold": 0.36,
+      "probabilities": {
+        "dispose": 0.55,
+        "hold": 0.36,
+        "acquire": 0.09
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct_side": 0.5,
+      "p_hold": 0.36,
+      "probabilities": {
+        "acquire": 0.14,
+        "hold": 0.36,
+        "dispose": 0.5
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": 2,
+      "chosen": "dispose",
+      "correct_side": "acquire",
+      "p_correct_side": 0.19,
+      "p_hold": 0.09,
+      "probabilities": {
+        "hold": 0.09,
+        "acquire": 0.19,
+        "dispose": 0.72
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": 4,
+      "chosen": "dispose",
+      "correct_side": "acquire",
+      "p_correct_side": 0.16,
+      "p_hold": 0.05,
+      "probabilities": {
+        "acquire": 0.16,
+        "hold": 0.05,
+        "dispose": 0.79
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": 8,
+      "chosen": "dispose",
+      "correct_side": "acquire",
+      "p_correct_side": 0.13,
+      "p_hold": 0.03,
+      "probabilities": {
+        "hold": 0.03,
+        "acquire": 0.13,
+        "dispose": 0.84
+      }
+    },
+    {
+      "variant": "label_swap",
+      "book": "99/101",
+      "edge": 12,
+      "chosen": "dispose",
+      "correct_side": "acquire",
+      "p_correct_side": 0.17,
+      "p_hold": 0.03,
+      "probabilities": {
+        "hold": 0.03,
+        "acquire": 0.17,
+        "dispose": 0.8
+      }
+    }
+  ],
+  "gaps": {
+    "baseline @ 99/101": 0.23750000000000004,
+    "baseline @ 149/151": 0.22499999999999998,
+    "order_reversed": 0.235,
+    "neutral_labels": 0.18499999999999994,
+    "label_swap": -0.37750000000000006
+  }
+}

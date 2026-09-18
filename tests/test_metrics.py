@@ -113,3 +113,42 @@ def test_reliability_curve_reports_accuracy_and_count_per_bin():
 def test_empty_bins_report_nan_accuracy_and_zero_count():
     curve = reliability_curve([0.95], [True], n_bins=10)
     assert curve[0][2] == 0 and math.isnan(curve[0][1])
+
+
+# --- post-jump error split by jump direction --------------------------------
+
+
+def test_post_jump_rmse_by_sign_separates_up_and_down_jumps():
+    from jevmarket.metrics import post_jump_rmse_by_sign
+
+    fundamental = [100.0, 110.0, 110.0, 100.0, 100.0]
+    prices =      [100.0, 108.0, 110.0,  96.0, 100.0]
+    # jump up at t=1 (error 2 then 0), jump down at t=3 (error 4 then 0)
+    result = post_jump_rmse_by_sign(prices, fundamental, [1, 3], window=2)
+    assert result["up"] == pytest.approx(math.sqrt(2.0))
+    assert result["down"] == pytest.approx(math.sqrt(8.0))
+
+
+def test_post_jump_rmse_by_sign_is_nan_where_there_were_no_jumps():
+    from jevmarket.metrics import post_jump_rmse_by_sign
+
+    result = post_jump_rmse_by_sign([100.0, 90.0], [100.0, 90.0], [1], window=1)
+    assert math.isnan(result["up"])
+    assert result["down"] == 0.0
+
+
+def test_post_jump_rmse_by_sign_pools_to_the_overall_figure():
+    from jevmarket.metrics import post_jump_rmse, post_jump_rmse_by_sign
+
+    fundamental = [100.0, 110.0, 110.0, 100.0, 100.0]
+    prices =      [100.0, 108.0, 110.0,  96.0, 100.0]
+    both = post_jump_rmse_by_sign(prices, fundamental, [1, 3], window=2)
+    pooled = post_jump_rmse(prices, fundamental, [1, 3], window=2)
+    assert min(both.values()) <= pooled <= max(both.values())
+
+
+def test_a_flat_jump_is_counted_as_neither_direction():
+    from jevmarket.metrics import post_jump_rmse_by_sign
+
+    result = post_jump_rmse_by_sign([100.0, 95.0], [100.0, 100.0], [1], window=1)
+    assert math.isnan(result["up"]) and math.isnan(result["down"])

@@ -98,3 +98,29 @@ def reliability_curve(confidences, correct, n_bins: int = 10):
         (float(mid), float(correct[mask].mean()) if count else float("nan"), count)
         for mid, (mask, count) in zip(midpoints, _bins(confidences, n_bins))
     ]
+
+
+def post_jump_rmse_by_sign(
+    prices, fundamental, jump_times, window: int = DEFAULT_POST_JUMP_WINDOW
+) -> dict:
+    """Post-jump RMSE split by the direction of the jump.
+
+    The asymmetric-conviction prediction lives here: if an arm is less willing
+    to sell than to buy at equal mispricing, its market should be slower to
+    find a fundamental that jumped DOWN than one that jumped UP.
+    """
+    n = len(fundamental)
+    errors = {"up": [], "down": []}
+
+    for jump in jump_times:
+        if jump == 0 or jump >= n:
+            continue
+        direction = fundamental[jump] - fundamental[jump - 1]
+        if direction == 0:
+            continue
+        bucket = errors["up"] if direction > 0 else errors["down"]
+        for t in range(jump, min(jump + window, n)):
+            if not _is_missing(prices[t]):
+                bucket.append((prices[t] - fundamental[t]) ** 2)
+
+    return {key: _rmse(values) for key, values in errors.items()}

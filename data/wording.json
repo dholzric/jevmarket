@@ -1,0 +1,442 @@
+{
+  "rows": [
+    {
+      "variant": "original",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.74,
+      "p_hold": 0.25,
+      "probabilities": {
+        "acquire": 0.01,
+        "dispose": 0.74,
+        "hold": 0.25
+      }
+    },
+    {
+      "variant": "original",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.79,
+      "p_hold": 0.2,
+      "probabilities": {
+        "hold": 0.2,
+        "dispose": 0.79,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "original",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.74,
+      "p_hold": 0.25,
+      "probabilities": {
+        "dispose": 0.74,
+        "hold": 0.25,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "original",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.68,
+      "p_hold": 0.3,
+      "probabilities": {
+        "acquire": 0.02,
+        "hold": 0.3,
+        "dispose": 0.68
+      }
+    },
+    {
+      "variant": "original",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 0.96,
+      "p_hold": 0.03,
+      "probabilities": {
+        "hold": 0.03,
+        "dispose": 0.01,
+        "acquire": 0.96
+      }
+    },
+    {
+      "variant": "original",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 0.99,
+      "p_hold": 0.01,
+      "probabilities": {
+        "acquire": 0.99,
+        "dispose": 0.0,
+        "hold": 0.01
+      }
+    },
+    {
+      "variant": "original",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "dispose": 0.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "original",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "hold": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 1.0,
+        "hold": 0.0,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 1.0,
+        "acquire": 0.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.99,
+        "acquire": 0.01,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.99,
+        "hold": 0.0,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "hold": 0.0,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "dispose": 0.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "mirror",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "hold": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "acquire": 0.01,
+        "dispose": 0.99
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.99,
+        "hold": 0.0,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.98,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 0.02,
+        "dispose": 0.98,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 0.01,
+        "hold": 0.0,
+        "dispose": 0.99
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "acquire": 1.0,
+        "hold": 0.0
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "hold": 0.0,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "dispose": 0.0,
+        "hold": 0.0,
+        "acquire": 1.0
+      }
+    },
+    {
+      "variant": "mirror_reversed",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "hold": 0.0,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": -12,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.86,
+      "p_hold": 0.12,
+      "probabilities": {
+        "dispose": 0.86,
+        "acquire": 0.02,
+        "hold": 0.12
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": -8,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.91,
+      "p_hold": 0.08,
+      "probabilities": {
+        "hold": 0.08,
+        "dispose": 0.91,
+        "acquire": 0.01
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": -4,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.78,
+      "p_hold": 0.19,
+      "probabilities": {
+        "hold": 0.19,
+        "dispose": 0.78,
+        "acquire": 0.03
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": -2,
+      "chosen": "dispose",
+      "correct_side": "dispose",
+      "p_correct": 0.75,
+      "p_hold": 0.22,
+      "probabilities": {
+        "acquire": 0.03,
+        "dispose": 0.75,
+        "hold": 0.22
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": 2,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 0.95,
+      "p_hold": 0.02,
+      "probabilities": {
+        "dispose": 0.03,
+        "hold": 0.02,
+        "acquire": 0.95
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": 4,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 1.0,
+      "p_hold": 0.0,
+      "probabilities": {
+        "acquire": 1.0,
+        "hold": 0.0,
+        "dispose": 0.0
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": 8,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "acquire": 0.99,
+        "dispose": 0.01
+      }
+    },
+    {
+      "variant": "gain_framed",
+      "edge": 12,
+      "chosen": "acquire",
+      "correct_side": "acquire",
+      "p_correct": 0.99,
+      "p_hold": 0.0,
+      "probabilities": {
+        "hold": 0.0,
+        "dispose": 0.01,
+        "acquire": 0.99
+      }
+    }
+  ],
+  "summary": {
+    "original": {
+      "mean_p_acquire": 0.9875,
+      "mean_p_dispose": 0.7375,
+      "asymmetry": 0.25
+    },
+    "mirror": {
+      "mean_p_acquire": 1.0,
+      "mean_p_dispose": 0.995,
+      "asymmetry": 0.0050000000000000044
+    },
+    "mirror_reversed": {
+      "mean_p_acquire": 1.0,
+      "mean_p_dispose": 0.9875,
+      "asymmetry": 0.012499999999999956
+    },
+    "gain_framed": {
+      "mean_p_acquire": 0.9824999999999999,
+      "mean_p_dispose": 0.825,
+      "asymmetry": 0.15749999999999997
+    }
+  }
+}

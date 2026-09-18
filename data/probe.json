@@ -1,0 +1,210 @@
+[
+  {
+    "value": 88,
+    "edge": -12.0,
+    "action": "sell",
+    "probabilities": {
+      "pass": 0.21,
+      "buy": 0.0,
+      "sell": 0.79
+    },
+    "max_probability": 0.79,
+    "score": 0.99,
+    "aggressiveness": 0.2475,
+    "noul": 0.32,
+    "model_confidence": 0.67,
+    "from_cache": false
+  },
+  {
+    "value": 90,
+    "edge": -10.0,
+    "action": "sell",
+    "probabilities": {
+      "sell": 0.77,
+      "pass": 0.23,
+      "buy": 0.0
+    },
+    "max_probability": 0.77,
+    "score": 1.14,
+    "aggressiveness": 0.285,
+    "noul": 0.35,
+    "model_confidence": 0.65,
+    "from_cache": false
+  },
+  {
+    "value": 92,
+    "edge": -8.0,
+    "action": "sell",
+    "probabilities": {
+      "pass": 0.21,
+      "buy": 0.01,
+      "sell": 0.78
+    },
+    "max_probability": 0.78,
+    "score": 1.27,
+    "aggressiveness": 0.3175,
+    "noul": 0.26,
+    "model_confidence": 0.68,
+    "from_cache": false
+  },
+  {
+    "value": 94,
+    "edge": -6.0,
+    "action": "sell",
+    "probabilities": {
+      "buy": 0.01,
+      "sell": 0.74,
+      "pass": 0.25
+    },
+    "max_probability": 0.74,
+    "score": 1.28,
+    "aggressiveness": 0.32,
+    "noul": 0.25,
+    "model_confidence": 0.62,
+    "from_cache": false
+  },
+  {
+    "value": 96,
+    "edge": -4.0,
+    "action": "sell",
+    "probabilities": {
+      "pass": 0.25,
+      "sell": 0.73,
+      "buy": 0.02
+    },
+    "max_probability": 0.73,
+    "score": 1.68,
+    "aggressiveness": 0.42,
+    "noul": 0.36,
+    "model_confidence": 0.6,
+    "from_cache": false
+  },
+  {
+    "value": 98,
+    "edge": -2.0,
+    "action": "sell",
+    "probabilities": {
+      "sell": 0.7,
+      "pass": 0.27,
+      "buy": 0.03
+    },
+    "max_probability": 0.7,
+    "score": 1.56,
+    "aggressiveness": 0.39,
+    "noul": 0.49,
+    "model_confidence": 0.55,
+    "from_cache": false
+  },
+  {
+    "value": 100,
+    "edge": 0.0,
+    "action": "pass",
+    "probabilities": {
+      "pass": 0.92,
+      "sell": 0.01,
+      "buy": 0.07
+    },
+    "max_probability": 0.92,
+    "score": 2.14,
+    "aggressiveness": 0.535,
+    "noul": 0.82,
+    "model_confidence": 0.89,
+    "from_cache": false
+  },
+  {
+    "value": 102,
+    "edge": 2.0,
+    "action": "buy",
+    "probabilities": {
+      "sell": 0.01,
+      "pass": 0.03,
+      "buy": 0.96
+    },
+    "max_probability": 0.96,
+    "score": 2.6,
+    "aggressiveness": 0.65,
+    "noul": 0.17,
+    "model_confidence": 0.94,
+    "from_cache": false
+  },
+  {
+    "value": 104,
+    "edge": 4.0,
+    "action": "buy",
+    "probabilities": {
+      "sell": 0.0,
+      "pass": 0.01,
+      "buy": 0.99
+    },
+    "max_probability": 0.99,
+    "score": 3.03,
+    "aggressiveness": 0.7575,
+    "noul": 0.1,
+    "model_confidence": 0.99,
+    "from_cache": false
+  },
+  {
+    "value": 106,
+    "edge": 6.0,
+    "action": "buy",
+    "probabilities": {
+      "pass": 0.0,
+      "buy": 1.0,
+      "sell": 0.0
+    },
+    "max_probability": 1.0,
+    "score": 3.24,
+    "aggressiveness": 0.81,
+    "noul": 0.09,
+    "model_confidence": 0.99,
+    "from_cache": false
+  },
+  {
+    "value": 108,
+    "edge": 8.0,
+    "action": "buy",
+    "probabilities": {
+      "sell": 0.0,
+      "buy": 1.0,
+      "pass": 0.0
+    },
+    "max_probability": 1.0,
+    "score": 3.51,
+    "aggressiveness": 0.8775,
+    "noul": 0.08,
+    "model_confidence": 0.99,
+    "from_cache": false
+  },
+  {
+    "value": 110,
+    "edge": 10.0,
+    "action": "buy",
+    "probabilities": {
+      "sell": 0.0,
+      "buy": 1.0,
+      "pass": 0.0
+    },
+    "max_probability": 1.0,
+    "score": 3.38,
+    "aggressiveness": 0.845,
+    "noul": 0.1,
+    "model_confidence": 0.99,
+    "from_cache": false
+  },
+  {
+    "value": 112,
+    "edge": 12.0,
+    "action": "buy",
+    "probabilities": {
+      "pass": 0.01,
+      "sell": 0.0,
+      "buy": 0.99
+    },
+    "max_probability": 0.99,
+    "score": 3.49,
+    "aggressiveness": 0.8725,
+    "noul": 0.09,
+    "model_confidence": 0.99,
+    "from_cache": false
+  }
+]

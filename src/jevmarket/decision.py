@@ -31,7 +31,10 @@ SCHEMA_PATH = (
     pathlib.Path(__file__).resolve().parents[2] / "schema" / "schema_jev_v1.json"
 )
 
-PROBABILITY_TOLERANCE = 1e-6
+# Jev rounds probabilities to 2dp, so a three-option distribution routinely
+# arrives summing to 0.99 or 1.01. Accept that and renormalise; reject anything
+# that is not plausibly a rounded distribution.
+PROBABILITY_TOLERANCE = 0.05
 QUESTION_TYPES = {"action": "choice", "aggressiveness": "score", "already_priced": "noul"}
 
 
@@ -75,9 +78,12 @@ def _validated_probabilities(probabilities) -> dict:
 
     clean = {key: _unit(probabilities[key], f"probability[{key}]") for key in probabilities}
     total = sum(clean.values())
-    if abs(total - 1.0) > 1e-3:
+    if abs(total - 1.0) > PROBABILITY_TOLERANCE:
         raise ValueError(f"action_probabilities must sum to 1, got {total}")
-    return clean
+    if total <= 0.0:
+        raise ValueError("action_probabilities are all zero")
+    # Renormalise: the sampling arm draws from this, so it must be exact.
+    return {key: value / total for key, value in clean.items()}
 
 
 @dataclass(frozen=True)

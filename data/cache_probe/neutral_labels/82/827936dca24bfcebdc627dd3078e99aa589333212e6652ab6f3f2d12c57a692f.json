@@ -1,0 +1,44 @@
+{
+  "cache_key": "827936dca24bfcebdc627dd3078e99aa589333212e6652ab6f3f2d12c57a692f",
+  "request": {
+    "model": "jev-latest",
+    "questions": {
+      "action": {
+        "criteria": {
+          "option_a": "The good is underpriced relative to your private value. You want to acquire a unit.",
+          "option_b": "The good is overpriced relative to your private value. You want to dispose of a unit.",
+          "option_c": "Neither direction is clear enough to justify an order this period."
+        },
+        "instructions": "You are a trader in a continuous double auction for one abstract good. You are given the current order book, your own private value for one unit, and your recent signal about the good's fundamental value. Decide the direction of your next order. Choose buy if the good looks underpriced relative to your private value, sell if it looks overpriced, and pass if neither is clear enough to act on.",
+        "type": "choice"
+      }
+    },
+    "schema_version": "probe",
+    "state": {
+      "best_ask": 101,
+      "best_bid": 99,
+      "last_trade_price": 100,
+      "spread": 2,
+      "your_private_value": 88,
+      "your_signal": 88
+    }
+  },
+  "response": {
+    "answers": {
+      "action": {
+        "choice": "option_b",
+        "confidence": 0.78,
+        "probabilities": {
+          "option_a": 0.0,
+          "option_b": 0.86,
+          "option_c": 0.14
+        },
+        "type": "choice"
+      }
+    },
+    "input_tokens": 496,
+    "latency_s": 0.34300000010989606,
+    "model": "jev-1.13.0",
+    "output_tokens": 42
+  }
+}

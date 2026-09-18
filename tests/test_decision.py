@@ -219,3 +219,39 @@ def test_create_rejects_an_aggressiveness_outside_the_unit_interval():
             action="buy", aggressiveness=1.4, already_priced=0.0,
             action_probabilities={"buy": 1.0, "sell": 0.0, "pass": 0.0},
         )
+
+
+# --- what the live API actually sends ---------------------------------------
+
+
+def test_probabilities_rounded_to_two_decimals_are_accepted():
+    """Jev rounds probabilities to 2dp, so they routinely sum to 0.99 or 1.01.
+    Observed live: {buy: 0.07, sell: 0.01, pass: 0.92} -> 1.00, and
+    {buy: 0.01, sell: 0.79, pass: 0.19} -> 0.99. Rejecting these would abort a
+    paid run partway through."""
+    decision = Decision.from_answers(
+        jev_answers(probabilities={"buy": 0.01, "sell": 0.79, "pass": 0.19}, choice="sell")
+    )
+    assert decision.action is Action.SELL
+
+
+def test_rounded_probabilities_are_renormalised_to_exactly_one():
+    """The sampling arm draws from these, so they must be a real distribution."""
+    decision = Decision.from_answers(
+        jev_answers(probabilities={"buy": 0.01, "sell": 0.79, "pass": 0.19}, choice="sell")
+    )
+    assert sum(decision.action_probabilities.values()) == pytest.approx(1.0)
+
+
+def test_confidence_reflects_the_renormalised_mass():
+    decision = Decision.from_answers(
+        jev_answers(probabilities={"buy": 0.01, "sell": 0.79, "pass": 0.19}, choice="sell")
+    )
+    assert decision.confidence == pytest.approx(0.79 / 0.99)
+
+
+def test_genuinely_wrong_probabilities_are_still_rejected():
+    with pytest.raises(ValueError):
+        Decision.from_answers(
+            jev_answers(probabilities={"buy": 0.7, "sell": 0.7, "pass": 0.7})
+        )

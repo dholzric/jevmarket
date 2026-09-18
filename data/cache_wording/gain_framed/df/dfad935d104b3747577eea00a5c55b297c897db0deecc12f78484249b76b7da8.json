@@ -1,0 +1,44 @@
+{
+  "cache_key": "dfad935d104b3747577eea00a5c55b297c897db0deecc12f78484249b76b7da8",
+  "request": {
+    "model": "jev-latest",
+    "questions": {
+      "action": {
+        "criteria": {
+          "buy": "The good is cheap relative to the trader's private value. Acquiring one unit would gain the trader the difference.",
+          "pass": "The good is priced at the trader's private value. Neither action gains the trader anything.",
+          "sell": "The good is dear relative to the trader's private value. Disposing of one unit would gain the trader the difference."
+        },
+        "instructions": "A trader holds a private value for one unit of a good and faces a market with a current price. Select the option that describes the trader's situation and the action it implies.",
+        "type": "choice"
+      }
+    },
+    "schema_version": "wording:gain_framed",
+    "state": {
+      "best_ask": 101,
+      "best_bid": 99,
+      "last_trade_price": 100,
+      "spread": 2,
+      "your_private_value": 88,
+      "your_signal": 88
+    }
+  },
+  "response": {
+    "answers": {
+      "action": {
+        "choice": "sell",
+        "confidence": 0.8,
+        "probabilities": {
+          "buy": 0.02,
+          "pass": 0.12,
+          "sell": 0.86
+        },
+        "type": "choice"
+      }
+    },
+    "input_tokens": 462,
+    "latency_s": 0.39099999982863665,
+    "model": "jev-1.13.0",
+    "output_tokens": 38
+  }
+}

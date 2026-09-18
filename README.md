@@ -70,8 +70,23 @@ it holds, and that the book is never crossed. `tests/test_conservation.py` runs
 
 ## Status
 
-Phase 0–1 (engine). No LLM code yet, by design — see the phase table in the
-preregistration.
+Phase 0–2. See the open items at the end of the preregistration — H1–H5 are
+still placeholders and no live Jev call has been made.
+
+## Cost control
+
+Jev calls go through `JevClient`, which sits in front of a content-addressed
+cache and a `SpendGate`. Two things are load-bearing:
+
+- `render_state` excludes the period number, cash and inventory, and rounds
+  prices to whole ticks. Measured on a 400-decision run, that takes the cache
+  hit rate from 1% to 31%. `tests/test_simulation.py` guards the regression.
+- `SpendGate` refuses a dollar cap it cannot compute (TypeSafe does not publish
+  pricing), and a cached answer never consumes the gate.
+
+`DecisionCache(path, read_only=True)` raises `CacheMiss` rather than calling the
+API, which is what lets Phase 6 publish a repo that provably reproduces every
+figure from cache.
 
 | Phase | Output | State |
 |---|---|---|

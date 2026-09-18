@@ -11,6 +11,16 @@ from dataclasses import dataclass
 
 TOKENS_PER_MTOK = 1_000_000
 
+# TypeSafe does not publish pricing. The rate below is EMPIRICAL, fitted to the
+# account meter after Phase 3: 2,643 calls / 2,251,476 tokens billed at $0.08,
+# i.e. $0.0355 per million tokens blended. The input/output split is NOT known;
+# a 5:1 ratio is assumed and then rounded up, so the gate over-estimates by
+# roughly 6% -- the right direction for a spend cap. Replace with published
+# rates if TypeSafe ever publishes them.
+OBSERVED_BLENDED_USD_PER_MTOK = 0.0355
+PRICING_NOTE = "empirical, fitted to the 2026-09-18 account meter; not official"
+
+
 
 class BudgetExceeded(Exception):
     """The run hit its call or dollar cap. The charge is still recorded."""
@@ -27,6 +37,9 @@ class Pricing:
         return (
             input_tokens * self.input_per_mtok + output_tokens * self.output_per_mtok
         ) / TOKENS_PER_MTOK
+
+
+JEV_PRICING_ESTIMATE = None  # set below, once Pricing is defined
 
 
 class SpendGate:
@@ -94,3 +107,7 @@ class SpendGate:
             "remaining_calls": self.remaining_calls,
             "remaining_usd": self.remaining_usd,
         }
+
+
+# Convenience: the working cost estimate for Jev, used by the run scripts.
+JEV_PRICING_ESTIMATE = Pricing(input_per_mtok=0.028, output_per_mtok=0.14)

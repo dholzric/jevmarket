@@ -24,8 +24,16 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from jevmarket.fundamental import Fundamental, Signal  # noqa: E402
-from jevmarket.jev.budget import BudgetExceeded, SpendGate  # noqa: E402
+from jevmarket.fundamental import (  # noqa: E402
+    Fundamental,
+    MatchedJumpFundamental,
+    Signal,
+)
+from jevmarket.jev.budget import (  # noqa: E402
+    JEV_PRICING_ESTIMATE,
+    BudgetExceeded,
+    SpendGate,
+)
 from jevmarket.jev.cache import DecisionCache  # noqa: E402
 from jevmarket.jev.client import JevClient  # noqa: E402
 from jevmarket.jev.http import HttpTransport  # noqa: E402
@@ -46,7 +54,11 @@ def parse_args(argv=None):
     parser.add_argument("--jump-sd", type=float, default=10.0)
     parser.add_argument("--burn-in", type=int, default=5)
     parser.add_argument("--window", type=int, default=15)
-    parser.add_argument("--max-calls", type=int, default=4000)
+    parser.add_argument("--max-calls", type=int, default=40_000)
+    parser.add_argument("--max-usd", type=float, default=2.0)
+    parser.add_argument("--matched", action="store_true",
+                        help="use MatchedJumpFundamental (paired up/down windows)")
+    parser.add_argument("--period-gap", type=int, default=20)
     parser.add_argument(
         "--cells",
         default="zi/-,jev_argmax/original,jev_sample/original,jev_argmax/mirror,jev_sample/mirror",
@@ -59,19 +71,25 @@ def parse_args(argv=None):
 
 def main(argv=None) -> int:
     args = parse_args(argv)
-    gate = SpendGate(max_calls=args.max_calls)
+    gate = SpendGate(
+        max_calls=args.max_calls, max_usd=args.max_usd, pricing=JEV_PRICING_ESTIMATE
+    )
     client = JevClient(HttpTransport(), cache=DecisionCache(args.cache), budget=gate)
 
     cells = [c.split("/") for c in args.cells.split(",")]
     results = []
     for arm, wording in cells:
         for seed in range(args.seeds):
-            fundamental = Fundamental(
-                initial=100.0,
-                jump_prob=args.jump_prob,
-                jump_sd=args.jump_sd,
-                seed=1000 + seed,
-            )
+            if args.matched:
+                fundamental = MatchedJumpFundamental(
+                    initial=100.0, jump_size=args.jump_sd,
+                    period_gap=args.period_gap, seed=1000 + seed,
+                )
+            else:
+                fundamental = Fundamental(
+                    initial=100.0, jump_prob=args.jump_prob,
+                    jump_sd=args.jump_sd, seed=1000 + seed,
+                )
             config = RunConfig(
                 n_traders=args.traders,
                 periods=args.periods,

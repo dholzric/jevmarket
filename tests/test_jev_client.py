@@ -97,7 +97,7 @@ def test_the_request_carries_the_frozen_questions_verbatim():
     request = build_request(observation())
     assert request.questions == load_schema()["questions"]
     assert request.model == "jev-latest"
-    assert request.schema_version == "v1"
+    assert request.schema_version == "v1:original"
 
 
 def test_the_request_body_is_what_typesafe_expects():

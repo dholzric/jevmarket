@@ -6,7 +6,7 @@ decision; the runner never sees a request or a token count.
 
 from __future__ import annotations
 
-from ..decision import Decision
+from ..decision import DEFAULT_WORDING, Decision, load_schema
 from .cache import DecisionCache
 from .questions import build_request
 from .transport import JevRequest, JevResponse, Transport
@@ -26,11 +26,15 @@ class JevClient:
         self.model = model
         self.schema_violations = 0
 
-    def decide(self, observation) -> tuple[Decision, JevResponse]:
-        request = build_request(observation, model=self.model)
+    def decide(
+        self, observation, wording: str = DEFAULT_WORDING
+    ) -> tuple[Decision, JevResponse]:
+        request = build_request(observation, model=self.model, wording=wording)
         response = self._fetch(request)
         try:
-            return Decision.from_answers(response.answers), response
+            return Decision.from_answers(
+                response.answers, schema=load_schema(wording)
+            ), response
         except ValueError:
             # Counted as a reported cost of the Jev arms, then re-raised so the
             # runner decides whether to fall back or stop.

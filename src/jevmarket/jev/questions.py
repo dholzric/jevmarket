@@ -25,7 +25,7 @@ locked in the schema alongside the question wording.
 
 from __future__ import annotations
 
-from ..decision import SCHEMA_VERSION, load_schema
+from ..decision import DEFAULT_WORDING, SCHEMA_VERSION, load_schema
 from .transport import JevRequest
 
 
@@ -44,11 +44,15 @@ def render_state(observation) -> dict:
     }
 
 
-def build_request(observation, model: str | None = None) -> JevRequest:
-    schema = load_schema()
+def build_request(
+    observation, model: str | None = None, wording: str = DEFAULT_WORDING
+) -> JevRequest:
+    schema = load_schema(wording)
     return JevRequest(
         model=model or schema["model"],
         state=render_state(observation),
         questions=schema["questions"],
-        schema_version=SCHEMA_VERSION,
+        # The wording is part of the key: the same observation under two
+        # wordings is two different experimental conditions, never one entry.
+        schema_version=f"{SCHEMA_VERSION}:{wording}",
     )

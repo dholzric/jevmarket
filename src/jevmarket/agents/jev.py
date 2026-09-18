@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ..decision import Action, Decision
+from ..decision import DEFAULT_WORDING, Action, Decision
 from .base import Observation
 
 
@@ -20,13 +20,16 @@ class JevArgmax:
 
     arm = "jev_argmax"
 
-    def __init__(self, trader_id: str, client, seed: int = 0) -> None:
+    def __init__(
+        self, trader_id: str, client, seed: int = 0, wording: str = DEFAULT_WORDING
+    ) -> None:
         self.trader_id = trader_id
         self.client = client
         self.seed = seed
+        self.wording = wording
 
     def decide(self, observation: Observation) -> Decision:
-        decision, _ = self.client.decide(observation)
+        decision, _ = self.client.decide(observation, wording=self.wording)
         return decision
 
 
@@ -35,13 +38,16 @@ class JevSample:
 
     arm = "jev_sample"
 
-    def __init__(self, trader_id: str, client, seed: int = 0) -> None:
+    def __init__(
+        self, trader_id: str, client, seed: int = 0, wording: str = DEFAULT_WORDING
+    ) -> None:
         self.trader_id = trader_id
         self.client = client
         self.seed = seed
+        self.wording = wording
 
     def decide(self, observation: Observation) -> Decision:
-        decision, _ = self.client.decide(observation)
+        decision, _ = self.client.decide(observation, wording=self.wording)
 
         options = [action.value for action in Action]
         weights = np.array([decision.action_probabilities[o] for o in options])

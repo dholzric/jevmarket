@@ -27,9 +27,17 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 SCHEMA_VERSION = "v1"
-SCHEMA_PATH = (
-    pathlib.Path(__file__).resolve().parents[2] / "schema" / "schema_jev_v1.json"
-)
+SCHEMA_DIR = pathlib.Path(__file__).resolve().parents[2] / "schema"
+
+# The wording treatment. `original` is the natural domain wording that induced a
+# +0.250 buy/sell conviction asymmetry; `mirror` is the control that measured
+# +0.005. They differ ONLY in the `action` question. See FINDINGS.md.
+WORDINGS = {
+    "original": SCHEMA_DIR / "schema_jev_v1.json",
+    "mirror": SCHEMA_DIR / "schema_jev_v1_mirror.json",
+}
+DEFAULT_WORDING = "original"
+SCHEMA_PATH = WORDINGS[DEFAULT_WORDING]
 
 # Jev rounds probabilities to 2dp, so a three-option distribution routinely
 # arrives summing to 0.99 or 1.01. Accept that and renormalise; reject anything
@@ -44,9 +52,11 @@ class Action(str, Enum):
     PASS = "pass"
 
 
-@functools.lru_cache(maxsize=1)
-def load_schema() -> dict:
-    return json.loads(pathlib.Path(SCHEMA_PATH).read_text(encoding="utf-8"))
+@functools.lru_cache(maxsize=len(WORDINGS))
+def load_schema(wording: str = DEFAULT_WORDING) -> dict:
+    if wording not in WORDINGS:
+        raise ValueError(f"unknown wording {wording!r}; known: {sorted(WORDINGS)}")
+    return json.loads(WORDINGS[wording].read_text(encoding="utf-8"))
 
 
 def normalise_score(score: float, levels: int, base: int = 0) -> float:
@@ -149,15 +159,36 @@ class Decision:
         if "score" not in aggressiveness_answer:
             raise ValueError("aggressiveness answer has no score")
 
+        # A wording may name its options neutrally (option_a/b/c) to avoid the
+        # lexical component of the asymmetry; map them back before anything else
+        # in the codebase sees them.
+        option_map = schema.get("option_map") or {}
+
+        def translate(option):
+            if not option_map:
+                return option
+            if option not in option_map:
+                raise ValueError(
+                    f"option {option!r} is not in this wording's option_map "
+                    f"({sorted(option_map)})"
+                )
+            return option_map[option]
+
+        raw_probabilities = action_answer.get("probabilities")
+        if isinstance(raw_probabilities, dict):
+            raw_probabilities = {
+                translate(option): p for option, p in raw_probabilities.items()
+            }
+
         return cls.create(
-            action=action_answer.get("choice"),
+            action=translate(action_answer.get("choice")),
             aggressiveness=normalise_score(
                 aggressiveness_answer["score"],
                 levels=schema["score_levels"],
                 base=schema.get("score_base", 0),
             ),
             already_priced=_unit(answers["already_priced"].get("noul"), "noul"),
-            action_probabilities=action_answer.get("probabilities"),
+            action_probabilities=raw_probabilities,
             model_confidence=action_answer.get("confidence"),
         )
 

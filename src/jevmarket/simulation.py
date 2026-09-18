@@ -14,7 +14,7 @@ import numpy as np
 
 from .agents import JevArgmax, JevSample, Observation, ZeroIntelligence
 from .book import Side
-from .decision import Action, Decision
+from .decision import DEFAULT_WORDING, Action, Decision
 from .exchange import Exchange, OrderRejected
 from .fundamental import Fundamental, Signal
 from .quoting import quote_price
@@ -41,6 +41,9 @@ class RunConfig:
     # that an informative arm inherits a populated book rather than a void. See
     # the cold-start note in preregistration.md.
     burn_in_periods: int = 0
+    # The wording treatment: "original" (asymmetry-inducing) vs "mirror"
+    # (the control). Only meaningful for the Jev arms.
+    wording: str = DEFAULT_WORDING
     fundamental: Fundamental = field(default_factory=Fundamental)
     signal: Signal = field(default_factory=Signal)
     # Required for the Jev arms. Share one client (and one cache) across arms
@@ -95,7 +98,8 @@ def run(config: RunConfig) -> RunResult:
         seed = config.seed * 100_003 + i
         if config.arm in JEV_ARMS:
             brains[tid] = brain_cls(
-                trader_id=tid, client=config.jev_client, seed=seed
+                trader_id=tid, client=config.jev_client, seed=seed,
+                wording=config.wording,
             )
         else:
             brains[tid] = brain_cls(trader_id=tid, seed=seed)

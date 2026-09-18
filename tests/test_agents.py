@@ -1,5 +1,7 @@
 """The zero-intelligence baseline on the common action space."""
 
+import pytest
+
 from jevmarket.agents import Observation, ZeroIntelligence
 from jevmarket.decision import Action, Decision
 
@@ -44,10 +46,30 @@ def test_zi_uses_the_whole_action_space():
     assert actions == set(Action)
 
 
-def test_zi_confidence_is_uninformative_by_construction():
-    """The null model for the calibration outcome: it always says 0.5."""
+def test_zi_reports_its_own_policy_as_its_distribution():
+    """Every arm carries a real distribution over {buy, sell, pass}. ZI's is its
+    fixed randomisation, which is what makes it the calibration null."""
     zi = ZeroIntelligence("t0", seed=3)
-    assert all(zi.decide(observation(t)).confidence == 0.5 for t in range(200))
+    distributions = {
+        tuple(sorted(zi.decide(observation(t)).action_probabilities.items()))
+        for t in range(200)
+    }
+    assert len(distributions) == 1, "ZI's policy must not vary with the state"
+    assert sum(dict(next(iter(distributions))).values()) == pytest.approx(1.0)
+
+
+def test_zi_has_no_view_on_whether_the_signal_is_already_priced():
+    zi = ZeroIntelligence("t0", seed=3)
+    assert all(zi.decide(observation(t)).already_priced == 0.5 for t in range(200))
+
+
+def test_zi_confidence_is_the_mass_on_the_action_it_took():
+    zi = ZeroIntelligence("t0", seed=3)
+    for t in range(50):
+        decision = zi.decide(observation(t))
+        assert decision.confidence == pytest.approx(
+            decision.action_probabilities[decision.action.value]
+        )
 
 
 def test_zi_ignores_the_book_entirely():

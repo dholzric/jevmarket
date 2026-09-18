@@ -73,3 +73,113 @@ def test_zi_prices_track_the_fundamental_better_than_a_shuffled_control():
         result.trade_prices, list(reversed(result.fundamental_path))
     )
     assert observed < shuffled
+
+
+# --- the Jev arms on the same engine ----------------------------------------
+
+
+def _jev_client(tmp_path=None):
+    from jevmarket.jev.cache import DecisionCache
+    from jevmarket.jev.client import JevClient
+    from jevmarket.jev.mock import MockTransport
+
+    cache = DecisionCache(tmp_path) if tmp_path is not None else None
+    return JevClient(MockTransport(seed=1), cache=cache)
+
+
+def test_a_jev_arm_runs_on_the_same_engine_and_conserves():
+    result = run(config(arm="jev_argmax", jev_client=_jev_client(), periods=60, n_traders=10))
+    result.exchange.check_invariants()
+    assert result.exchange.trade_count > 0
+    assert {d.arm for d in result.decisions} == {"jev_argmax"}
+
+
+def test_the_sampling_arm_also_runs():
+    result = run(config(arm="jev_sample", jev_client=_jev_client(), periods=60, n_traders=10))
+    result.exchange.check_invariants()
+    assert {d.arm for d in result.decisions} == {"jev_sample"}
+
+
+def test_a_jev_arm_without_a_client_fails_loudly_before_spending_anything():
+    import pytest
+
+    with pytest.raises(ValueError, match="jev_client"):
+        run(config(arm="jev_argmax"))
+
+
+def test_every_decision_carries_a_distribution_whatever_the_arm():
+    for arm in ("zi", "jev_argmax", "jev_sample"):
+        result = run(config(arm=arm, jev_client=_jev_client(), periods=30, n_traders=8))
+        for record in result.decisions:
+            probabilities = record.decision.action_probabilities
+            assert set(probabilities) == {"buy", "sell", "pass"}
+            assert abs(sum(probabilities.values()) - 1.0) < 1e-3
+
+
+def test_sharing_a_cache_across_arms_never_costs_more_than_separate_caches(tmp_path):
+    """The honest version of the cost claim.
+
+    One call serves both arms for a given observation, but NOT across a run:
+    the arms take different actions, so they walk into different books within a
+    few periods. Measured saving from sharing is around 3%, not a halving. What
+    must always hold is that sharing is never worse.
+    """
+    from jevmarket.jev.cache import DecisionCache
+    from jevmarket.jev.client import JevClient
+    from jevmarket.jev.mock import MockTransport
+
+    cache = DecisionCache(tmp_path)
+
+    class Counting:
+        def __init__(self):
+            self.inner = MockTransport(seed=1)
+            self.calls = 0
+
+        def send(self, request):
+            self.calls += 1
+            return self.inner.send(request)
+
+    transport = Counting()
+
+    client = JevClient(transport, cache=cache)
+
+    run(config(arm="jev_argmax", jev_client=client, periods=40, n_traders=10))
+    after_first = transport.calls
+    run(config(arm="jev_sample", jev_client=client, periods=40, n_traders=10))
+    shared_total = transport.calls
+
+    separate = Counting()
+    separate_client = JevClient(separate, cache=DecisionCache(tmp_path / "other"))
+    run(config(arm="jev_sample", jev_client=separate_client, periods=40, n_traders=10))
+
+    assert after_first > 0
+    assert shared_total <= after_first + separate.calls
+
+
+def test_dropping_account_fields_from_the_state_is_what_makes_the_cache_work(tmp_path):
+    """Regression guard on a measured 30x improvement.
+
+    Putting cash/inventory back in the state would silently take the hit rate
+    from ~31% to ~1% and quietly multiply the cost of every sweep.
+    """
+    from jevmarket.jev.cache import DecisionCache
+    from jevmarket.jev.client import JevClient
+    from jevmarket.jev.mock import MockTransport
+
+    cache = DecisionCache(tmp_path)
+    client = JevClient(MockTransport(seed=1), cache=cache)
+    run(config(arm="jev_argmax", jev_client=client, periods=40, n_traders=10))
+
+    assert cache.hit_rate > 0.15, f"cache hit rate collapsed to {cache.hit_rate:.1%}"
+
+
+def test_burn_in_lets_an_informative_arm_inherit_a_book():
+    """Cold start: with an empty book an informative arm may see no reason to
+    quote at all. Burn-in periods of ZI flow open the market first."""
+    result = run(
+        config(arm="jev_argmax", jev_client=_jev_client(), periods=40,
+               n_traders=10, burn_in_periods=5)
+    )
+    assert {d.arm for d in result.decisions} == {"burn_in", "jev_argmax"}
+    assert all(d.arm == "burn_in" for d in result.decisions if d.period < 5)
+    result.exchange.check_invariants()

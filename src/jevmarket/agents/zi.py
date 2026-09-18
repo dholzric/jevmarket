@@ -1,10 +1,11 @@
 """Zero-intelligence baseline.
 
-Random direction, random aggressiveness, no view of the book, and a flat 0.5
-confidence -- the null model for the calibration outcome. It is not stupid in
-the way it trades: `quote_price` clamps every quote at its private value, so
-like Gode & Sunder's ZI-C it never knowingly trades at a loss. Everything above
-that constraint is noise.
+Random direction, random aggressiveness, no view of the book. Its distribution
+over {buy, sell, pass} is a fixed randomisation that never moves with the
+state, which is exactly what makes it the null model for the calibration
+outcome. It is not stupid in the way it trades: `quote_price` clamps every
+quote at its private value, so like Gode & Sunder's ZI-C it never knowingly
+trades at a loss. Everything above that constraint is noise.
 """
 
 from __future__ import annotations
@@ -15,6 +16,8 @@ from ..decision import Decision
 from .base import Observation
 
 PASS_PROBABILITY = 0.10
+SIDE_PROBABILITY = (1.0 - PASS_PROBABILITY) / 2
+POLICY = {"buy": SIDE_PROBABILITY, "sell": SIDE_PROBABILITY, "pass": PASS_PROBABILITY}
 
 
 class ZeroIntelligence:
@@ -28,16 +31,10 @@ class ZeroIntelligence:
         # Seeded on (seed, period) so a rerun reproduces the path exactly,
         # independent of the order traders happen to be called in.
         rng = np.random.default_rng([self.seed, observation.period])
-        side_p = (1.0 - PASS_PROBABILITY) / 2
-        action = rng.choice(
-            ["buy", "sell", "pass"], p=[side_p, side_p, PASS_PROBABILITY]
-        )
-        return Decision.from_payload(
-            {
-                "action": str(action),
-                "aggressiveness": float(rng.random()),
-                "already_priced": False,
-                "confidence": 0.5,
-                "rationale": "",
-            }
+        action = rng.choice(list(POLICY), p=list(POLICY.values()))
+        return Decision.create(
+            action=str(action),
+            aggressiveness=float(rng.random()),
+            already_priced=0.5,  # no view: the uninformative midpoint
+            action_probabilities=dict(POLICY),
         )

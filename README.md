@@ -5,9 +5,15 @@ against zero-intelligence and noisy best-response baselines under full vs.
 delayed/noisy information.
 
 The engine owns matching, budgets, order sizes and the book. A brain answers
-four things: direction, how aggressive, whether the signal looks already
-priced, and how confident it is. That contract is frozen in
+three typed questions: direction (`choice`), urgency (`score`), and whether the
+signal is already priced (`noul`). That contract -- including the exact question
+wording, hash-locked -- is frozen in
 [`schema/schema_jev_v1.json`](schema/schema_jev_v1.json).
+
+"Jev" is [TypeSafe AI's System One model](https://docs.typesafe.ai/), which
+returns typed decisions with their probability distributions rather than text.
+Confidence is therefore never self-reported: it is the mass the arm put on the
+action it took, which ZI, NBR and both Jev arms all have.
 
 Read [`preregistration.md`](preregistration.md) first — the hypotheses and the
 three primary outcomes were written before any result existed.
@@ -16,7 +22,7 @@ three primary outcomes were written before any result existed.
 
 ```bash
 python -m pip install -e ".[dev]"
-python -m pytest                 # 90 tests, ~3s
+python -m pytest                 # 170 tests, ~4s, no network
 python scripts/zi_price_path.py  # writes figures/zi_price_path.png
 ```
 
@@ -46,6 +52,7 @@ src/jevmarket/
   decision.py      the frozen Jev contract, mirrored by schema_jev_v1.json
   quoting.py       aggressiveness in [0,1] -> an integer tick, clamped at value
   agents/          one class per brain; all share Observation -> Decision
+  jev/             transport, live HTTP client, cache, spend gate, mock
   simulation.py    the run loop
   metrics.py       the three pre-declared primary outcomes
 tests/             conservation, matching, schema freeze, metrics, end-to-end
@@ -70,7 +77,7 @@ preregistration.
 |---|---|---|
 | 0 | Prereg, frozen schema, CDA chosen | done, pending verbatim H1–H5 |
 | 1 | Engine, ZI + NBR, conservation tests | ZI done; NBR next |
-| 2 | Jev client, mock, cache | not started |
+| 2 | Jev client, mock, cache | done (live transport untested against the real API) |
 | 3 | Live Jev, N=50, reliability diagram, real $/call | not started |
 | 4 | Core sweep N=200, >=5 seeds then 30 | not started |
 | 5 | Figures, robustness, LLM subsample | not started |

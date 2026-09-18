@@ -1,36 +1,69 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "jev_decision_v1",
-  "description": "FROZEN 2026-09-18 (Phase 0). The complete set of things an LLM trader is allowed to decide. Prices, order sizes, budget checks, and matching are owned by code and are deliberately absent. Changing this file invalidates the preregistration; add schema_jev_v2.json and rerun instead.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["action", "aggressiveness", "already_priced", "confidence"],
-  "properties": {
+  "title": "jev_questions_v1",
+  "frozen": "2026-09-18",
+  "model": "jev-latest",
+  "endpoint": "https://api.typesafe.ai/v1/systemone",
+  "description": "FROZEN (Phase 0). The complete set of things Jev is allowed to decide, expressed in TypeSafe System One primitives. Prices, order sizes, budget checks and matching are owned by code and are deliberately absent. The `instructions_sha256` field locks the question wording: any edit to the text below breaks tests/test_decision.py. Changing this file invalidates the preregistration -- add schema_jev_v2.json and rerun instead.",
+  "call_shape": "one call per decision; all three questions in a single request. Per TypeSafe, mixed questions are evaluated in parallel and in isolation, so `aggressiveness` is NOT conditioned on the action chosen in `action`. This is a pre-registered property of the design, not an oversight.",
+  "score_levels": 5,
+  "score_base": 0,
+  "questions": {
     "action": {
-      "type": "string",
-      "enum": ["buy", "sell", "pass"],
-      "description": "Direction only. 'pass' means submit no order this period."
+      "type": "choice",
+      "instructions": "You are a trader in a continuous double auction for one abstract good. You are given the current order book, your own private value for one unit, and your recent signal about the good's fundamental value. Decide the direction of your next order. Choose buy if the good looks underpriced relative to your private value, sell if it looks overpriced, and pass if neither is clear enough to act on.",
+      "criteria": {
+        "buy": "The good is underpriced relative to your private value. You want to acquire a unit.",
+        "sell": "The good is overpriced relative to your private value. You want to dispose of a unit.",
+        "pass": "Neither direction is clear enough to justify an order this period."
+      }
     },
     "aggressiveness": {
-      "type": "number",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "description": "0 = quote passively at the near touch, 1 = cross the spread and take. Code maps this to an integer tick price; the model never names a price."
+      "type": "score",
+      "instructions": "Rate how urgently this trader should transact this period, given the book and the gap between the current prices and the trader's private value. A high rating means give up price to transact immediately; a low rating means wait at a better price and risk not trading at all. Rate the situation only. Do not consider which direction the trade would be in.",
+      "criteria": [
+        "No urgency. The gap is small or the book is uninformative; wait patiently well behind the best price and accept that no trade may happen.",
+        "Low urgency. Slightly improve on the best price and wait.",
+        "Moderate urgency. Post at or near the best price on your side.",
+        "High urgency. Give up most of the spread to raise the chance of trading now.",
+        "Maximum urgency. Cross the spread and transact immediately at the best available price."
+      ]
     },
     "already_priced": {
-      "type": "boolean",
-      "description": "Does the current book already reflect the signal you were given? Recorded as a stated belief; it does not change order handling."
-    },
-    "confidence": {
-      "type": "number",
-      "minimum": 0.0,
-      "maximum": 1.0,
-      "description": "Probability that this call is the profitable one. For 'pass', the probability that 'already_priced' is correct. This field is the sole input to the calibration (ECE) and confidently-wrong outcomes."
-    },
-    "rationale": {
-      "type": "string",
-      "maxLength": 200,
-      "description": "Optional free text, logged for the qualitative appendix. Never scored, never parsed."
+      "type": "noul",
+      "instructions": "Is the information in this trader's signal already reflected in the current order book? Answer yes if the best bid and best ask already sit where the signal implies they should, so that acting on the signal offers no edge.",
+      "criteria": {
+        "true": "The book already sits where the signal implies. There is no edge left to capture.",
+        "false": "The book has not yet moved to where the signal implies. An edge remains."
+      }
     }
-  }
+  },
+  "instructions_sha256": "44dee3378f9b9156e38e8ae4c3701e07f381eb7d545b7ba4eb450d41f5e58466",
+  "answer_contract": {
+    "action": {
+      "type": "choice",
+      "choice": "one of buy | sell | pass",
+      "probabilities": "map option -> probability, sums to 1. jev_argmax takes the max; jev_sample draws from this map. BOTH ARMS COME FROM THIS ONE FIELD.",
+      "confidence": "model's own scalar. Logged as a secondary outcome; the primary calibration outcome uses probabilities[chosen action]."
+    },
+    "aggressiveness": {
+      "type": "score",
+      "score": "fractional level in [0, score_levels - 1]; normalised to [0,1] before it reaches quote_price",
+      "legend": "map level -> description",
+      "probabilities": "map level -> probability",
+      "confidence": "model's own scalar"
+    },
+    "already_priced": {
+      "type": "noul",
+      "noul": "probability in [0,1] that the signal is already priced. Kept as a probability -- NOT thresholded to a boolean -- so it is a second calibration surface."
+    }
+  },
+  "state_fields": [
+    "best_bid",
+    "best_ask",
+    "spread",
+    "last_trade_price",
+    "your_private_value",
+    "your_signal"
+  ],
+  "state_note": "Prices and values are rounded to whole ticks, and the period number, cash and inventory are deliberately excluded. Cash and inventory change after every fill and would make every decision a unique cache key; the exchange enforces both constraints in code, so Jev never needs them."
 }

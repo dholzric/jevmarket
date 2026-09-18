@@ -12,14 +12,19 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from .agents import Observation, ZeroIntelligence
+from .agents import JevArgmax, JevSample, Observation, ZeroIntelligence
 from .book import Side
 from .decision import Action, Decision
 from .exchange import Exchange, OrderRejected
 from .fundamental import Fundamental, Signal
 from .quoting import quote_price
 
-ARMS = {"zi": ZeroIntelligence}
+ARMS = {
+    "zi": ZeroIntelligence,
+    "jev_argmax": JevArgmax,
+    "jev_sample": JevSample,
+}
+JEV_ARMS = {"jev_argmax", "jev_sample"}
 
 
 @dataclass
@@ -32,8 +37,15 @@ class RunConfig:
     initial_inventory: int = 50
     private_value_sd: float = 5.0
     order_size: int = 1
+    # Periods of zero-intelligence flow before the treatment arm takes over, so
+    # that an informative arm inherits a populated book rather than a void. See
+    # the cold-start note in preregistration.md.
+    burn_in_periods: int = 0
     fundamental: Fundamental = field(default_factory=Fundamental)
     signal: Signal = field(default_factory=Signal)
+    # Required for the Jev arms. Share one client (and one cache) across arms
+    # and the second arm costs nothing.
+    jev_client: object | None = None
 
 
 @dataclass(frozen=True)
@@ -70,11 +82,25 @@ class RunResult:
 def run(config: RunConfig) -> RunResult:
     if config.arm not in ARMS:
         raise ValueError("unknown arm: " + repr(config.arm))
+    if config.arm in JEV_ARMS and config.jev_client is None:
+        raise ValueError(
+            f"arm {config.arm!r} needs a jev_client; refusing to start a run that "
+            f"would fail partway through"
+        )
 
     trader_ids = ["t%03d" % i for i in range(config.n_traders)]
     brain_cls = ARMS[config.arm]
-    brains = {
-        tid: brain_cls(trader_id=tid, seed=config.seed * 100_003 + i)
+    brains = {}
+    for i, tid in enumerate(trader_ids):
+        seed = config.seed * 100_003 + i
+        if config.arm in JEV_ARMS:
+            brains[tid] = brain_cls(
+                trader_id=tid, client=config.jev_client, seed=seed
+            )
+        else:
+            brains[tid] = brain_cls(trader_id=tid, seed=seed)
+    burn_in_brains = {
+        tid: ZeroIntelligence(trader_id=tid, seed=config.seed * 100_003 + i)
         for i, tid in enumerate(trader_ids)
     }
     exchange = Exchange.from_endowments(
@@ -114,7 +140,9 @@ def run(config: RunConfig) -> RunResult:
                 available_inventory=exchange.available_inventory(trader_id),
             )
 
-            decision = brains[trader_id].decide(observation)
+            in_burn_in = period < config.burn_in_periods
+            brain = burn_in_brains[trader_id] if in_burn_in else brains[trader_id]
+            decision = brain.decide(observation)
             price = None
             filled = 0
             rejected = False
@@ -142,7 +170,7 @@ def run(config: RunConfig) -> RunResult:
                 DecisionRecord(
                     period=period,
                     trader_id=trader_id,
-                    arm=config.arm,
+                    arm="burn_in" if in_burn_in else config.arm,
                     decision=decision,
                     fundamental=path[period],
                     signal=signal,

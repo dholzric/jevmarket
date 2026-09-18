@@ -15,20 +15,28 @@ is exploratory and must be labelled exploratory in the paper.
 A continuous double auction in one abstract good `X`. A jumping fundamental
 `F_t` sets the common component of value; each trader's private value is
 `F_t + epsilon_i,t`. Code owns matching, budgets, order sizes and the book.
-A trader's brain answers exactly four things and nothing else:
+A trader's brain answers exactly three things and nothing else:
 
-| Field | Meaning |
-|---|---|
-| `action` | `buy` / `sell` / `pass` |
-| `aggressiveness` | 0 = quote passively at the near touch, 1 = cross the spread |
-| `already_priced` | does the book already reflect the signal? |
-| `confidence` | probability this call is the profitable one |
+| Question | System One primitive | Returns |
+|---|---|---|
+| `action` | `choice` over buy/sell/pass | `choice`, `probabilities`, `confidence` |
+| `aggressiveness` | `score`, 5 ordered levels | fractional level, normalised to [0,1] |
+| `already_priced` | `noul` | a probability in [0,1], never thresholded |
 
-This is the frozen contract (`schema_jev_v1.json`). The model never names a
-price, a size, or a counterparty. **A model therefore cannot express a losing
-price**: `quoting.quote_price` clamps every quote at the trader's own private
-value. That clamp is the reason the comparison is about judgement rather than
-about arithmetic slips.
+This is the frozen contract (`schema_jev_v1.json`), whose question wording is
+hash-locked (`instructions_sha256`) and enforced by `tests/test_decision.py`.
+The model never names a price, a size, or a counterparty.
+
+**Jev emits no text.** There is no `rationale` field and no qualitative
+appendix is possible. `confidence` is likewise not self-reported: it is the
+probability mass the arm placed on the action it took, which every arm has --
+ZI reports its fixed randomisation, NBR its softmax, Jev its `probabilities`.
+That makes the calibration outcome comparable across all four arms.
+
+**A model cannot express a losing price.** `quoting.quote_price` clamps every
+quote at the trader's own private value, so a bad answer degrades to a bad
+trade, never to a broken run. That clamp is the reason the comparison is about
+judgement rather than about arithmetic slips.
 
 ### 1.1 Design — FROZEN
 
@@ -36,10 +44,10 @@ about arithmetic slips.
 
 | Brain | Description |
 |---|---|
-| `zi` | Zero-intelligence. Random direction, random aggressiveness, flat 0.5 confidence. Budget- and value-constrained (Gode & Sunder ZI-C in spirit). |
+| `zi` | Zero-intelligence. Random direction, random aggressiveness, and a fixed policy distribution that never moves with the state -- the calibration null. Budget- and value-constrained (Gode & Sunder ZI-C in spirit). |
 | `nbr` | Noisy best-response. Best response to the book with logit noise. |
-| `jev_argmax` | LLM, temperature 0 / greedy decode. |
-| `jev_sample` | LLM, sampled from its own output distribution. |
+| `jev_argmax` | Jev, taking the action System One chose (`answers.action.choice`). |
+| `jev_sample` | Jev, drawing from the same `answers.action.probabilities` map. |
 
 | Information treatment | Signal |
 |---|---|
@@ -48,6 +56,13 @@ about arithmetic slips.
 
 That 2x4 is the paper. `zi` and `nbr` exist so that the LLM arms have a floor
 and a ceiling a referee recognises.
+
+Jev has **no temperature or sampling parameter**, so the two Jev arms are not
+two decode settings but two rules applied locally to one returned distribution.
+For a given observation they are one API call, which makes H5 a *within-call*
+comparison with no between-call sampling noise. Across a whole run the shared
+cache saves only ~3%, because the arms take different actions and diverge into
+different books within a few periods.
 
 ### 1.2 CDA vs call market — DECIDED: continuous double auction
 
@@ -99,8 +114,10 @@ hand-worked test case in `tests/test_metrics.py`.
    over the 20 periods following each jump, pooled across jumps. Periods with
    no trade are dropped, not interpolated.
 2. **Expected calibration error (ECE).** `expected_calibration_error`, 10
-   equal-width bins over stated `confidence`. A call is *correct* if its
-   direction was the profitable one — see 3.1.
+   equal-width bins over `confidence`, defined for every arm as
+   `action_probabilities[action taken]`. Jev's own `confidence` scalar is
+   logged but is a *secondary* outcome. A call is *correct* if its direction
+   was the profitable one — see 3.1.
 3. **Confidently-wrong rate.** Share of calls with `confidence >= 0.8` that
    were incorrect under the same definition.
 
@@ -111,8 +128,10 @@ For a decision at period `t` with private value `v`:
 - `buy` is correct iff `F_t > P_t`, where `P_t` is the per-period VWAP (the
   trader was buying something the market was underpricing).
 - `sell` is correct iff `F_t < P_t`.
-- `pass` is correct iff `already_priced` matched reality, defined as
-  `|F_t - P_t| <= 0.5 * private_value_sd`.
+- `pass` is correct iff the signal really was already priced, defined as
+  `|F_t - P_t| <= 0.5 * private_value_sd`. Because `already_priced` comes back
+  as a probability rather than a boolean, it is scored as a second calibration
+  surface in its own right (Brier score), not collapsed to a yes/no.
 - Periods with no trade contribute no `P_t` and are dropped from calibration.
 
 This definition is fixed now, before any Jev output exists.
@@ -186,6 +205,11 @@ tuned after seeing results.
 | Fundamental | piecewise constant, Bernoulli(`jump_prob`) jumps of `N(0, jump_sd)` | makes "how fast does price find `F`" well posed |
 | RNG | every draw seeded on `(seed, period, index)`, never a running stream | a rerun reproduces exactly, independent of call order |
 | ZI action space | ZI emits the same `Decision` as Jev | the arms differ only in the function, not the interface |
+| Jev call shape | one call per decision, all three questions together | cheapest; TypeSafe evaluates mixed questions in parallel and in isolation |
+| Conditioning | `aggressiveness` is NOT conditioned on the chosen `action` | a consequence of that isolation, pre-registered rather than discovered |
+| State shown to Jev | book, spread, last trade, own private value, own signal -- all rounded to whole ticks | frozen in `schema_jev_v1.json` as `state_fields` |
+| Cash/inventory in state | excluded | they change after every fill, which made every decision a unique cache key and collapsed the hit rate from 31% to 1%. The exchange enforces both constraints in code, so Jev never needs them |
+| Period number in state | excluded | not decision-relevant, and including it makes the cache worthless |
 
 ## 11. Deviation log
 

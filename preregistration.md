@@ -393,8 +393,32 @@ a window spans 15 periods -- so the levels will not match exactly. The
 | **E2 (primary)** | the `jev_sample` gap shows no such decay | same slope for sampling; predicted indistinguishable from zero |
 
 - **Correction.** Holm across the E1/E2 family.
-- **Seeds.** 10 per cell per market size; N=8 reuses the 20 seeds already run
-  (24-43) rather than paying for them twice. New sizes use seeds 24-33.
+- **Sizes.** N in {4, 8, 16, 32}. **N=2 is excluded**, and N=4 is flagged as
+  floor-constrained, on the basis of a free structural check run BEFORE the
+  sweep. `zi` and `nbr` are symmetric by construction, so their trading rate at
+  each size measures what the market can do structurally:
+
+  | N | zi periods traded | nbr periods traded | zi up/down gap |
+  |---|---|---|---|
+  | 2 | 10.8% | 21.6% | -0.4% |
+  | 4 | 32.9% | 70.3% | -4.2% |
+  | 8 | 76.2% | 99.4% | +2.0% |
+  | 16 | 99.4% | 99.9% | -0.4% |
+  | 32 | 100.0% | 100.0% | +0.0% |
+
+  A thin market barely trades whatever its traders believe, so a +25pp halting
+  gap is arithmetically impossible at N=2. Since the prediction is that halting
+  worsens at small N, thinness would mimic the mechanism and we would measure a
+  confound. Conversely at N=16 and N=32 the symmetric arms trade ~100% of
+  periods with a zero gap, so there is **no structural floor** and any argmax
+  halting there is unambiguously attributable to the arm. That is where E1 is
+  most falsifiable, and it is the part of the curve the test rests on.
+
+- **Seeds.** 20 per cell per size (seeds 24-43), fixed in advance. N=8 is
+  already cached from prereg 10b and costs nothing.
+- **Per-size control.** `zi` and `nbr` run free at every size; the argmax gap is
+  read against the symmetric-arm gap at the SAME size, so any residual
+  structural effect is differenced out.
 - **Falsification, and why this test matters.** If the argmax gap is **flat or
   rising** in N, the no-counterparty mechanism is WRONG even if the effect
   itself is real, and the finding would have to be reported without a

@@ -94,21 +94,77 @@ tests designed to kill it.
 
 \section{Related work}
 
-\textit{[TO BE COMPLETED. This section requires a literature search the authors
-have not yet performed; citations must be verified before submission. The two
-references below are load-bearing for the design and are believed accurate, but
-should be checked against the published record.]}
+\paragraph{Market design and baselines.} The experimental market tradition
+begins with \citet{smith1962}. Our lower baseline is the zero-intelligence
+trader of \citet{gode1993}, whose result---that budget-constrained random
+traders achieve high allocative efficiency---makes a random arm a genuine floor
+rather than a strawman, and motivates the value clamp that prevents any arm in
+our design from knowingly trading at a loss.
 
-Our market design follows the experimental tradition of \citet{smith1962} and
-takes its lower baseline from the zero-intelligence traders of
-\citet{gode1993}, whose central result---that budget-constrained random traders
-achieve high allocative efficiency---motivates our use of a random arm as a
-floor rather than a strawman.
+\paragraph{LLM agents in simulated markets.} \citet{lopezlira2025} builds a
+simulated stock market with a persistent order book in which heterogeneous LLM
+agents submit structured decisions, and reports that agents adhere consistently
+to assigned strategies while the market reproduces price discovery, bubbles and
+underreaction. That work also notes that prompts can generate correlated
+behaviours affecting market stability, which is the phenomenon we isolate and
+measure here.
 
-Work that must be surveyed before submission: LLM-populated economic
-simulations; herding and information cascades in financial markets; decoding
-strategies and their effect on output diversity; calibration of language-model
-confidence.
+\paragraph{Correlation as systemic risk.} Closest to our result is
+\citet{ross2026}, who argue that shared training and architecture make more
+capable models behave more similarly, creating a non-diversifiable risk floor,
+and who test this with LLM traders of varying capability in an agent-based
+market. They find correlated behaviour that \emph{increases} with capability,
+and that it becomes a liability when agents share a misinformation
+environment.
+
+Our contribution is complementary and, we think, orthogonal in a useful way.
+They vary the model and attribute correlation to properties of the model---its
+training, its architecture, its capability. We hold the model \emph{fixed} and
+vary only how its output distribution is consumed. The correlation we measure
+is therefore not a property of the model at all but of a deployment choice,
+and it is one a practitioner controls directly: our argmax and sampling arms
+issue identical requests and read identical responses, differing only in a
+single line of client code. Where \citet{ross2026} identify a risk floor set by
+model similarity, we show a large component of realised correlation sitting
+above that floor, removable without changing models.
+
+\paragraph{Herding and cascades.} The classical account of correlated action is
+the informational cascade of \citet{bikhchandani1992}, in which an agent
+rationally ignores private information after observing enough predecessors.
+Our mechanism is deliberately simpler and should not be confused with it.
+Agents in our market do not observe one another's decisions and draw no
+inference from them; they condition on a common public signal and a
+deterministic policy maps that signal to the same action. There is no learning,
+no sequence, and no inference---only a degenerate policy. The resulting
+unanimity looks like herding and has the same market consequence, but it
+arises without any of the cascade machinery, which is why it can be switched
+off at the decoder.
+
+\paragraph{Decoding and diversity.} That greedy decoding collapses output
+diversity is long established in text generation: \citet{holtzman2020} show
+that maximisation-based decoding yields repetitive, degenerate text and
+introduce nucleus sampling as a remedy. The quality--diversity tension is
+well understood \emph{within} a single generation. We report a consequence one
+level up: when many agents share a decoder, the diversity that sampling
+preserves is not a stylistic property of one output but the raw material a
+market needs to clear. Sampling is individually worse and collectively
+necessary.
+
+\paragraph{Confidence and calibration.} \citet{kadavath2022} study whether
+language models can predict the correctness of their own answers, and
+subsequent work has documented systematic overconfidence in verbalised
+confidence. Our Experiment~\ref{sec:wording} touches this literature from an
+unusual angle: the model we use returns a probability distribution natively
+rather than a verbalised estimate, and we find that ordinary domain wording
+shifts that distribution by 25 points without changing the selected option.
+Any calibration measurement taken over such a model inherits whatever asymmetry
+the question's phrasing introduced.
+
+\paragraph{What we could not find.} We did not find prior work isolating the
+decode rule as a cause of market-level liquidity failure, nor a preregistered
+size-scaling test of a herding mechanism in an LLM-populated market. We would
+welcome pointers; this survey was conducted by the authors and is not
+exhaustive.
 
 \section{The instrument}
 
@@ -415,6 +471,35 @@ D.~K. Gode and S.~Sunder.
 V.~L. Smith.
 \newblock An experimental study of competitive market behavior.
 \newblock \emph{Journal of Political Economy}, 70(2):111--137, 1962.
+
+\bibitem[Bikhchandani et~al.(1992)]{bikhchandani1992}
+S.~Bikhchandani, D.~Hirshleifer, and I.~Welch.
+\newblock A theory of fads, fashion, custom, and cultural change as
+  informational cascades.
+\newblock \emph{Journal of Political Economy}, 100(5):992--1026, 1992.
+
+\bibitem[Holtzman et~al.(2020)]{holtzman2020}
+A.~Holtzman, J.~Buys, L.~Du, M.~Forbes, and Y.~Choi.
+\newblock The curious case of neural text degeneration.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+\newblock arXiv:1904.09751.
+
+\bibitem[Kadavath et~al.(2022)]{kadavath2022}
+S.~Kadavath et~al.
+\newblock Language models (mostly) know what they know.
+\newblock arXiv:2207.05221, 2022.
+
+\bibitem[Lopez-Lira(2025)]{lopezlira2025}
+A.~Lopez-Lira.
+\newblock Can large language models trade? Testing financial theories with LLM
+  agents in market simulations.
+\newblock arXiv:2504.10789, 2025.
+
+\bibitem[Ross et~al.(2026)]{ross2026}
+J.~Ross, E.~So, Z.~De~Simone, C.~Pozniak, and A.~W. Lo.
+\newblock Why better models can create riskier systems: Evidence from LLM
+  agents in financial markets.
+\newblock arXiv:2609.04373, 2026.
 \end{thebibliography}
 
 \end{document}

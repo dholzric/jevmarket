@@ -264,6 +264,45 @@ tuned after seeing results.
 | Cash/inventory in state | excluded | they change after every fill, which made every decision a unique cache key and collapsed the hit rate from 31% to 1%. The exchange enforces both constraints in code, so Jev never needs them |
 | Period number in state | excluded | not decision-relevant, and including it makes the cache worthless |
 
+## 10a. Confirmatory test — REGISTERED 2026-09-18, BEFORE the run
+
+The 4-seed matched-jump sweep (seeds 0-3) is **exploratory**. It produced two
+results and one new hypothesis, none of which it can itself test:
+
+- `jev_argmax` paired contrast +0.629, 4/4 seeds positive, t=3.88, raw p=0.030,
+  **Holm p=0.061 — not significant.**
+- `jev_sample` paired contrast -0.339, t=-0.84, p=0.464. The revised prediction
+  that sampling would show the *larger* effect is falsified.
+- **New hypothesis (post-hoc, from those seeds):** sampling *dilutes* the
+  induced asymmetry rather than transmitting it. Under the original wording the
+  distribution is soft, so sampling randomises on both sides (pass rate 19.6%
+  vs 6.6% under mirror), and that symmetric noise washes out the systematic
+  sell-side abstention. Under mirror the distribution is near-saturated, so
+  sampling is effectively argmax (6.3% vs 5.6% pass).
+
+**Confirmatory run: seeds 4-23, disjoint from every seed used so far.** All four
+Jev cells. Nothing below was chosen after seeing seeds 4-23, because they do
+not exist yet.
+
+| | Hypothesis | Test |
+|---|---|---|
+| **C1 (primary)** | `jev_argmax` paired contrast > 0 | paired t over 20 seeds |
+| **C2 (primary)** | `jev_sample` paired contrast < `jev_argmax` paired contrast | paired t on the difference of contrasts |
+
+- **Correction.** Holm across the C1/C2 family. Significance requires Holm
+  p < 0.05.
+- **Power.** Observed paired sd 0.32; at n=20, SE ~ 0.072, so a +0.63 effect
+  gives t ~ 8.7. The run is therefore decisive in either direction: a null
+  result at this n is real evidence of absence, not weak evidence.
+- **Controls that must hold.** `zi` and `nbr` gaps must remain consistent with
+  zero (n=40 null calibration: t=+1.16 and +0.70). If either moves, the design
+  is at fault and the Jev cells are not to be interpreted.
+- **Falsification.** C1 failing at n=20 retires the mechanism. We would then
+  report a precisely-estimated null: natural wording measurably skews Jev's
+  conviction (+0.250, §5 of FINDINGS) but does **not** measurably move market
+  price discovery. That is a publishable negative and it will be written up as
+  one.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

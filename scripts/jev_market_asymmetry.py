@@ -50,6 +50,8 @@ def parse_args(argv=None):
     parser.add_argument("--periods", type=int, default=120)
     parser.add_argument("--traders", type=int, default=12)
     parser.add_argument("--seeds", type=int, default=1)
+    parser.add_argument("--seed-offset", type=int, default=0,
+                        help="first seed; use to run seeds disjoint from an earlier sweep")
     parser.add_argument("--jump-prob", type=float, default=0.06)
     parser.add_argument("--jump-sd", type=float, default=10.0)
     parser.add_argument("--burn-in", type=int, default=5)
@@ -79,7 +81,7 @@ def main(argv=None) -> int:
     cells = [c.split("/") for c in args.cells.split(",")]
     results = []
     for arm, wording in cells:
-        for seed in range(args.seeds):
+        for seed in range(args.seed_offset, args.seed_offset + args.seeds):
             if args.matched:
                 fundamental = MatchedJumpFundamental(
                     initial=100.0, jump_size=args.jump_sd,

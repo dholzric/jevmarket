@@ -83,10 +83,23 @@ class RunResult:
     mid_prices: list
     decisions: list[DecisionRecord]
     rejections: int
+    # Resting quantity on each side at the close of every period. A market that
+    # stops trading because every trader wants the same side shows up here as
+    # one depth at zero and the other well above it -- which distinguishes "no
+    # counterparty" from "counterparties exist but their prices do not cross".
+    bid_depth: list[int] = field(default_factory=list)
+    ask_depth: list[int] = field(default_factory=list)
 
     @property
     def jump_times(self) -> list[int]:
         return list(self.config.fundamental.jump_times)
+
+    @property
+    def one_sided_periods(self) -> int:
+        return sum(
+            1 for bids, asks in zip(self.bid_depth, self.ask_depth)
+            if (bids == 0) != (asks == 0)
+        )
 
 
 def run(config: RunConfig) -> RunResult:
@@ -121,6 +134,8 @@ def run(config: RunConfig) -> RunResult:
 
     trade_prices: list = []
     mid_prices: list = []
+    bid_depth: list[int] = []
+    ask_depth: list[int] = []
     decisions: list[DecisionRecord] = []
     rejections = 0
 
@@ -203,6 +218,8 @@ def run(config: RunConfig) -> RunResult:
         bid = exchange.book.best_bid
         ask = exchange.book.best_ask
         mid_prices.append((bid + ask) / 2 if bid is not None and ask is not None else None)
+        bid_depth.append(sum(q for _, q in exchange.book.depth(Side.BUY)))
+        ask_depth.append(sum(q for _, q in exchange.book.depth(Side.SELL)))
 
     return RunResult(
         config=config,
@@ -212,4 +229,6 @@ def run(config: RunConfig) -> RunResult:
         mid_prices=mid_prices,
         decisions=decisions,
         rejections=rejections,
+        bid_depth=bid_depth,
+        ask_depth=ask_depth,
     )

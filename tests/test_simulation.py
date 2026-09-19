@@ -183,3 +183,52 @@ def test_burn_in_lets_an_informative_arm_inherit_a_book():
     assert {d.arm for d in result.decisions} == {"burn_in", "jev_argmax"}
     assert all(d.arm == "burn_in" for d in result.decisions if d.period < 5)
     result.exchange.check_invariants()
+
+
+# --- book one-sidedness, for diagnosing why a market stops trading ----------
+
+
+def test_book_depth_is_recorded_each_period():
+    result = run(config(periods=50, n_traders=10))
+    assert len(result.bid_depth) == 50
+    assert len(result.ask_depth) == 50
+    assert all(isinstance(n, int) for n in result.bid_depth)
+
+
+def test_a_one_sided_book_is_visible_in_the_depths():
+    """If every trader wants the same side, one depth is zero and the other is
+    not. That is the signature of a market with no counterparty."""
+    from jevmarket.agents.base import Observation
+    from jevmarket.decision import Decision
+
+    class AlwaysBuy:
+        arm = "always_buy"
+
+        def __init__(self, trader_id, seed=0, **kwargs):
+            self.trader_id = trader_id
+
+        def decide(self, observation: Observation) -> Decision:
+            return Decision.create(
+                action="buy", aggressiveness=0.5, already_priced=0.0,
+                action_probabilities={"buy": 1.0, "sell": 0.0, "pass": 0.0},
+            )
+
+    from jevmarket import simulation
+
+    simulation.ARMS["always_buy"] = AlwaysBuy
+    try:
+        result = run(config(arm="always_buy", periods=20, n_traders=6))
+        assert max(result.bid_depth) > 0, "everyone was buying; there should be bids"
+        assert max(result.ask_depth) == 0, "nobody was selling; there should be no asks"
+        assert result.exchange.trade_count == 0, "no counterparty means no trades"
+    finally:
+        del simulation.ARMS["always_buy"]
+
+
+def test_one_sided_period_count_matches_the_depths():
+    result = run(config(periods=60, n_traders=10))
+    one_sided = sum(
+        1 for bids, asks in zip(result.bid_depth, result.ask_depth)
+        if (bids == 0) != (asks == 0)
+    )
+    assert result.one_sided_periods == one_sided

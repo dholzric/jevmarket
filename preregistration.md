@@ -303,6 +303,62 @@ not exist yet.
   price discovery. That is a publishable negative and it will be written up as
   one.
 
+## 10b. Second confirmatory test — REGISTERED 2026-09-19, BEFORE the run
+
+The trade-cessation result (`FINDINGS.md` §11) is **post-hoc**: it was found by
+investigating a NaN in seeds 4-23, so those seeds cannot test it. Registered
+here on **seeds 24-43**, disjoint from every seed used so far.
+
+### What changed, and why the outcome measure is different
+
+The first confirmatory test measured post-jump RMSE and returned a clean null.
+That null is correct for the question it asked, but the question was wrong:
+RMSE is defined only over periods that traded, so it discarded exactly the
+periods where the effect lives. The outcome measure here is therefore
+**liquidity, not pricing error**:
+
+    traded_share(direction) = share of the 15 periods after a jump of that
+                              direction in which at least one trade occurred
+
+This is defined for every period, including the silent ones.
+
+### Hypotheses
+
+| | Hypothesis | Test |
+|---|---|---|
+| **D1 (primary)** | `jev_argmax` trades less after UP jumps than after DOWN jumps: `traded_share(down) - traded_share(up) > 0` | paired t over 20 seeds |
+| **D2 (primary)** | that gap is larger for `jev_argmax` than for `jev_sample` | paired t on the within-seed difference of gaps |
+
+- **Correction.** Holm across the D1/D2 family; Holm p < 0.05 required.
+- **Power.** Exploratory estimate +27.2pp at t=4.9, n=20, implying sd ~24.6pp.
+  At n=20, SE ~5.5pp, so a true effect of that size gives t ~5. Decisive either
+  way; a null at this n is evidence of absence.
+- **Cells.** `jev_argmax/original` and `jev_sample/original` only. The wording
+  dimension is deliberately dropped: it was measured at +2.7pp (t=0.57) on this
+  outcome and is not part of either hypothesis, so spending a third of the
+  remaining budget to re-confirm a null would be waste.
+- **Controls.** `zi` and `nbr` on the same seeds (free). Both must stay
+  consistent with zero (established at n=40: -2.3pp and -0.4pp).
+- **Falsification.** D1 failing retires the finding, and we report a
+  precisely-estimated null. D2 failing while D1 holds means the halt is not
+  about the decode rule, and the mechanism claim is wrong even if the effect
+  is real.
+
+### Mechanism — MEASURED, not predicted
+
+Section 11 of FINDINGS could not explain why the halt is worse after UP jumps
+than after DOWN jumps, and two attempts to predict a mechanism in this project
+have already failed. So this run instruments rather than guesses.
+`RunResult.bid_depth` / `ask_depth` now record resting quantity on each side at
+the close of every period, which separates two different failures:
+
+- **no counterparty** — one side has depth, the other is empty. Every trader
+  wants the same side.
+- **no crossing** — both sides have depth but the prices do not meet.
+
+This is reported as an exploratory diagnostic, explicitly not a test, and it is
+labelled as such in any write-up.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

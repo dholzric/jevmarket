@@ -1,0 +1,420 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+
+\title{Argmax Decoding Causes Liquidity Failure\\
+in a Market of Language-Model Traders}
+
+\author{%
+  D. Holzricher\\
+  \texttt{dholzric@gmail.com}
+}
+
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We populate a continuous double auction with traders whose decisions are made
+by a typed language model that returns a probability distribution over actions,
+and vary only how that distribution is consumed. Taking the model's modal
+action---the default in virtually every deployment---makes the market stop
+trading after shocks: following a positive shock, the market clears in
+$66.6\%$ of periods against $93.8\%$ after a negative shock, a gap of
+$25.8$ percentage points (95\% CI $[17.3, 34.2]$, $t=6.37$, $n=20$
+preregistered). Sampling from the same distribution reduces the gap to
+$3.1$ points. Two algorithmic baselines that are symmetric by construction show
+no gap. The mechanism is direct and observable: $100\%$ of non-trading periods
+under modal decoding had one side of the order book entirely empty, against
+$3.4\%$ for the zero-intelligence baseline. Because every trader conditions on
+the same public signal, a deterministic policy makes them act identically,
+and a market of unanimous buyers has no counterparty.
+
+We test this mechanism with a preregistered prediction it could have failed:
+if unanimity is the cause, the effect must vanish as the market grows. It does,
+from $37.0$ points at four traders to $4.2$ at thirty-two
+($-0.112$ per doubling, $t=-6.91$). A companion prediction---that sampling
+would show no such decay---was falsified: sampling herds too, seven times more
+weakly, on the same curve. We therefore report a single mechanism whose
+strength is set by how sharply the decode rule collapses the model's
+distribution, rather than two regimes.
+
+Separately, we find that ordinary domain wording induces a $25$-point
+asymmetry in the model's stated conviction between buying and selling at equal
+mispricing, which vanishes under mirror-image phrasing. A preregistered test
+found this does \emph{not} move pricing error, and we report that null.
+
+All experiments were preregistered, including the two hypotheses that failed.
+\end{abstract}
+
+\section{Introduction}
+
+A language model asked to choose among actions returns, in principle, a
+distribution. Almost every deployment discards it and takes the mode. For a
+single decision this is correct: the mode is the most likely action. This paper
+asks what happens when many agents driven by the same model make related
+decisions at the same time.
+
+The answer, in a market, is that the market stops. Modal decoding makes agents
+conditioning on shared information act identically. In a setting that requires
+counterparties, unanimity is not consensus; it is the absence of trade. We
+measure this in a continuous double auction, isolate the mechanism, and confirm
+it with a prediction that could have failed and did not.
+
+Our contributions:
+
+\begin{enumerate}
+\item \textbf{A liquidity failure caused by decoding, not by reasoning.} The
+  model's modal action is \emph{correct} on both sides at every mispricing we
+  tested. Nothing about its judgement is wrong. The failure is entirely in the
+  aggregation of correct decisions.
+\item \textbf{A directly observed mechanism.} We instrument both sides of the
+  order book and show that under modal decoding, non-trading periods are
+  one-sided essentially always, while for symmetric baselines they are not.
+\item \textbf{A falsifiable size-scaling test.} The mechanism implies the
+  effect must decay with market size at a rate set by the agreement rate. We
+  registered this before running it; it held.
+\item \textbf{A prompt-sensitivity result, and a null.} Domain-idiomatic
+  wording induces a large conviction asymmetry invisible to anyone reading only
+  the modal action. A preregistered test found it does not move pricing error.
+\end{enumerate}
+
+We emphasise the failures. Three preregistered predictions in this project were
+wrong, and each is reported: the original mechanism (Section~\ref{sec:wording}),
+the sampling-amplification prediction, and the claim that sampling would show no
+size decay (Section~\ref{sec:size}). The result that survived did so against
+tests designed to kill it.
+
+\section{Related work}
+
+\textit{[TO BE COMPLETED. This section requires a literature search the authors
+have not yet performed; citations must be verified before submission. The two
+references below are load-bearing for the design and are believed accurate, but
+should be checked against the published record.]}
+
+Our market design follows the experimental tradition of \citet{smith1962} and
+takes its lower baseline from the zero-intelligence traders of
+\citet{gode1993}, whose central result---that budget-constrained random traders
+achieve high allocative efficiency---motivates our use of a random arm as a
+floor rather than a strawman.
+
+Work that must be surveyed before submission: LLM-populated economic
+simulations; herding and information cascades in financial markets; decoding
+strategies and their effect on output diversity; calibration of language-model
+confidence.
+
+\section{The instrument}
+
+\subsection{Market}
+
+A continuous double auction in one abstract good. Prices are integer ticks;
+matching is price-then-time priority; an incoming order executes at the resting
+order's price. A trader's resting orders are withdrawn at the top of its turn,
+so each trader has at most one live order. Submitting on one side cancels the
+trader's resting orders on the other, preventing wash trades without leaving a
+crossed book.
+
+Accounts are conserved by construction. Each trade moves cash from buyer to
+seller and inventory from seller to buyer, one for one. Short sales and
+borrowing are disallowed, and every order is pre-checked against uncommitted
+cash or uncommitted inventory. A property test submits 20{,}000 random orders
+and asserts after every one that total cash and total units are exactly their
+endowed values, that no account is negative, that no trader has committed more
+than it holds, and that the book is never crossed.
+
+Order size is fixed at one unit, so aggressiveness is the only lever an arm
+has; position sizing is a second channel and is deliberately disabled.
+
+\subsection{Fundamental and information}
+
+The fundamental $F_t$ is piecewise constant. For the size and liquidity
+experiments we use a \emph{matched-jump} process: jumps are evenly spaced, of
+identical magnitude, strictly alternating in direction, and even in number, so
+that every up window is paired with a down window of the same size between the
+same two price levels. This makes the up-versus-down comparison within-run and
+matched, which matters: under a random-jump process the per-run noise on this
+statistic has standard deviation $0.74$, large enough that a single seed of the
+symmetric baseline returned a spurious $-0.82$ gap.
+
+Each trader's private value is $F_t + \varepsilon_{i,t}$ with
+$\varepsilon \sim \mathcal{N}(0, 5)$, redrawn each period. All experiments here
+use full information; the delayed and noisy signal treatments are implemented
+but not reported.
+
+\subsection{The decision contract}
+
+Code owns matching, budgets, order sizes and prices. An agent answers three
+typed questions and nothing else: direction (\texttt{buy}/\texttt{sell}/%
+\texttt{pass}), urgency on a five-level scale, and whether the signal is
+already reflected in the book. A code-owned rule maps urgency to an integer
+tick, anchored on the book and hard-clamped at the agent's own private value.
+
+That clamp is load-bearing. \emph{An agent cannot express a losing price},
+because it never expresses a price. A 20{,}000-case property test asserts that
+no quote is ever on the wrong side of the quoting agent's value. Consequently
+every effect we report is about direction and timing, never about arithmetic.
+
+The question wording is frozen and hash-locked; a test fails if any instruction
+or criterion changes. This is the defence against unrecorded prompt iteration.
+
+\subsection{Arms}
+
+All four arms emit the same object, including a distribution over
+$\{\texttt{buy}, \texttt{sell}, \texttt{pass}\}$, which makes them comparable.
+
+\begin{itemize}
+\item \textbf{ZI}: random direction and urgency, fixed policy distribution,
+  value-clamped so it never knowingly trades at a loss.
+\item \textbf{NBR}: logit best-response over the same urgency grid, scored by
+  expected surplus times a fill probability. Exactly symmetric between sides by
+  construction; a buy at mispricing $+x$ and a sell at $-x$ receive identical
+  probability.
+\item \textbf{Jev-argmax}: the model's modal action.
+\item \textbf{Jev-sample}: a draw from the model's distribution.
+\end{itemize}
+
+The two model arms read one response, so for a given observation they are one
+API call and differ only in the decode rule.
+
+\section{The model and its measurement properties}
+
+The model is a commercially available typed-decision model that returns, for a
+multiple-choice question, a selected option together with a probability over
+all options. Three properties affect measurement and are reported because they
+constrain what can be claimed.
+
+\paragraph{Non-determinism.} Identical requests return different answers. Four
+repetitions of one request returned urgency scores of $2.84$, $2.79$, $2.82$
+and $2.74$ and buy probabilities of $0.98$, $0.99$, $0.99$, $0.99$. There is no
+seed parameter. Run-to-run noise is roughly $\pm 0.05$ on a $0$--$4$ urgency
+scale and $\pm 0.01$ on probabilities. \emph{Reproducibility therefore requires
+the response archive, not merely the code}: a rerun without it does not
+reproduce. All 110{,}805 responses are retained and every reported figure is
+regenerable from them.
+
+\paragraph{Quantisation.} Probabilities are returned to two decimal places, so
+three-option distributions routinely sum to $0.99$ or $1.01$. We accept and
+renormalise within tolerance.
+
+\paragraph{Undocumented failure modes.} The published status codes are
+incomplete; the service returns bare \texttt{5xx} from its edge under load. A
+client written to the documentation alone will treat these as fatal.
+
+\section{Experiment 1: wording, conviction, and a null}
+\label{sec:wording}
+
+\subsection{Domain wording induces a conviction asymmetry}
+
+Our first criteria were written in ordinary domain language: \emph{buy} as ``the
+good is underpriced\ldots you want to acquire a unit'', \emph{sell} as ``the
+good is overpriced\ldots you want to dispose of a unit''. At equal absolute
+mispricing the model placed $0.988$ on the profitable side when buying was
+correct and $0.738$ when selling was correct, a gap of $0.250$, with the
+missing mass on \texttt{pass}.
+
+The gap survives a second price level ($+0.225$), reversing the option order
+($+0.235$), and renaming the options neutrally ($+0.185$). It does not survive
+rewriting the two criteria as exact structural mirrors---``value is
+\emph{above} the price'' versus ``\emph{below} the price''---under neutral
+instructions, where the gap is $+0.005$ (Figure~\ref{fig:wording}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{../figures/fig2_wording.pdf}
+\caption{Probability the model places on the profitable side, against
+mispricing, under the two wordings. The model is symmetric when asked
+symmetrically. The effect is $25\times$ the model's own run-to-run noise.}
+\label{fig:wording}
+\end{figure}
+
+Two points matter for practice. First, the modal action is \emph{correct on
+both sides at every point tested}: a practitioner reading only the selected
+option sees nothing wrong. Second, the wording that induces the skew is the
+natural one; symmetry had to be engineered deliberately.
+
+\subsection{It does not move pricing error}
+
+We predicted this skew would slow price discovery after negative shocks. A
+four-seed exploratory run supported it ($+0.63$, four of four seeds positive,
+Holm $p=0.061$). We registered the test and ran it on twenty fresh seeds. It
+failed: $-0.184$, 95\% CI $[-0.479, +0.111]$, seven of nineteen seeds positive,
+one-sided $p=0.897$. The confirmatory interval excludes the exploratory
+estimate. With $\mathrm{SE}=0.140$ the run had ample power to detect the
+exploratory effect, so this is evidence of absence.
+
+We report it as such. Wording skews what the model says; it does not, in this
+market, change what prices do.
+
+\section{Experiment 2: liquidity failure under modal decoding}
+\label{sec:liquidity}
+
+The null above was correct for the question it asked, and the question was
+wrong. Root mean squared pricing error is defined only over periods in which
+trade occurred, and so discards exactly the periods where the effect lives. In
+one run, modal decoding produced zero trades in all three up-jump windows and
+full trading in all three down-jump windows---270 trades in the run, none in
+the 45 periods after a positive shock.
+
+We therefore registered a new outcome, defined for every period:
+$\mathrm{traded}(d)$, the share of the fifteen periods after a jump of
+direction $d$ in which at least one trade occurred.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+& \multicolumn{2}{c}{Traded share} & \\
+\cmidrule(lr){2-3}
+Arm & after up & after down & Gap \\
+\midrule
+Jev-argmax   & $66.6\%$ & $93.8\%$ & $+25.8$ \\
+Jev-sample   & $93.0\%$ & $93.9\%$ & $+3.1$ \\
+ZI           & $77.3\%$ & $75.0\%$ & $-0.4$ \\
+NBR          & $99.8\%$ & $99.3\%$ & $+1.0$ \\
+\bottomrule
+\end{tabular}
+\caption{Preregistered confirmatory test, twenty fresh seeds. D1: the
+Jev-argmax gap exceeds zero, $t=6.37$, eighteen of twenty seeds positive.
+D2: it exceeds the Jev-sample gap by $22.7$ points, $t=6.01$. Both
+Holm-significant.}
+\label{tab:liquidity}
+\end{table}
+
+\paragraph{Mechanism, observed.} We instrument resting depth on both sides at
+the close of every period, which separates two failures: \emph{no counterparty}
+(one side empty) and \emph{no crossing} (both sides present, prices do not
+meet). Of the silent post-shock periods:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Arm & after up & after down \\
+\midrule
+Jev-argmax & $\mathbf{100.0\%}$ & $95.6\%$ \\
+Jev-sample & $71.9\%$ & $56.2\%$ \\
+ZI         & $3.4\%$  & $5.3\%$ \\
+NBR        & $9.1\%$  & $0.0\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every silent period under modal decoding after a positive shock had no
+counterparty whatsoever. The symmetric baselines fall silent for the ordinary
+reason instead.
+
+\paragraph{A control that does not quite hold.} NBR returns $+1.0$ points
+($t=3.33$), small but distinguishable from zero, indicating a slight genuine
+structural tilt in the market. It is $1/26$ of the effect under test, ZI is
+clean ($-0.4$, $t=-0.22$), and it does not survive the per-size controls of
+Section~\ref{sec:size}. We report it because the registration required controls
+to sit on zero and this one does not.
+
+\section{Experiment 3: the mechanism, tested where it could fail}
+\label{sec:size}
+
+If the market halts because every trader reaches the same conclusion, the
+effect must depend on the number of traders. With agreement rate $p$ measured
+independently at $0.92$, the probability that all $N$ agree is approximately
+$p^N$, which falls from $0.72$ at $N=4$ to $0.07$ at $N=32$. We registered two
+predictions before running: that the argmax gap would decay with $N$ (E1), and
+that the sampling gap would not (E2).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{../figures/fig1_market_size.pdf}
+\caption{The liquidity gap against market size, twenty seeds per point, bars
+are standard errors. At $N=32$ both symmetric baselines trade in $100\%$ of
+periods with a zero gap, so there is no structural floor and the residual
+$4.2$ points is attributable to the arm.}
+\label{fig:size}
+\end{figure}
+
+\paragraph{E1 confirmed.} The gap falls from $37.0$ points at $N=4$ to $4.2$ at
+$N=32$; slope $-0.112$ per doubling, $t=-6.91$. It is robust to dropping the
+$N=4$ point, which we flagged in advance as floor-constrained because the
+symmetric baselines themselves trade in only $33\%$ of periods there
+($-0.108$, $t=-4.21$).
+
+\paragraph{E2 falsified.} We predicted sampling would show no decay. It shows
+$-0.016$ per doubling, $t=-2.53$. The available rescue---attributing it to the
+floor-constrained $N=4$ point---fails: dropping that point makes the decay
+\emph{more} significant ($t=-3.53$).
+
+The corrected account is better than the prediction. Sampling herds as well,
+seven times more weakly, on the same curve. At a buy probability of $0.99$,
+most sampled traders still choose to buy; sampling does not abolish correlation
+but dilutes it. There is one mechanism, whose strength is set by how sharply
+the decode rule collapses the distribution, rather than two regimes.
+
+\section{Discussion}
+
+The practical claim is narrow and, we think, general in shape: \emph{the best
+way to use one model is not the best way to use many of them}. Modal decoding
+is individually optimal and collectively degenerate whenever agents share
+information and require counterparties or diversity. Sampling is individually
+worse---it deliberately takes a less likely action some of the time---and here
+it was the difference between a market that cleared and one that did not.
+
+The failure is not a reasoning failure. The model's modal action was correct on
+both sides at every mispricing tested. Nothing in its judgement was wrong; the
+loss occurred in aggregation. Evaluation of a single agent's decisions cannot
+detect this, which is what makes it worth reporting.
+
+\section{Limitations}
+
+\paragraph{One unexplained asymmetry.} The halt is markedly worse after
+positive shocks than negative ones, and we cannot explain it. Both symmetric
+baselines show no such lopsidedness at any market size, so it is not an
+artefact of the market's construction. It is real, replicated, and unexplained.
+
+\paragraph{One model.} All results are for a single typed-decision model. We
+have no evidence about others, and cannot say whether the agreement rate that
+drives the mechanism is characteristic or idiosyncratic.
+
+\paragraph{Provenance of the probabilities.} We treat the returned
+probabilities as the model's beliefs. We have asked the vendor whether they are
+calibrated posterior mass or post-processed, and have no answer. If the latter,
+Experiment~1 is a statement about a serving stack rather than a model.
+
+\paragraph{Full information only.} Every trader observes $F_t$ exactly, which
+maximises the correlation the mechanism exploits. The delayed and noisy
+treatments are implemented but unreported, and would plausibly weaken the
+effect.
+
+\paragraph{Scale.} Markets of four to thirty-two traders over 160 periods. The
+extrapolation to larger markets is the fitted decay, not a measurement.
+
+\section{Reproducibility}
+
+Because the model is non-deterministic and has no seed, code alone does not
+reproduce these numbers. Every response is archived---110{,}805 of them---and
+the analysis can be replayed against the archive with live calls disabled, in
+which case a cache miss raises rather than silently contacting the API. Total
+spend was approximately \$3.30 across roughly 95{,}000 live calls.
+
+The preregistrations, including the falsified hypotheses and the reasons the
+outcome measure changed between Experiments~1 and~2, are in the repository with
+their commit timestamps.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+\bibitem[Gode and Sunder(1993)]{gode1993}
+D.~K. Gode and S.~Sunder.
+\newblock Allocative efficiency of markets with zero-intelligence traders:
+  Market as a partial substitute for individual rationality.
+\newblock \emph{Journal of Political Economy}, 101(1):119--137, 1993.
+
+\bibitem[Smith(1962)]{smith1962}
+V.~L. Smith.
+\newblock An experimental study of competitive market behavior.
+\newblock \emph{Journal of Political Economy}, 70(2):111--137, 1962.
+\end{thebibliography}
+
+\end{document}

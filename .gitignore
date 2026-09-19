@@ -9,11 +9,31 @@ build/
 .env
 .env.*
 *.local
-data/runs/
-figures/*.png
-figures/*.pdf
-!figures/.gitkeep
-cache/
 .coverage
 htmlcov/
 .ipynb_checkpoints/
+
+data/runs/
+
+# The response archive is deliberately NOT discarded. The model is
+# non-deterministic and exposes no seed, so the code alone does not reproduce
+# the reported numbers -- only the saved responses do. The working cache is
+# 110k loose files, which git handles badly, so it is published as compressed
+# bundles under data/archive/ instead.
+data/cache/
+data/cache_*/
+
+# Paper figures are generated, but the paper needs them, so the ones it
+# includes are tracked.
+figures/*.png
+!figures/fig1_market_size.png
+!figures/fig2_wording.png
+!figures/zi_price_path.png
+
+# LaTeX build products
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz

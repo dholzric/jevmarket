@@ -359,6 +359,52 @@ the close of every period, which separates two different failures:
 This is reported as an exploratory diagnostic, explicitly not a test, and it is
 labelled as such in any write-up.
 
+## 10c. Market-size sweep — REGISTERED 2026-09-19, BEFORE the run
+
+This is a robustness check and a **mechanism test at the same time**, and it is
+registered before the data exists.
+
+### The mechanism, stated as a number
+
+The claim is that the market halts after a jump because every trader reaches
+the same conclusion, leaving no counterparty. Measured directly
+(`FINDINGS.md`, rounding probe): about **92%** of traders pick the same side in
+the instant after an up jump, and this is unaffected by state rounding.
+
+If that is the cause, then the probability that ALL `N` traders agree is
+roughly `0.92^N`, and halting must **fall sharply as the market grows**:
+
+| Traders | 0.92^N | expected halting |
+|---|---|---|
+| 4 | 0.72 | severe |
+| 8 | 0.51 | as measured (up traded 66.6%) |
+| 16 | 0.26 | much milder |
+| 32 | 0.07 | nearly gone |
+
+The real market is more forgiving than this bound -- stale orders persist, and
+a window spans 15 periods -- so the levels will not match exactly. The
+*direction and steepness* are what is being tested.
+
+### Hypotheses
+
+| | Hypothesis | Test |
+|---|---|---|
+| **E1 (primary)** | the `jev_argmax` up/down trading gap **decreases** with market size | OLS slope of gap on `log2(N)`, across N in {4, 8, 16, 32}; predicted negative |
+| **E2 (primary)** | the `jev_sample` gap shows no such decay | same slope for sampling; predicted indistinguishable from zero |
+
+- **Correction.** Holm across the E1/E2 family.
+- **Seeds.** 10 per cell per market size; N=8 reuses the 20 seeds already run
+  (24-43) rather than paying for them twice. New sizes use seeds 24-33.
+- **Falsification, and why this test matters.** If the argmax gap is **flat or
+  rising** in N, the no-counterparty mechanism is WRONG even if the effect
+  itself is real, and the finding would have to be reported without a
+  mechanism. Two mechanism predictions in this project have already failed
+  (prereg 1.1.1, and the sampling-amplification prediction), so this one is
+  deliberately quantitative and falsifiable rather than a story fitted after
+  the fact.
+- **Secondary.** Whether the *level* of `traded_share(up)` tracks `1 - 0.92^N`.
+  Exploratory: the bound ignores stale liquidity and multi-period windows.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

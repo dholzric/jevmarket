@@ -34,8 +34,10 @@ $3.1$ points. Two algorithmic baselines that are symmetric by construction show
 no gap. The mechanism is direct and observable: $100\%$ of non-trading periods
 under modal decoding had one side of the order book entirely empty, against
 $3.4\%$ for the zero-intelligence baseline. Because every trader conditions on
-the same public signal, a deterministic policy makes them act identically,
-and a market of unanimous buyers has no counterparty.
+the same public signal, a deterministic policy makes them act identically, and
+a market of unanimous buyers has no counterparty. The effect decomposes into
+two parts: unanimity sets its magnitude, while a standing directional bias in
+the arm's order flow determines which shock it strikes.
 
 We test this mechanism with a preregistered prediction it could have failed:
 if unanimity is the cause, the effect must vanish as the market grows. It does,
@@ -75,9 +77,12 @@ Our contributions:
   model's modal action is \emph{correct} on both sides at every mispricing we
   tested. Nothing about its judgement is wrong. The failure is entirely in the
   aggregation of correct decisions.
-\item \textbf{A directly observed mechanism.} We instrument both sides of the
-  order book and show that under modal decoding, non-trading periods are
-  one-sided essentially always, while for symmetric baselines they are not.
+\item \textbf{A directly observed mechanism, in two parts.} We instrument both
+  sides of the order book and show that under modal decoding, non-trading
+  periods lack a counterparty essentially always, while for symmetric baselines
+  they do not. Unanimity sets the magnitude; a standing directional bias in
+  order flow sets which shock it strikes. Our own first account used only the
+  former and is corrected in Section~\ref{par:two}.
 \item \textbf{A falsifiable size-scaling test.} The mechanism implies the
   effect must decay with market size at a rate set by the agreement rate. We
   registered this before running it; it held.
@@ -346,24 +351,81 @@ Holm-significant.}
 \paragraph{Mechanism, observed.} We instrument resting depth on both sides at
 the close of every period, which separates two failures: \emph{no counterparty}
 (one side empty) and \emph{no crossing} (both sides present, prices do not
-meet). Of the silent post-shock periods:
+meet). Table~\ref{tab:silence} classifies every silent post-shock period.
 
-\begin{center}
-\begin{tabular}{lrr}
+\begin{table}[t]
+\centering
+\begin{tabular}{llrrr}
 \toprule
-Arm & after up & after down \\
+Arm & Shock & No seller & No buyer & Both sides, no cross \
 \midrule
-Jev-argmax & $\mathbf{100.0\%}$ & $95.6\%$ \\
-Jev-sample & $71.9\%$ & $56.2\%$ \\
-ZI         & $3.4\%$  & $5.3\%$ \\
-NBR        & $9.1\%$  & $0.0\%$ \\
+Jev-argmax & up   & $\mathbf{100.0\%}$ & $0.0\%$ & $0.0\%$ \
+           & down & $96.2\%$ & $0.0\%$ & $3.8\%$ \
+Jev-sample & up   & $71.4\%$ & $4.3\%$ & $24.3\%$ \
+           & down & $57.1\%$ & $7.1\%$ & $35.7\%$ \
+ZI         & up   & $0.9\%$  & $2.8\%$ & $96.3\%$ \
+           & down & $2.3\%$  & $1.8\%$ & $95.9\%$ \
+NBR        & up   & $8.3\%$  & $0.0\%$ & $91.7\%$ \
+           & down & $0.0\%$  & $0.0\%$ & $100.0\%$ \
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Why each silent post-shock period was silent, twenty seeds. Under
+modal decoding the market is missing a counterparty essentially always; the
+symmetric baselines fall silent the ordinary way, with both sides quoting and
+prices failing to meet.}
+\label{tab:silence}
+\end{table}
 
-Every silent period under modal decoding after a positive shock had no
-counterparty whatsoever. The symmetric baselines fall silent for the ordinary
-reason instead.
+The failure is unambiguous and one-sided: the market runs out of
+\emph{sellers}. It is never short of buyers in any arm.
+
+\paragraph{Two components, not one.}
+\label{par:two}
+Unanimity alone does not account for the direction of the effect, and we report
+this because our own account of it was initially wrong. Measured directly, the
+agreement rate is \emph{higher} after down shocks ($96\%$) than up shocks
+($92\%$), while the halt is far worse after up shocks. A pure unanimity story
+predicts the opposite ordering.
+
+Order flow resolves it (Table~\ref{tab:flow}). The modal arm carries a standing
+buy bias, and the two shocks interact with it differently. After an up shock
+the bias compounds with the shock and order flow becomes overwhelmingly
+one-sided. After a down shock---where every trader's value lies below the
+prevailing price and selling is plainly indicated---the arm still issues
+\emph{more buys than sells}. It never reaches a sell majority. The bias and the
+shock roughly cancel, flow stays mixed, and the market continues to clear.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{llrrr}
+\toprule
+Arm & Shock & Buy & Sell & Pass \
+\midrule
+Jev-argmax & up   & $65.9\%$ & $28.2\%$ & $5.8\%$ \
+           & down & $\mathbf{48.8\%}$ & $\mathbf{42.3\%}$ & $8.8\%$ \
+Jev-sample & up   & $44.3\%$ & $34.9\%$ & $20.8\%$ \
+           & down & $41.2\%$ & $39.0\%$ & $19.8\%$ \
+ZI         & up   & $46.2\%$ & $44.1\%$ & $9.8\%$ \
+           & down & $44.8\%$ & $45.9\%$ & $9.3\%$ \
+NBR        & up   & $51.6\%$ & $48.4\%$ & $0.0\%$ \
+           & down & $47.9\%$ & $52.1\%$ & $0.0\%$ \
+\bottomrule
+\end{tabular}
+\caption{Order flow in the fifteen periods after a shock. Both algorithmic
+baselines respond to shock direction symmetrically. The modal arm does not: it
+issues more buys than sells even after a down shock, which is why the down-side
+halt is mild and the up-side halt severe.}
+\label{tab:flow}
+\end{table}
+
+So the effect decomposes. \textbf{Unanimity} sets its magnitude and produces
+the size-scaling of Section~\ref{sec:size}: with more traders, the chance that
+every one of them agrees falls, and the halt fades. \textbf{A directional bias}
+sets which shock it strikes, by determining whether the bias reinforces or
+offsets the shock. The sampling arm exhibits the same bias in muted form
+($41.2\%$ versus $39.0\%$ after a down shock), consistent with the falsified E2
+of Section~\ref{sec:size}: sampling dilutes correlation rather than removing
+it.
 
 \paragraph{A control that does not quite hold.} NBR returns $+1.0$ points
 ($t=3.33$), small but distinguishable from zero, indicating a slight genuine
@@ -425,10 +487,13 @@ detect this, which is what makes it worth reporting.
 
 \section{Limitations}
 
-\paragraph{One unexplained asymmetry.} The halt is markedly worse after
-positive shocks than negative ones, and we cannot explain it. Both symmetric
-baselines show no such lopsidedness at any market size, so it is not an
-artefact of the market's construction. It is real, replicated, and unexplained.
+\paragraph{The origin of the directional bias.} Section~\ref{par:two}
+establishes \emph{that} the modal arm carries a standing buy bias, and that
+this bias determines which shock the halt strikes. It does not establish
+\emph{why} the bias exists. Both symmetric baselines are balanced at every
+market size, so it is not an artefact of the market's construction, but we
+cannot presently attribute it to the model, to the task framing, or to the
+state representation.
 
 \paragraph{One model.} All results are for a single typed-decision model. We
 have no evidence about others, and cannot say whether the agreement rate that

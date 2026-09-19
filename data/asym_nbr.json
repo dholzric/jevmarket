@@ -1,0 +1,42 @@
+{
+  "arm": "nbr",
+  "pre_jump_depth": {
+    "up": {
+      "bids": 1.8333333333333333,
+      "asks": 1.7833333333333334
+    },
+    "down": {
+      "bids": 2.25,
+      "asks": 1.55
+    }
+  },
+  "post_jump_depth": {
+    "up": {
+      "bids": 1.9266666666666667,
+      "asks": 1.7233333333333334
+    },
+    "down": {
+      "bids": 1.6755555555555555,
+      "asks": 1.9022222222222223
+    }
+  },
+  "order_flow": {
+    "up": {
+      "buy": 3714,
+      "sell": 3486
+    },
+    "down": {
+      "buy": 3449,
+      "sell": 3751
+    }
+  },
+  "silence_reasons": {
+    "up": {
+      "both sides, no cross": 11,
+      "bids only (no seller)": 1
+    },
+    "down": {
+      "both sides, no cross": 3
+    }
+  }
+}

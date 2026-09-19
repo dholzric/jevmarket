@@ -167,3 +167,85 @@ cell-seeds — about 625 calls each. Cache hit rate was only 8.9%, far below the
 A 5-cell x 5-seed sweep on this design would be ~15,600 calls and ~12M input
 tokens. That is very likely beyond a $5 free tier, which is why the matched-jump
 redesign (more power per call) matters more than buying more seeds.
+
+
+## 9. Confirmatory test — the registered hypotheses are NULL
+
+Seeds 4-23, disjoint from the exploratory seeds 0-3. 80 cell-seeds, ~42,000
+live calls, $1.36. Controls held throughout (`zi` t=+1.16, `nbr` t=+0.70 at
+n=40, both on zero), so the design was sound and the cells interpretable.
+
+| | registered hypothesis | result |
+|---|---|---|
+| **C1** | `jev_argmax` paired wording contrast > 0 | mean **-0.184**, 95% CI [-0.479, +0.111], 7/19 seeds positive, one-sided p=0.897 |
+| **C2** | `jev_sample` contrast < `jev_argmax` contrast | mean +0.161, p=0.800 |
+
+Both NOT significant; C1's point estimate is the wrong sign. The exploratory
++0.629 (4/4 seeds positive, Holm p=0.061) was a **false positive**, and the
+confirmatory CI excludes it entirely. At SE 0.140 the run had ample power to
+see +0.63 (t would have been ~4.5), so this is evidence of absence.
+
+This is the outcome the preregistration committed to publishing, and it stands:
+**natural wording measurably skews Jev's stated conviction (+0.250, §5) but
+does not measurably change post-jump pricing error.**
+
+## 10. The metric was measuring the wrong thing
+
+One cell-seed returned NaN. Investigating it rather than dropping it changed
+the project. In `jev_argmax/original` seed 7:
+
+| jump | direction | periods with a trade, 15-period window |
+|---|---|---|
+| t=20 | up | **0/15** |
+| t=40 | down | 15/15 |
+| t=60 | up | **0/15** |
+| t=80 | down | 12/15 |
+| t=100 | up | **0/15** |
+| t=120 | down | 15/15 |
+
+270 trades in the run, none of them in the 45 periods following an up jump.
+
+`post_jump_rmse` is computed only over periods that traded, so it **discards
+exactly the periods where the effect is strongest**. C1 was measuring pricing
+error in the windows that still had trades while the real effect was the
+windows going silent. The null in §9 is correct for the question it asked; the
+question was wrong.
+
+## 11. The real effect is decode, not wording
+
+Share of post-jump periods that produced a trade, n=20 seeds, replayed from
+cache at zero cost:
+
+| cell | up jumps | down jumps | gap | t |
+|---|---|---|---|---|
+| `jev_argmax/original` | 66.6% | 93.8% | **+27.2pp** | +4.9 |
+| `jev_argmax/mirror` | 71.6% | 96.1% | **+24.6pp** | +4.7 |
+| `jev_sample/original` | 93.0% | 93.9% | +0.9pp | +1.0 |
+| `jev_sample/mirror` | 97.2% | 99.3% | +2.1pp | +3.3 |
+| `zi` | 77.3% | 75.0% | -2.3pp | -1.6 |
+| `nbr` | 99.8% | 99.3% | -0.4pp | -1.3 |
+
+Paired wording contrast on this measure: `jev_argmax` +2.7pp (t=0.57),
+`jev_sample` -1.2pp (t=-1.10). **Both null.**
+
+So the wording is not the cause. The **decode rule** is:
+
+- argmax halts the market after up jumps, under BOTH wordings, at t~5.
+- sampling from the same distribution removes the asymmetry almost entirely.
+- the two algorithmic baselines show nothing.
+
+**Mechanism.** Under full information every trader sees the same `F_t` and the
+state is rounded to whole ticks, so traders with nearby private values submit
+*identical* requests. Argmax is a deterministic function of the request, so
+they return identical decisions: the arm herds perfectly, everyone wants the
+same side, and there is no counterparty. Sampling breaks the tie -- even at
+p(buy)=0.99 it produces ~1% sellers, which is enough to clear the market.
+
+Not yet explained: why the halt is asymmetric (up jumps far worse than down)
+even under mirror wording, where conviction is symmetric. `zi` and `nbr` show
+no such asymmetry, so it is specific to the herding regime.
+
+**Status: post-hoc.** This was found by investigating a NaN in seeds 4-23, so
+those seeds cannot test it. It needs registering and running on fresh seeds
+before it is a result. The effect is large (t~5 at n=20), so a confirmatory run
+can be small.

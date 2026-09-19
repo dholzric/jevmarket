@@ -249,3 +249,92 @@ no such asymmetry, so it is specific to the herding regime.
 those seeds cannot test it. It needs registering and running on fresh seeds
 before it is a result. The effect is large (t~5 at n=20), so a confirmatory run
 can be small.
+
+
+## 12. Trade cessation CONFIRMED (prereg 10b), on fresh seeds 24-43
+
+| | registered hypothesis | result |
+|---|---|---|
+| **D1** | `jev_argmax` trades less after up jumps than down jumps | **+25.8%**, 95% CI [+17.3%, +34.2%], t=+6.37, 18/20 seeds positive |
+| **D2** | that gap exceeds `jev_sample`'s | **+22.7%**, CI [+14.8%, +30.6%], t=+6.01 (sampling's own gap: +3.1%) |
+
+Both Holm-significant. Exploratory estimate was +27.2%; confirmatory +25.8% on
+seeds that did not generate it.
+
+**Mechanism observed directly.** Share of *silent* post-jump periods in which
+one side of the book was completely empty:
+
+| cell | after up | after down |
+|---|---|---|
+| `jev_argmax` | **100.0%** | 95.6% |
+| `jev_sample` | 71.9% | 56.2% |
+| `zi` | 3.4% | 5.3% |
+| `nbr` | 9.1% | 0.0% |
+
+Every silent argmax period after good news had no counterparty at all. The
+symmetric arms go quiet for the ordinary reason instead.
+
+**Control caveat.** `nbr` returned +1.0% (t=+3.33) -- small but distinguishable
+from zero, so the market has a slight genuine structural tilt. It is 1/26th the
+argmax effect and `zi` is clean (-0.4%, t=-0.22), but the prereg said controls
+must sit on zero and strictly this one does not. The per-size controls in §13
+net it out: it does not survive there.
+
+## 13. Market-size sweep (prereg 10c): E1 confirmed, **E2 falsified**
+
+20 seeds per cell per size, 37,259 live calls, 90% cache hit rate, $1.21.
+
+| N | argmax gap | net of `zi` | `zi` gap | `nbr` gap | sample gap |
+|---|---|---|---|---|---|
+| 4 | +37.0% | +38.7% | -1.7% | -1.3% | +4.3% |
+| 8 | +25.8% | +26.2% | -0.4% | +1.0% | +3.1% |
+| 16 | +12.3% | +12.7% | -0.3% | +0.1% | -0.1% |
+| 32 | **+4.2%** | +4.2% | +0.0% | +0.0% | +0.0% |
+
+**E1 CONFIRMED.** The argmax gap collapses as the market grows: slope
+**-0.112 per doubling**, t=-6.91. Robust to dropping the floor-constrained N=4
+point (-0.108, t=-4.21). At N=32, where the symmetric arms trade 100% of
+periods with a zero gap and there is no structural floor whatsoever, argmax
+retains only +4.2%.
+
+This is the no-counterparty mechanism doing exactly what it must. It is the
+first mechanism prediction in this project to survive contact with data, and it
+was registered before the run.
+
+**E2 FALSIFIED.** We predicted sampling would show NO decay. It shows a real
+one: slope -0.016 per doubling, t=-2.53 (two-sided p=0.011). The obvious rescue
+-- blaming the floor-constrained N=4 point -- **also fails**: dropping N=4 makes
+it *more* significant (t=-3.53), not less.
+
+The honest reading is better than the prediction was. Sampling herds too, just
+**7x more weakly**, and its herding dissolves with size on the same curve. At
+99% buy probability most sampled traders still pick buy; sampling does not
+abolish correlation, it dilutes it. So there is ONE mechanism whose strength is
+set by how sharply the decode rule collapses the distribution, not two regimes.
+
+**Quantitative check (secondary, exploratory).** The bound
+`traded_share(up) ~ 1 - 0.92^N` is a lower bound, since real books carry stale
+liquidity across a 15-period window. Observed sits above it at every size, as
+it should, and converges as N grows:
+
+| N | predicted | observed | difference |
+|---|---|---|---|
+| 4 | 28.4% | 33.9% | +5.5% |
+| 8 | 48.7% | 65.6% | +16.9% |
+| 16 | 73.7% | 84.1% | +10.5% |
+| 32 | 93.1% | 95.7% | +2.6% |
+
+## 14. Where this leaves the project
+
+Established, on registered tests with fresh data:
+
+1. Natural domain wording skews Jev's stated conviction by 25 points (§5); it
+   does **not** move post-jump pricing error (§9, a precisely-estimated null).
+2. Argmax decoding causes asymmetric market halting (§12, D1/D2), by removing
+   the counterparty (100% of silent periods one-sided).
+3. That halting collapses as the market grows, exactly as the mechanism
+   requires (§13, E1) -- and sampling shows the same effect 7x weaker, which
+   falsified our cleaner two-regime story in favour of a single dose-response.
+
+Still unexplained: why halting is worse after UP jumps than DOWN jumps. The
+per-size controls show this is not a structural artefact of the market.

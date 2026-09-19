@@ -110,6 +110,16 @@ def main(argv=None) -> int:
             print(f"{arm:>13} {size:>4} {up:>10.1%} {down:>11.1%} "
                   f"{statistics.fmean(gaps):>+8.1%} {note}")
 
+    print("\n=== per-size symmetric controls (free arms) ===")
+    print("  zi and nbr are symmetric by construction, so their gap at each size")
+    print("  is whatever structural asymmetry the market itself has.")
+    print(f"  {'N':>4} {'zi gap':>9} {'nbr gap':>9} {'argmax gap':>12} {'net of zi':>11}")
+    for size in sizes:
+        zi = results[f"zi|{size}"]["gap"]
+        nbr = results[f"nbr|{size}"]["gap"]
+        argmax = results[f"jev_argmax|{size}"]["gap"]
+        print(f"  {size:>4} {zi:>+8.1%} {nbr:>+8.1%} {argmax:>+11.1%} {argmax - zi:>+10.1%}")
+
     print("\n=== E1 / E2: slope of the gap on log2(market size) ===")
     ps = {}
     for label, arm in (("E1", "jev_argmax"), ("E2", "jev_sample")):

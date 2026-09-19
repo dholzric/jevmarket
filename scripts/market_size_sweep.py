@@ -75,7 +75,7 @@ def main(argv=None) -> int:
     results = {}
     print(f"{'cell':>13} {'N':>4} {'up traded':>11} {'down traded':>12} {'gap':>9} {'predicted':>11}")
     print("-" * 66)
-    for arm in ("jev_argmax", "jev_sample"):
+    for arm in ("jev_argmax", "jev_sample", "zi", "nbr"):
         for size in sizes:
             rows = []
             for seed in seeds:
@@ -88,7 +88,7 @@ def main(argv=None) -> int:
                             n_traders=size, periods=args.periods, seed=seed, arm=arm,
                             wording="original", burn_in_periods=5,
                             fundamental=fundamental, signal=Signal(seed=seed),
-                            jev_client=client,
+                            jev_client=client if arm.startswith("jev") else None,
                         )
                     )
                 except BudgetExceeded as error:

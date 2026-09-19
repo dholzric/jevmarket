@@ -1,0 +1,86 @@
+{
+  "cache_key": "050ec8ec1ebb5bf830e6ff69638b59808e88de6ac58195f2f293413c069d39ae",
+  "request": {
+    "model": "jev-latest",
+    "questions": {
+      "action": {
+        "criteria": {
+          "buy": "The good is underpriced relative to your private value. You want to acquire a unit.",
+          "pass": "Neither direction is clear enough to justify an order this period.",
+          "sell": "The good is overpriced relative to your private value. You want to dispose of a unit."
+        },
+        "instructions": "You are a trader in a continuous double auction for one abstract good. You are given the current order book, your own private value for one unit, and your recent signal about the good's fundamental value. Decide the direction of your next order. Choose buy if the good looks underpriced relative to your private value, sell if it looks overpriced, and pass if neither is clear enough to act on.",
+        "type": "choice"
+      },
+      "aggressiveness": {
+        "criteria": [
+          "No urgency. The gap is small or the book is uninformative; wait patiently well behind the best price and accept that no trade may happen.",
+          "Low urgency. Slightly improve on the best price and wait.",
+          "Moderate urgency. Post at or near the best price on your side.",
+          "High urgency. Give up most of the spread to raise the chance of trading now.",
+          "Maximum urgency. Cross the spread and transact immediately at the best available price."
+        ],
+        "instructions": "Rate how urgently this trader should transact this period, given the book and the gap between the current prices and the trader's private value. A high rating means give up price to transact immediately; a low rating means wait at a better price and risk not trading at all. Rate the situation only. Do not consider which direction the trade would be in.",
+        "type": "score"
+      },
+      "already_priced": {
+        "criteria": {
+          "false": "The book has not yet moved to where the signal implies. An edge remains.",
+          "true": "The book already sits where the signal implies. There is no edge left to capture."
+        },
+        "instructions": "Is the information in this trader's signal already reflected in the current order book? Answer yes if the best bid and best ask already sit where the signal implies they should, so that acting on the signal offers no edge.",
+        "type": "noul"
+      }
+    },
+    "schema_version": "roundprobe:original",
+    "state": {
+      "best_ask": 111,
+      "best_bid": 109,
+      "last_trade_price": 110,
+      "spread": 2,
+      "your_private_value": 92.7272,
+      "your_signal": 92.7272
+    }
+  },
+  "response": {
+    "answers": {
+      "action": {
+        "choice": "sell",
+        "confidence": 0.81,
+        "probabilities": {
+          "buy": 0.01,
+          "pass": 0.12,
+          "sell": 0.87
+        },
+        "type": "choice"
+      },
+      "aggressiveness": {
+        "confidence": 0.18,
+        "legend": {
+          "0": "No urgency. The gap is small or the book is uninformative; wait patiently well behind the best price and accept that no trade may happen.",
+          "1": "Low urgency. Slightly improve on the best price and wait.",
+          "2": "Moderate urgency. Post at or near the best price on your side.",
+          "3": "High urgency. Give up most of the spread to raise the chance of trading now.",
+          "4": "Maximum urgency. Cross the spread and transact immediately at the best available price."
+        },
+        "probabilities": {
+          "0": 0.65,
+          "1": 0.07,
+          "2": 0.04,
+          "3": 0.09,
+          "4": 0.15
+        },
+        "score": 0.99,
+        "type": "score"
+      },
+      "already_priced": {
+        "noul": 0.2,
+        "type": "noul"
+      }
+    },
+    "input_tokens": 806,
+    "latency_s": 0.31200000015087426,
+    "model": "jev-1.13.0",
+    "output_tokens": 73
+  }
+}

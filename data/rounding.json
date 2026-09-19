@@ -1,0 +1,34 @@
+{
+  "after UP jump   (F=110, book 99/101)|rounded": {
+    "distinct_states": 11,
+    "counts": {
+      "buy": 22,
+      "sell": 2
+    },
+    "agreement": 0.9166666666666666
+  },
+  "after UP jump   (F=110, book 99/101)|unrounded": {
+    "distinct_states": 24,
+    "counts": {
+      "buy": 22,
+      "sell": 2
+    },
+    "agreement": 0.9166666666666666
+  },
+  "after DOWN jump (F=100, book 109/111)|rounded": {
+    "distinct_states": 14,
+    "counts": {
+      "pass": 1,
+      "sell": 23
+    },
+    "agreement": 0.9583333333333334
+  },
+  "after DOWN jump (F=100, book 109/111)|unrounded": {
+    "distinct_states": 24,
+    "counts": {
+      "buy": 1,
+      "sell": 23
+    },
+    "agreement": 0.9583333333333334
+  }
+}

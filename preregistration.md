@@ -570,6 +570,81 @@ pair count): mean shift +0.33pp, 90% CI [-0.33, +1.00], TOST p < 0.0001
 against a +/-10pp margin. G1 holds on its registered estimand. Modal agreement
 (60/60) is reported as secondary.
 
+## 10h. Dynamic replication under independent calling — REGISTERED 2026-09-19, BEFORE the run
+
+The paper (\S estimand) now states that the 25.8-point liquidity gap "is a
+property of the memoised regime" and that "the dynamic experiment---replaying
+the market with independent draws throughout---remains unrun." The static
+bound in 10g (counterparty gain +10.1pp, upper 14.4) says memoisation matters;
+it does not say how much of the dynamic halt survives without it. That is a
+different quantity and it is measurable, so it is measured.
+
+### Design
+
+The registered confirmatory design of 10b, unchanged in every respect but one:
+
+- same engine, same seeds **24--43**, same fundamental paths (`1000 + seed`),
+  same private-value signal seeds, N=8, 160 periods, 5 burn-in periods,
+  15-period post-shock windows, outcome `traded_share(direction)`;
+- cells `jev_argmax/original` and `jev_sample/original`;
+- **every trader decision is a fresh live call.** The content-addressed cache
+  is neither read nor written. Traders rendering the same tick-rounded state
+  in the same period each receive their own response.
+
+For `jev_sample`, each trader draws from the distribution its *own* call
+returned, with the same per-trader RNG scheme as 10b.
+
+The two runs are paired by seed and share the fundamental path, but they walk
+into different books as soon as a response differs, so the pairing is by
+environment, not by state.
+
+**Archive.** Every response is appended, in call order, to
+`data/independent/<arm>_seed<k>.json.gz` together with its request key. A
+replay transport serves these back in order and refuses a request whose key
+does not match the archived one, so the run is reproducible from the archive
+exactly as the memoised runs are from the cache. The cache directory
+`data/cache` is not touched: writing to it would overwrite entries the
+memoised confirmatory runs replay from.
+
+### Hypotheses
+
+| | Hypothesis | Test |
+|---|---|---|
+| **H1 (primary)** | under independent calling, `jev_argmax` still trades less after UP jumps than after DOWN jumps: `traded_share(down) - traded_share(up) > 0` | one-sided paired t over the 20 seeds |
+| **H2 (primary)** | that gap is larger for `jev_argmax` than for `jev_sample`, both under independent calling | one-sided paired t on the within-seed difference of gaps |
+| **H3 (secondary, estimation)** | memoisation's dynamic contribution: `gap_memoised - gap_independent` for `jev_argmax`, paired by seed against the 10b run | two-sided 95% t interval; no threshold |
+
+- **Correction.** Holm across the H1/H2 family; Holm p < 0.05 required. H3 is
+  reported as an interval, not tested.
+- **Interpretation, fixed in advance.**
+  - H1 holds: the halt is not a memoisation artefact. The independent-regime
+    gap becomes the headline number in the abstract, and the memoised 25.8 is
+    reported alongside it as the memoised-regime value.
+  - H1 fails: the halt IS a memoisation artefact. The abstract and
+    contributions are rewritten to say that modal decoding halts the market
+    only when identical states share one response; D1 is retired to the
+    memoised regime and the paper's main claim is withdrawn.
+  - H2 fails while H1 holds: the decode-rule contrast does not survive
+    independent calling; the mechanism section is narrowed accordingly.
+  - H3: reported whatever it shows. If the interval excludes zero the
+    memoised headline is described as inflated by the measured amount.
+- **Direction expected.** The static bound predicts the independent gap is
+  smaller, not larger. A larger independent gap would be surprising and would
+  be reported as such, not explained away.
+- **Power.** The 10b gap was +25.8pp with SE 4.0pp at n=20. If independent
+  calling removes even half of it the test still has t of roughly 3 at the same
+  spread. A null here is informative.
+- **Controls.** `zi` and `nbr` do not call the model and are unchanged from
+  10b; they are not rerun.
+- **Diagnostic.** The one-sided-book share of silent periods is recorded as in
+  10b, exploratory only.
+- **Cost.** 2 arms x 20 seeds x 8 traders x 155 live periods = 49,600 live
+  calls, about \$1.60 at the fitted rate. Spend gate at \$2.50. Latency was
+  measured at 0.3--0.4 s per call with no penalty for eight concurrent calls,
+  so runs are executed in parallel across seeds; within a run calls are
+  sequential because each trader sees the book the previous one left.
+- **This cuts against us.** The paper's central number can only go down.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

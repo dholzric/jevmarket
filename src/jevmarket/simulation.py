@@ -56,6 +56,11 @@ class RunConfig:
     # Required for the Jev arms. Share one client (and one cache) across arms
     # and the second arm costs nothing.
     jev_client: object | None = None
+    # Mixed-decoder markets: trader id -> arm, overriding `arm` for those
+    # traders only. Everything else (seeds, arrival order, private values,
+    # burn-in) is unchanged, so a market with one sampler among modal traders
+    # differs from the all-modal run in exactly that trader's decoder.
+    arm_overrides: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -112,11 +117,19 @@ def run(config: RunConfig) -> RunResult:
         )
 
     trader_ids = ["t%03d" % i for i in range(config.n_traders)]
-    brain_cls = ARMS[config.arm]
+    for tid, arm in config.arm_overrides.items():
+        if tid not in trader_ids:
+            raise ValueError(f"arm_overrides names unknown trader {tid!r}")
+        if arm not in ARMS:
+            raise ValueError(f"arm_overrides names unknown arm {arm!r} for {tid}")
+        if arm in JEV_ARMS and config.jev_client is None:
+            raise ValueError(f"override {tid}->{arm} needs a jev_client")
+    arm_of = {tid: config.arm_overrides.get(tid, config.arm) for tid in trader_ids}
     brains = {}
     for i, tid in enumerate(trader_ids):
         seed = config.seed * 100_003 + i
-        if config.arm in JEV_ARMS:
+        brain_cls = ARMS[arm_of[tid]]
+        if arm_of[tid] in JEV_ARMS:
             brains[tid] = brain_cls(
                 trader_id=tid, client=config.jev_client, seed=seed,
                 wording=config.wording,
@@ -196,7 +209,7 @@ def run(config: RunConfig) -> RunResult:
                 DecisionRecord(
                     period=period,
                     trader_id=trader_id,
-                    arm="burn_in" if in_burn_in else config.arm,
+                    arm="burn_in" if in_burn_in else arm_of[trader_id],
                     decision=decision,
                     fundamental=path[period],
                     signal=signal,

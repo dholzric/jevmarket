@@ -232,3 +232,49 @@ def test_one_sided_period_count_matches_the_depths():
         if (bids == 0) != (asks == 0)
     )
     assert result.one_sided_periods == one_sided
+
+
+# --- mixed-decoder markets (per-trader arm overrides) ------------------------
+
+
+def test_arm_overrides_assign_a_different_decoder_to_named_traders():
+    """A market of modal traders with one sampler: the follow-up study's unit."""
+    result = run(config(arm="jev_argmax", jev_client=_jev_client(), periods=40,
+                        n_traders=8, arm_overrides={"t000": "jev_sample"}))
+    result.exchange.check_invariants()
+    by_trader = {}
+    for d in result.decisions:
+        by_trader.setdefault(d.trader_id, set()).add(d.arm)
+    assert by_trader["t000"] == {"jev_sample"}
+    assert all(arms == {"jev_argmax"} for tid, arms in by_trader.items() if tid != "t000")
+
+
+def test_a_zero_intelligence_override_never_calls_the_model():
+    from tests.test_jev_client import CountingTransport
+    from jevmarket.jev.client import JevClient
+    from jevmarket.jev.mock import MockTransport
+
+    wire = CountingTransport(MockTransport(seed=1))
+    client = JevClient(wire)
+    run(config(arm="jev_argmax", jev_client=client, periods=20, n_traders=4,
+               arm_overrides={"t003": "zi"}))
+    # 3 modal traders x 20 periods; the ZI trader must not add to the wire count
+    assert wire.calls == 3 * 20
+
+
+def test_an_empty_override_is_the_plain_arm():
+    plain = run(config(arm="jev_argmax", jev_client=_jev_client(), periods=30, n_traders=6))
+    same = run(config(arm="jev_argmax", jev_client=_jev_client(), periods=30, n_traders=6,
+                      arm_overrides={}))
+    assert plain.trade_prices == same.trade_prices
+
+
+def test_an_override_for_an_unknown_trader_or_arm_fails_before_running():
+    import pytest
+
+    with pytest.raises(ValueError):
+        run(config(arm="jev_argmax", jev_client=_jev_client(), periods=10, n_traders=4,
+                   arm_overrides={"t999": "zi"}))
+    with pytest.raises(ValueError):
+        run(config(arm="jev_argmax", jev_client=_jev_client(), periods=10, n_traders=4,
+                   arm_overrides={"t000": "oracle"}))

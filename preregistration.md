@@ -409,6 +409,46 @@ a window spans 15 periods -- so the levels will not match exactly. The
 - **Secondary.** Whether the *level* of `traded_share(up)` tracks `1 - 0.92^N`.
   Exploratory: the bound ignores stale liquidity and multi-period windows.
 
+## 10d. Repeated-response sensitivity — REGISTERED 2026-09-19, BEFORE the run
+
+External review raised twice, correctly, that the content-addressed cache
+changes the estimand. Traders rendering the same tick-rounded state receive one
+stored response, so this measures *one archived response per distinct state*
+rather than N agents independently calling a non-deterministic service.
+Memoisation can only increase within-state agreement, which is the proposed
+mechanism, so the concern is material and not merely about reproducibility.
+
+It is also directly measurable, which is better than the limitation paragraph
+currently in the paper.
+
+### Design
+
+Sample states drawn from the post-shock windows of the confirmatory runs. Call
+each **R = 5** times live, bypassing the cache. For each state compute:
+
+- **mode stability**: the share of repeats returning the same argmax action;
+- **memoised agreement**: the share of N traders agreeing when all read one
+  stored response (by construction, 1.0 for identical states);
+- **independent agreement**: the share agreeing when each draws its own live
+  response, estimated by resampling the R repeats.
+
+### Hypotheses
+
+| | Hypothesis | Test |
+|---|---|---|
+| **F1 (primary)** | the modal action is stable across repeats: mode stability >= 0.95 | one-sample proportion over sampled states |
+| **F2 (primary)** | independent agreement is lower than memoised agreement by less than 10 percentage points at N=8 | paired comparison per state |
+
+- **Interpretation, fixed in advance.** If F1 and F2 both hold, memoisation is
+  immaterial at the mode and the argmax result generalises to independent
+  callers; the limitation is downgraded to a measured bound. If F1 fails, the
+  argmax arm is not the deterministic policy the mechanism assumes, and the
+  mechanism section must be rewritten. If F2 fails, the effect size is inflated
+  by memoisation and the headline number must be reported as an upper bound.
+- **This cuts against us.** A failure here weakens the paper's central result,
+  which is why it is registered before running rather than after seeing it.
+- **Cost.** About 250 live calls, under \$0.05.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

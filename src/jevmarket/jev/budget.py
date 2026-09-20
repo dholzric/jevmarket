@@ -7,6 +7,7 @@ cap without pricing is refused at construction rather than ignored at runtime.
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass
 
 TOKENS_PER_MTOK = 1_000_000
@@ -61,6 +62,8 @@ class SpendGate:
         self.cache_hits = 0
         self.input_tokens = 0
         self.output_tokens = 0
+        # Prereg 10h charges one gate from several seed threads at once.
+        self._lock = threading.Lock()
 
     def note_cache_hit(self) -> None:
         """A cached answer costs nothing and does not consume the gate."""
@@ -68,9 +71,10 @@ class SpendGate:
 
     def charge(self, input_tokens: int, output_tokens: int) -> None:
         """Record a live call, then raise if that call breached a cap."""
-        self.calls += 1
-        self.input_tokens += input_tokens
-        self.output_tokens += output_tokens
+        with self._lock:
+            self.calls += 1
+            self.input_tokens += input_tokens
+            self.output_tokens += output_tokens
 
         if self.max_calls is not None and self.calls > self.max_calls:
             raise BudgetExceeded(

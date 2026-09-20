@@ -19,11 +19,15 @@ class JevClient:
         cache: DecisionCache | None = None,
         budget=None,
         model: str | None = None,
+        archive=None,
     ) -> None:
         self.transport = transport
         self.cache = cache
         self.budget = budget
         self.model = model
+        # Prereg 10h: with no cache, every decision is a live call, and each one
+        # is appended here in order so the run can be replayed from disk.
+        self.archive = archive
         self.schema_violations = 0
 
     def decide(
@@ -54,4 +58,6 @@ class JevClient:
             self.budget.charge(response.input_tokens, response.output_tokens)
         if self.cache is not None:
             self.cache.put(request, response)
+        if self.archive is not None:
+            self.archive.record(request, response)
         return response

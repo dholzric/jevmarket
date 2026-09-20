@@ -221,6 +221,11 @@
     "unstable_with_opposite_side_minority": 3,
     "max_opposite_side_share": 0.02,
     "unstable_with_pass_minority_or_pass_mode": 7,
+    "buy_and_sell_coexistence_plugin": {
+      "all": 0.006262119607980852,
+      "up": 0.004974496449619415,
+      "down": 0.007549742766342289
+    },
     "detail": [
       {
         "modal": "pass",

@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from typing import Mapping
 import urllib.error
 import urllib.request
 
@@ -80,10 +81,10 @@ class HttpTransport:
         timeout_s: float = DEFAULT_TIMEOUT_S,
         opener=_urlopen,
         sleep=time.sleep,
-        env: dict | None = None,
+        env: Mapping[str, str] | None = None,
     ) -> None:
-        env = os.environ if env is None else env
-        self.api_key = api_key or env.get("JEV_API_KEY")
+        environ: Mapping[str, str] = os.environ if env is None else env
+        self.api_key = api_key or environ.get("JEV_API_KEY")
         if not self.api_key:
             raise ValueError(
                 "no Jev API key: pass api_key= or set JEV_API_KEY. Failing here "

@@ -20,7 +20,6 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
 from jevmarket.agents.base import Observation  # noqa: E402
-from jevmarket.decision import Decision  # noqa: E402
 from jevmarket.jev.budget import SpendGate  # noqa: E402
 from jevmarket.jev.cache import DecisionCache  # noqa: E402
 from jevmarket.jev.client import JevClient  # noqa: E402

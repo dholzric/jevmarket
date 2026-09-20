@@ -86,6 +86,14 @@ def main() -> int:
     independent_cost = (independent_input * INPUT_PER_MTOK
                         + independent_output * OUTPUT_PER_MTOK) / 1_000_000
 
+    raw_repeats_file = DATA / "raw_repeats.json"
+    raw_repeats_calls = 0
+    if raw_repeats_file.is_file():
+        try:
+            raw_repeats_calls = len(json.loads(raw_repeats_file.read_text(encoding="utf-8")))
+        except Exception:
+            pass
+
     results = {}
     for f in sorted(DATA.glob("*.json")):
         if f.name == "manifest.json":
@@ -107,6 +115,7 @@ def main() -> int:
                       "not a provider invoice",
         "caches": per_cache,
         "archive_bundles": bundles,
+        "raw_repeats_calls": raw_repeats_calls,
         "independent_calls": independent_calls,
         "independent_input_tokens": independent_input,
         "independent_output_tokens": independent_output,
@@ -124,6 +133,7 @@ def main() -> int:
     print(f"estimated cost ${cost:.2f}")
     print(f"independent calls (10h archives)  {independent_calls:,}  "
           f"${independent_cost:.2f}")
+    print(f"raw repeats calls (estimand test) {raw_repeats_calls:,}")
     print(f"\nwrote {DATA / 'manifest.json'}")
     return 0
 

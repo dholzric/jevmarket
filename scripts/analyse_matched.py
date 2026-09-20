@@ -20,7 +20,6 @@ import argparse
 import json
 import pathlib
 import statistics
-import sys
 
 import numpy as np
 
@@ -104,7 +103,7 @@ def main(argv=None) -> int:
     if zi:
         clean = [v for v in zi if v == v]
         lo, hi = bootstrap_ci(clean)
-        print(f"\n=== control ===")
+        print("\n=== control ===")
         print(f"  zi gap  mean {statistics.fmean(clean):+.2f}  95% CI [{lo:+.2f}, {hi:+.2f}]")
         print("  zi is symmetric by construction, so a CI containing 0 is the")
         print("  check that the matched-jump design is doing its job.")

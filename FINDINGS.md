@@ -522,8 +522,8 @@ agreement by at most 2.84 percentage points with 95% confidence, against a
 **G1 is stronger on the correct population** than on the flawed one: 60/60
 identical meanings against 48/50.
 
-All 300 raw responses are archived in `data/raw_repeats.json`, so the claim
-that every response is retained remains true.
+All 6,000 raw responses (60 states times 100 uncached calls) are archived in
+`data/raw_repeats.json`, so the claim that every response is retained remains true.
 
 ### Process change
 
@@ -625,3 +625,41 @@ not every round-trip; the paper says so. Logged in the prereg deviation table.
 **Registration scorecard, updated:** confirmed D1, D2, E1, G1, H1, H2; failed
 C1, C2, F1, original-immunity; unresolved E2; not identified F2. Twelve
 registered, all reported.
+
+## 21. Sixth review: the 10.1pp statistic was non-unanimity, not counterparty supply
+
+Codex, Grok and Gemini reviewed 22e21a6. No further experiment was asked for.
+Three corrections, all zero-cost:
+
+1. **Naming.** Section 19's "+10.1pp counterparty gain" is `1 - sum_a p_a^8`,
+   the probability that eight independent calls are not all identical. A
+   buy/pass mixture satisfies it while supplying no seller. Relabelled
+   "non-unanimity gain" throughout the paper and README (Gemini applied this
+   directly in the working tree; verified here). The claim-aligned quantity,
+   P(at least one buy AND at least one sell among eight),
+   `1 - (p_b+p_p)^8 - (p_s+p_p)^8 + p_p^8` with plug-in frequencies, is
+   **0.63%** over the sixty states (0.50% after up, 0.75% after down),
+   descriptive and not uncertainty-adjusted; one to two orders of magnitude
+   below the non-unanimity figure, and consistent with the dynamic replication
+   finding no memoisation effect. Now computed in `independent_market.py`,
+   pinned in `verify_paper.py`, required by `audit_prose.py`.
+2. **Counts.** The paper still said 300 deliberately uncached calls (the R=5
+   count); `raw_repeats.json` holds 6,000. README still said 118,628 unique
+   responses against the manifest's 118,968. Both fixed; the manifest now
+   records `raw_repeats_calls` from disk and the audits check it, with a
+   mutation test. Two stale counts survived three passing gates because no
+   gate read those sentences. That hole is closed for these two numbers.
+3. **H3 wording.** "Contributed nothing measurable" overstated an interval
+   of [-13.9, +7.2]. Now "detected no difference", with the interval; the
+   old phrase is forbidden by the prose audit.
+
+Also labelled: Table 3 (silence classification) and the abstract's 90.0% /
+59.4% agreement figures are from the memoised confirmatory run, next to a
+headline from the independent-calling run; both now say so. The $1.61
+replication cost is the cost of the archived runs; the discarded 550-call
+attempt adds about $0.02. Gemini additionally added `py.typed`, tightened
+type hints, and cleared 22 ruff warnings; ruff and mypy pass.
+
+Review status: Codex "conditional go after this pass", Grok "send it after
+changing 300 to 6,000", Gemini "go". All conditions met.
+

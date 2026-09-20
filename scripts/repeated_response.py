@@ -33,7 +33,6 @@ from jevmarket.jev.budget import (  # noqa: E402
     BudgetExceeded,
     SpendGate,
 )
-from jevmarket.jev.cache import DecisionCache  # noqa: E402
 from jevmarket.jev.http import HttpTransport  # noqa: E402
 from jevmarket.jev.transport import JevRequest  # noqa: E402
 

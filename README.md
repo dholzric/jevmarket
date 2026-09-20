@@ -67,7 +67,7 @@ was caught certifying something the paper contradicted:
 | Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
 | Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
 | Modal policy is effectively deterministic | 51/60 stable at R=100, bound 0.887 | registered, **failed** (F1) |
-| Memoisation's counterparty effect (static) | +10.1pp, upper bound 14.4pp, direction-balanced | measured bound; the dynamic replication (H1) shows no measurable contribution |
+| Memoisation's non-unanimity effect (static) | +10.1pp, upper bound 14.4pp, direction-balanced | non-unanimity bound (not counterparty availability); dynamic replication detects no difference |
 | Option naming shifts P(buy) | +0.33pp, TOST p<0.0001 | registered, confirmed (G1) |
 
 Of twelve registered predictions, six were confirmed (D1, D2, E1, G1, H1, H2),
@@ -118,14 +118,16 @@ instruction or criterion changes.
 
 ## Cost
 
-The archive holds 118,628 **unique** responses, one per distinct request — a
+The archive holds 118,968 **unique** responses, one per distinct request — a
 lower bound on live calls rather than a count of them. Estimated spend from the
 archived token counts is $3.85. Both are regenerated into `data/manifest.json`
 from disk rather than transcribed. Replaying from the archive is free.
 
 The independent-calling replication (prereg 10h) adds 49,600 archived live
 calls in `data/independent/` (one gzipped, ordered archive per run, 5 MB) at an
-estimated $1.61; `python scripts/independent_market.py --replay` reproduces
+estimated $1.61 for the archived runs (plus about $0.02 for one attempt that
+died on a connection reset and was redone; its 550 responses are not
+archived); `python scripts/independent_market.py --replay` reproduces
 `data/independent_market.json` byte for byte from them without a key.
 
 Note on the estimand: in the memoised runs, requests are content-addressed, so

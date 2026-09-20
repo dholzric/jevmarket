@@ -8,7 +8,7 @@ total inventory conserved by construction.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Iterable
 
 from .book import Book, Side, SubmitResult, Trade

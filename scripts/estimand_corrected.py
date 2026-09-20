@@ -48,7 +48,6 @@ from jevmarket.jev.budget import (  # noqa: E402
 from jevmarket.jev.cache import DecisionCache  # noqa: E402
 from jevmarket.jev.client import JevClient  # noqa: E402
 from jevmarket.jev.http import HttpTransport  # noqa: E402
-from jevmarket.jev.questions import render_state  # noqa: E402
 from jevmarket.jev.transport import JevRequest  # noqa: E402
 
 SCHEMA = load_schema("original")
@@ -193,12 +192,12 @@ def main(argv=None) -> int:
     k = sum(1 for r in rows if r["stable"])
     mean_stability = statistics.fmean(r["stability"] for r in rows)
 
-    print(f"\n=== F1 (registered statistic: proportion of states fully stable) ===")
+    print("\n=== F1 (registered statistic: proportion of states fully stable) ===")
     print(f"  states                                {n}")
     print(f"  fully stable across {args.repeats} repeats        {k}/{n} = {k / n:.3f}")
     lower = st.beta.ppf(0.05, k + 0.5, n - k + 0.5)
     print(f"  Jeffreys one-sided 95% lower bound    {lower:.3f}")
-    print(f"  registered threshold                  0.950")
+    print("  registered threshold                  0.950")
     f1 = lower > 0.95
     print(f"  F1: {'HOLDS' if f1 else 'DOES NOT HOLD'} "
           f"(decided on the bound, not the point estimate)")
@@ -216,15 +215,15 @@ def main(argv=None) -> int:
     mean_inf = statistics.fmean(inflation)
     se_inf = statistics.stdev(inflation) / len(inflation) ** 0.5
     upper = mean_inf + st.t.ppf(0.95, len(inflation) - 1) * se_inf
-    print(f"\n=== F2 (paired inflation, one-sided 95% upper bound) ===")
+    print("\n=== F2 (paired inflation, one-sided 95% upper bound) ===")
     print(f"  mean inflation                        {mean_inf * 100:+.2f}pp")
     print(f"  one-sided 95% upper bound             {upper * 100:+.2f}pp")
-    print(f"  registered margin                     10.00pp")
+    print("  registered margin                     10.00pp")
     f2 = upper < 0.10
     print(f"  F2: {'HOLDS' if f2 else 'DOES NOT HOLD'}")
 
     # --- G1: paired TOST on the label swap ----------------------------------
-    print(f"\n=== G1 (paired equivalence, TOST, margin +/-10pp) ===")
+    print("\n=== G1 (paired equivalence, TOST, margin +/-10pp) ===")
     cache = DecisionCache("data/cache_naming")
     shares = {}
     per_state = collections.defaultdict(dict)

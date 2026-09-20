@@ -80,7 +80,11 @@ class SpendGate:
             raise BudgetExceeded(
                 f"call cap reached: {self.calls} > {self.max_calls}"
             )
-        if self.max_usd is not None and self.spent_usd > self.max_usd:
+        if (
+            self.max_usd is not None
+            and self.spent_usd is not None
+            and self.spent_usd > self.max_usd
+        ):
             raise BudgetExceeded(
                 f"spend cap reached: ${self.spent_usd:.4f} > ${self.max_usd:.4f}"
             )

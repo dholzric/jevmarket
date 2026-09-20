@@ -35,6 +35,7 @@
       "sha256": "7effc184bf85ba64a441e80a0c9c0b1848c8ffb9c8a3a0c8bf83790b4fe3867f"
     }
   },
+  "raw_repeats_calls": 6000,
   "independent_calls": 49600,
   "independent_input_tokens": 39429104,
   "independent_output_tokens": 3620800,
@@ -287,8 +288,8 @@
       "sha256": "8bc6a52615646fcc7e2df665dadb78b9c452e78a5f8d049861d66e9f00feab42"
     },
     "independent_market.json": {
-      "bytes": 8827,
-      "sha256": "226c2a44141361ad4ae5e67cb39b8f53e67cade907df75304ad03f12cdaae016"
+      "bytes": 8984,
+      "sha256": "562c552bb65fe8e2867c3b258c3510a40ea446afb9c19d41a8fdc89a4cebdb8f"
     },
     "lag_flow.json": {
       "bytes": 1494,

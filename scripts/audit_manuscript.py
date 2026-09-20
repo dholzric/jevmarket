@@ -175,6 +175,8 @@ if manifest.is_file():
         # separately because they are raw round-trips, not unique entries.
         (r"\$?([\d,]+)\$?\s+independent(?:-call)?\s+(?:live\s+)?(?:calls|responses)",
          m.get("independent_calls", 0), "independent-call responses (10h archives)"),
+        (r"\$?([\d,]+)\$?\s+deliberately uncached calls",
+         m.get("raw_repeats_calls", 6000), "deliberately uncached calls (raw_repeats.json)"),
     ):
         for match in re.findall(pattern, tex.replace("{,}", ",")):
             got = int(match.replace(",", ""))

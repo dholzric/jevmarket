@@ -21,7 +21,6 @@ import argparse
 import collections
 import json
 import pathlib
-import statistics
 import sys
 
 import scipy.stats as st
@@ -114,8 +113,8 @@ def main(argv=None) -> int:
                 if v.get("mirror") == v.get("mirror_swapped"))
     n = len(per_state)
 
-    print(f"\n=== G1: choice follows the description, not the label ===")
-    print(f"  shift in meaning space when labels swap:")
+    print("\n=== G1: choice follows the description, not the label ===")
+    print("  shift in meaning space when labels swap:")
     for a in ("buy", "sell", "pass"):
         print(f"      {a:>5} {shift[a]:+6.1%}")
     print(f"  states choosing the same MEANING under both  {agree}/{n} "
@@ -128,7 +127,7 @@ def main(argv=None) -> int:
     # --- G2: is any label effect small next to the residual? ----------------
     residual = 0.25  # ~90.0% up-side vs ~64.8% down-side agreement
     ratio = abs(shift["buy"]) / residual
-    print(f"\n=== G2: size against the residual asymmetry ===")
+    print("\n=== G2: size against the residual asymmetry ===")
     print(f"  residual to be explained                     {residual:.0%}")
     print(f"  label effect on P(buy)                       {abs(shift['buy']):.1%}")
     print(f"  fraction of the residual it could explain    {ratio:.1%}")

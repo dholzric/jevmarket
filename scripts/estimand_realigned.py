@@ -17,7 +17,7 @@ wording moves probability mass while leaving the mode correct, testing the mode
 is precisely the wrong test for contamination of a probability-based control.
 
 Both are recomputed here from archived responses:
-  data/raw_repeats.json   300 uncached repeats, with full answers
+  data/raw_repeats.json   6,000 uncached repeats, with full answers
   data/cache_naming/      the label-swap responses, with full probabilities
 
     python scripts/estimand_realigned.py
@@ -30,7 +30,6 @@ import json
 import math
 import pathlib
 import statistics
-import sys
 
 import scipy.special as sp
 import scipy.stats as st
@@ -143,7 +142,7 @@ def main() -> int:
     paired = [v["mirror_swapped"] - v["mirror"] for v in mass.values()
               if "mirror" in v and "mirror_swapped" in v]
 
-    print(f"\n=== G1 realigned: shift in returned P(buy), not modal choice ===")
+    print("\n=== G1 realigned: shift in returned P(buy), not modal choice ===")
     if len(paired) < 2:
         print(f"  only {len(paired)} paired states recovered; cannot test")
         return 1
@@ -162,7 +161,7 @@ def main() -> int:
     print(f"  90% CI                             [{lo * 100:+.2f}, {hi * 100:+.2f}]pp")
     print(f"  TOST p against +/-{MARGIN * 100:.0f}pp          {p_tost:.4f}")
     print(f"  G1 (probability mass): {'HOLDS' if g1 else 'NOT ESTABLISHED'}")
-    print(f"  [secondary] modal agreement was 60/60, reported separately")
+    print("  [secondary] modal agreement was 60/60, reported separately")
     print(f"  (restricted to the {len(population)} states of the corrected population)")
 
     payload = {"f2_realigned": summary,

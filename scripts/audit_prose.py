@@ -22,9 +22,9 @@ So this file does two things.
 
 from __future__ import annotations
 
+import json as _json
 import pathlib
 import re
-import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 TEX = ROOT / "paper" / "main.tex"
@@ -32,9 +32,9 @@ TEX = ROOT / "paper" / "main.tex"
 # Read provenance from the manifest rather than hard-coding it. Hard-coding
 # 118,628 here was the same transcription hole the table audit had: when the
 # archive grew, this file would have demanded the stale number.
-import json as _json
 _MANIFEST = _json.loads((ROOT / "data" / "manifest.json").read_text(encoding="utf-8"))
 ARCHIVE_COUNT = f"{_MANIFEST['unique_archived_responses']:,}".replace(",", "{,}")
+RAW_REPEATS_COUNT = f"{_MANIFEST.get('raw_repeats_calls', 6000):,}".replace(",", "{,}")
 
 # (pattern, why it must not appear) -- withdrawn or superseded claims.
 # A superseded statistic may appear when the sentence is retracting it. The
@@ -75,6 +75,9 @@ FORBIDDEN = [
     (r"is a property of the\s+\\emph\{memoised\} regime",
      "withdrawn: the halt replicates under independent calling"),
     (r"Of ten registered", "twelve registered predictions after H1/H2"),
+    (r"300\s+deliberately uncached", "stale 300 raw repeats count; should be 6,000"),
+    (r"contributed nothing measurable",
+     "H3 is absence of detected difference, not proof of zero contribution"),
 ]
 
 # (pattern, why it must appear) -- the corrected headline claims.
@@ -108,6 +111,12 @@ REQUIRED = [
     (r"cannot explain the direction", "direction-balance of the memoisation effect"),
     (r"F1 fails", "F1 reported as failing"),
     (r"60/60", "option-naming control on the registered population"),
+    (r"\$?" + re.escape(RAW_REPEATS_COUNT) + r"\$?\s+deliberately uncached",
+     f"raw repeats count matching manifest/raw_repeats.json ({RAW_REPEATS_COUNT})"),
+    (r"detected no difference between the memoised and independent",
+     "exact H3 framing of no detected difference"),
+    (r"at least one buy and at least one sell", "the claim-aligned coexistence statistic, stated"),
+    (r"0\.63\\%", "buy-and-sell coexistence probability over the sixty states"),
 ]
 
 # Claims that must never be filed under the registration record.
@@ -173,6 +182,11 @@ def main() -> int:
         ("drop H1/H2 from the confirmed tally",
          lambda s: s.replace("six were\nconfirmed (D1, D2, E1, G1, H1, H2)",
                              "four were\nconfirmed (D1, D2, E1, G1)")),
+        ("restore stale 300 raw repeats count",
+         lambda s: re.sub(r"(\$?" + re.escape(RAW_REPEATS_COUNT) + r"\$?)\s+deliberately uncached",
+                          r"300 deliberately uncached", s)),
+        ("claim memoisation contributed nothing measurable",
+         lambda s: s + "\nThe replication shows memoisation contributed nothing measurable.\n"),
     ]
     mutation_failures = []
     for name, mutate in mutations:

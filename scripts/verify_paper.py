@@ -147,6 +147,11 @@ check("Exp 2 indep", "unstable states with any opposite-side minority = 3", 3,
 check("Exp 2 indep", "largest opposite-side minority = 2%", 2.0, sbd["max_opposite_side_share"] * 100, 0.1)
 check("Exp 2 indep", "unstable states involving pass = 7", 7,
       sbd["unstable_with_pass_minority_or_pass_mode"], 0)
+# the claim-aligned quantity computed directly (sixth-pass review): P(>=1 buy and >=1 sell among 8)
+cx = sbd["buy_and_sell_coexistence_plugin"]
+check("Exp 2 indep", "buy-and-sell coexistence, all = 0.63%", 0.63, cx["all"] * 100, 0.01)
+check("Exp 2 indep", "buy-and-sell coexistence, up = 0.50%", 0.50, cx["up"] * 100, 0.01)
+check("Exp 2 indep", "buy-and-sell coexistence, down = 0.75%", 0.75, cx["down"] * 100, 0.01)
 
 # levels quoted in the abstract
 cell = load("market_size.json")

@@ -110,7 +110,7 @@ def post_jump_rmse_by_sign(
     find a fundamental that jumped DOWN than one that jumped UP.
     """
     n = len(fundamental)
-    errors = {"up": [], "down": []}
+    errors: dict[str, list[float]] = {"up": [], "down": []}
 
     for jump in jump_times:
         if jump == 0 or jump >= n:

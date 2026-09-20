@@ -18,8 +18,8 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass, field
-from typing import Protocol
+from dataclasses import dataclass
+from typing import Any, Protocol
 
 DEFAULT_BASE_URL = "https://api.typesafe.ai"
 DEFAULT_ENDPOINT = "/v1/systemone"
@@ -36,7 +36,7 @@ class JevRequest:
     """One System One call. Everything that can change an answer is in the key."""
 
     model: str
-    state: str
+    state: dict[str, Any]
     questions: dict
     schema_version: str
 

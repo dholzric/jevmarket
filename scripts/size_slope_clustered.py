@@ -23,7 +23,6 @@ from __future__ import annotations
 import json
 import pathlib
 import statistics
-import sys
 
 import numpy as np
 import scipy.stats as st

@@ -241,6 +241,21 @@ def main(argv=None) -> int:
                 record["answers"]["action"]["choice"])
         opposite = {"buy": "sell", "sell": "buy"}
         unstable = []
+        # The claim-aligned quantity, computed directly: P(at least one buy AND
+        # at least one sell among eight independent draws), plug-in frequencies.
+        # 1 - sum_a p_a^8 is non-unanimity, which pass satisfies without
+        # supplying a counterparty (sixth-pass review, Codex).
+        direction_of = {}
+        for record in json.loads(raw.read_text(encoding="utf-8")):
+            direction_of[json.dumps(record["state"], sort_keys=True)] = record["provenance"]["direction"]
+        coexistence = {"all": [], "up": [], "down": []}
+        for state, actions in by_state.items():
+            n = len(actions)
+            c = collections.Counter(actions)
+            pb, ps, pp = c["buy"] / n, c["sell"] / n, c["pass"] / n
+            value = 1 - (pb + pp) ** 8 - (ps + pp) ** 8 + pp ** 8
+            coexistence["all"].append(value)
+            coexistence[direction_of[state]].append(value)
         for actions in by_state.values():
             counts = collections.Counter(actions)
             modal, n = counts.most_common(1)[0]
@@ -257,8 +272,13 @@ def main(argv=None) -> int:
             "max_opposite_side_share": max((u["opposite_side_share"] for u in unstable), default=0.0),
             "unstable_with_pass_minority_or_pass_mode": sum(
                 1 for u in unstable if u["pass_share"] > 0 or u["modal"] == "pass"),
+            "buy_and_sell_coexistence_plugin": {
+                k: statistics.fmean(v) for k, v in coexistence.items()},
             "detail": sorted(unstable, key=lambda u: u["modal_share"]),
         }
+        cx = minority["buy_and_sell_coexistence_plugin"]
+        print(f"  P(at least one buy and one sell among 8), plug-in: "
+              f"all {cx['all']:.2%}  up {cx['up']:.2%}  down {cx['down']:.2%}")
         print("\n=== static bound decomposition (EXPLORATORY, from data/raw_repeats.json) ===")
         print(f"  {minority['unstable']}/{minority['states']} unstable states; "
               f"{minority['unstable_with_opposite_side_minority']} have any opposite-side minority "

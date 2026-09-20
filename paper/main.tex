@@ -42,11 +42,11 @@ construction show no gap.
 The mechanism is a single one. Every trader conditions on the same public
 signal, so a decoder that takes the mode of the returned distribution makes
 them act identically, and a market of
-unanimous buyers has no counterparty. Measured at the shock itself, $90.0\%$ of
-traders take the same side after a positive shock against $59.4\%$ after a
-negative one, and $100\%$ of non-trading periods under modal decoding had one
-side of the order book entirely empty, against $3.4\%$ for the
-zero-intelligence baseline.
+unanimous buyers has no counterparty. Measured at the shock itself in the
+confirmatory run, $90.0\%$ of traders take the same side after a positive
+shock against $59.4\%$ after a negative one, and $100\%$ of non-trading periods
+under modal decoding had one side of the order book entirely empty, against
+$3.4\%$ for the zero-intelligence baseline.
 
 We test that mechanism with a preregistered prediction it could have failed: if
 unanimity is the cause, the effect must weaken sharply as the market grows.
@@ -455,7 +455,7 @@ NBR        & up   & $8.3\%$  & $0.0\%$ & $91.7\%$ \\
            & down & $0.0\%$  & $0.0\%$ & $100.0\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Why each silent post-shock period was silent, twenty seeds. Under
+\caption{Why each silent post-shock period was silent (memoised confirmatory run, seeds 24--43). Under
 modal decoding the market is missing a counterparty essentially always; the
 symmetric baselines fall silent the ordinary way, with both sides quoting and
 prices failing to meet.}
@@ -686,21 +686,23 @@ $60$ states are perfectly stable, but nine are not, and four substantially so,
 with modal shares between $0.76$ and $0.86$. We do not claim the modal policy
 is effectively deterministic, because it is not.
 
-\textbf{The claim-aligned quantity is counterparty availability, and
-memoisation is not immaterial.} An earlier draft bounded the expected
+\textbf{Non-unanimity probability, and why memoisation cannot explain the
+effect.} While memoisation is not immaterial (it enforces unanimity where
+independent calling shows instability), an earlier draft bounded the expected
 \emph{majority share} at $+2.84$ points and compared it to the $25.8$-point
 liquidity gap; external review correctly objected that these are
-incommensurable, since the mechanism turns on whether \emph{any} trader takes
-the opposite side---$1-\sum_a p_a^8$, which is nonlinear in the share. That
-comparison, and the sentence it supported, are withdrawn.
+incommensurable, since the mechanism turns on whether decisions diverge from
+unanimity---which is nonlinear in the share. That comparison, and the sentence
+it supported, are withdrawn.
 
-Measured on the aligned outcome, with a Jeffreys posterior over each state's
-action distribution:
+Measured on the non-unanimity outcome ($1-\sum_a p_a^8$, the probability that
+eight independent calls do not produce identical actions), with a Jeffreys
+posterior over each state's action distribution:
 
 \begin{center}
 \begin{tabular}{lrrr}
 \toprule
-& Memoised & Independent & Counterparty gain \\
+& Memoised & Independent & Non-unanimity gain \\
 \midrule
 All states ($n=60$)        & $1.000$ & $0.899$ & $+10.1$pp \\
 After up shocks ($n=30$)   & $1.000$ & $0.899$ & $+10.1$pp \\
@@ -709,24 +711,32 @@ After down shocks ($n=30$) & $1.000$ & $0.899$ & $+10.1$pp \\
 \end{tabular}
 \end{center}
 
-Independent calling would supply at least one counterparty in roughly $10\%$ of
-post-shock states that memoisation renders unanimous (one-sided 95\% upper
-bound $14.4$ points; about $3.8$ points of the $10.1$ is residual posterior
-width at $R=100$, the rest observed instability). Two consequences follow.
+Independent calling would break unanimity in roughly $10\%$ of post-shock states
+that memoisation renders unanimous (one-sided 95\% upper bound $14.4$ points;
+about $3.8$ points of the $10.1$ is residual posterior width at $R=100$, the
+rest observed instability). Crucially, this non-unanimity probability is
+\emph{not} counterparty availability: breaking unanimity via \emph{pass} does
+not supply an opposite-side order. Two consequences follow.
 
-First, this is a static bound on what memoisation \emph{could} contribute, and
-the dynamic replication (Section~\ref{sec:independent}) shows it contributed
-nothing measurable: the gap under independent calling is $29.1$ points against
-$25.8$ memoised, a difference of $-3.3$ points (95\% CI $[-13.9, +7.2]$). An
-exploratory decomposition of the same sixty repeated-call states explains why
-the bound was loose. Of the nine unstable states, seven involve \emph{pass},
-which breaks unanimity without supplying a counterparty; only three show any
-opposite-side minority, and the largest is $2\%$ of calls. Counting
-disagreement of any kind, as $1-\sum_a p_a^8$ does, overstates the supply of
-counterparties.
+First, this is an upper bound on what memoisation \emph{could} contribute to
+breaking unanimity, and the dynamic replication (Section~\ref{sec:independent})
+detected no difference between the memoised and independent-calling gaps: the
+estimate was $-3.3$ points (95\% CI $[-13.9, +7.2]$). An exploratory
+decomposition of the same sixty repeated-call states explains why: of the nine
+unstable states, seven involve \emph{pass}, which breaks unanimity without
+supplying a counterparty; only three show any opposite-side minority, and the
+largest is $2\%$ of calls. Counting divergence of any kind, as
+$1-\sum_a p_a^8$ does, measures non-unanimity rather than the coexistence of
+buyers and sellers, and therefore substantially overstates the potential supply
+of counterparties. Computed directly as the probability that eight independent
+draws contain at least one buy and at least one sell,
+$1-(p_b+p_p)^8-(p_s+p_p)^8+p_p^8$ with plug-in frequencies, the mean over the
+sixty states is $0.63\%$ ($0.50\%$ after up shocks, $0.75\%$ after down), a
+descriptive figure with no uncertainty adjustment, and one to two orders of
+magnitude below the non-unanimity gain.
 
 Second, and usefully, \textbf{memoisation cannot explain the direction of the
-effect}: the counterparty gain is balanced to a tenth of a point across shock
+effect}: the non-unanimity gain is balanced to a tenth of a point across shock
 directions ($10.1$ against $10.1$), arising from different compositions of
 unstable states on each side. Whatever unanimity memoisation adds, it adds
 symmetrically, so the up-versus-down halt asymmetry survives it.
@@ -759,17 +769,17 @@ contacting the API; the replication replays from its archives through a
 transport that refuses any request whose key differs from the one archived at
 that position, and two replays produce byte-identical result files.
 
-The replication archives hold $49{,}600$ independent live calls, one file per
-run under \texttt{data/independent/}. One sampling run failed on a connection
+The replication archives hold $49{,}600$ independent live calls under
+\texttt{data/independent/}, one file per run. One sampling run failed on a connection
 reset partway through and was redone from scratch; the $550$ responses of the
 failed attempt were discarded rather than archived, so the archives hold every
 response of every completed run, not every round-trip. Estimated spend for the
-replication is \$$1.61$.
+archived runs is \$$1.61$; the discarded attempt adds about \$$0.02$.
 
 The archive holds $118{,}968$ \emph{unique} cached request/response entries, one per distinct
 request. That is a lower bound on live calls rather than a count of them:
 retries, repeated uncached requests and overwrites of the same key would not
-appear separately. The 300 deliberately uncached calls of the estimand test are
+appear separately. The $6{,}000$ deliberately uncached calls of the estimand test are
 archived separately, in full, as \texttt{data/raw\_repeats.json}. Estimated
 spend from the archived token counts is
 \$$3.85$, consistent with the provider's reported balance. These figures, and

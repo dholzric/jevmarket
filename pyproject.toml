@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jevmarket"
-version = "1.1.1"
+version = "1.1.2"
 description = "Continuous double auction testbed for comparing LLM traders against zero-intelligence and noisy best-response baselines"
 requires-python = ">=3.11"
 dependencies = ["numpy>=1.26", "matplotlib>=3.8", "scipy>=1.11"]

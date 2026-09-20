@@ -34,7 +34,8 @@ TEX = ROOT / "paper" / "main.tex"
 # archive grew, this file would have demanded the stale number.
 _MANIFEST = _json.loads((ROOT / "data" / "manifest.json").read_text(encoding="utf-8"))
 ARCHIVE_COUNT = f"{_MANIFEST['unique_archived_responses']:,}".replace(",", "{,}")
-RAW_REPEATS_COUNT = f"{_MANIFEST.get('raw_repeats_calls', 6000):,}".replace(",", "{,}")
+_RAW_COUNT = len(_json.loads((ROOT / "data" / "raw_repeats.json").read_text(encoding="utf-8")))
+RAW_REPEATS_COUNT = f"{_RAW_COUNT:,}".replace(",", "{,}")
 
 # (pattern, why it must not appear) -- withdrawn or superseded claims.
 # A superseded statistic may appear when the sentence is retracting it. The
@@ -78,6 +79,10 @@ FORBIDDEN = [
     (r"300\s+deliberately uncached", "stale 300 raw repeats count; should be 6,000"),
     (r"contributed nothing measurable",
      "H3 is absence of detected difference, not proof of zero contribution"),
+    (r"equivalence holds within any\s+positive margin",
+     "modal agreement does not establish probability-mass equivalence at any margin"),
+    (r"memoisation cannot explain the direction",
+     "static non-unanimity balance does not identify the dynamic directional effect"),
 ]
 
 # (pattern, why it must appear) -- the corrected headline claims.
@@ -104,11 +109,10 @@ REQUIRED = [
      "the withdrawn mechanism identified as post-hoc, not registered"),
     (r"memoised|memoized", "the cache estimand limitation"),
     (r"one archived response per distinct state", "the estimand stated explicitly"),
-    (r"\+10\.1", "counterparty gain on the claim-aligned outcome"),
+    (r"\+10\.1", "static non-unanimity gain, not counterparty supply"),
     (r"14\.4", "its one-sided 95% upper bound"),
     (r"0\.887", "F1 lower bound, which fails its criterion"),
-    (r"memoisation is not immaterial", "the corrected memoisation claim"),
-    (r"cannot explain the direction", "direction-balance of the memoisation effect"),
+    (r"[Mm]emoisation is not immaterial", "the corrected memoisation claim"),
     (r"F1 fails", "F1 reported as failing"),
     (r"60/60", "option-naming control on the registered population"),
     (r"\$?" + re.escape(RAW_REPEATS_COUNT) + r"\$?\s+deliberately uncached",
@@ -143,6 +147,18 @@ def audit(text: str) -> list[str]:
 def main() -> int:
     text = TEX.read_text(encoding="utf-8")
     problems = audit(text)
+    if _MANIFEST["raw_repeats_calls"] != _RAW_COUNT:
+        problems.append("manifest raw-repeat count differs from raw_repeats.json")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    count_pattern = r"archive holds ([\d,]+) \*\*unique\*\* responses"
+    def audit_readme_count(source: str) -> bool:
+        matches = re.findall(count_pattern, source)
+        return len(matches) == 1 and int(matches[0].replace(",", "")) == _MANIFEST["unique_archived_responses"]
+    if not audit_readme_count(readme):
+        problems.append("README cached-response count missing or differs from manifest")
+    mutated_readme = re.sub(count_pattern, "archive holds 1 **unique** responses", readme)
+    if audit_readme_count(mutated_readme):
+        problems.append("README count mutation was not caught")
 
     for pattern, why in FORBIDDEN + REGISTRATION_TRAPS:
         if not re.search(pattern, text):
@@ -187,10 +203,15 @@ def main() -> int:
                           r"300 deliberately uncached", s)),
         ("claim memoisation contributed nothing measurable",
          lambda s: s + "\nThe replication shows memoisation contributed nothing measurable.\n"),
+        ("restore exact equivalence from modal agreement",
+         lambda s: s + "\nEquivalence: equivalence holds within any positive margin.\n"),
+        ("infer dynamic direction from static balance",
+         lambda s: s + "\nmemoisation cannot explain the direction of the effect.\n"),
     ]
     mutation_failures = []
     for name, mutate in mutations:
-        caught = bool(audit(mutate(text)))
+        mutated = mutate(text)
+        caught = mutated != text and bool(set(audit(mutated)) - set(audit(text)))
         print(f"    [{'ok  ' if caught else 'FAIL'}] {name}")
         if not caught:
             mutation_failures.append(name)

@@ -27,7 +27,7 @@ in a Market of Language-Model Traders}
 We populate a continuous double auction with traders whose decisions are made
 by a typed language model that returns a probability distribution over actions,
 and vary only how that distribution is consumed. Taking the model's modal
-action---a common deployment choice---makes the market stop trading after
+action increases the frequency of non-trading periods after
 shocks: following a positive shock, the market clears in $63.2\%$ of periods
 against $92.3\%$ after a negative shock, a gap of $29.1$ percentage points
 (95\% CI $[19.1, 39.1]$, $t=6.08$, $n=20$, preregistered, with an independent
@@ -39,10 +39,9 @@ memoisation. Sampling from the same distribution reduces the gap to $1.7$
 points ($3.1$ memoised). Two algorithmic baselines that are symmetric by
 construction show no gap.
 
-The mechanism is a single one. Every trader conditions on the same public
-signal, so a decoder that takes the mode of the returned distribution makes
-them act identically, and a market of
-unanimous buyers has no counterparty. Measured at the shock itself in the
+The observed mechanism is counterparty scarcity. Traders share a public
+signal, and modal action selection concentrates their decisions on the same
+side; unanimous buyers have no counterparty. Measured at the shock itself in the
 confirmatory run, $90.0\%$ of traders take the same side after a positive
 shock against $59.4\%$ after a negative one, and $100\%$ of non-trading periods
 under modal decoding had one side of the order book entirely empty, against
@@ -60,38 +59,39 @@ preregistered equivalence margin, confirms it.
 Separately, we find that ordinary domain wording induces a $25$-point
 asymmetry in the model's stated conviction between buying and selling at equal
 mispricing, which vanishes under mirror-image phrasing. A preregistered test
-found this does \emph{not} move pricing error, and we report that null.
+detected no effect on pricing error, and we report that null.
 
 Every confirmatory hypothesis test was preregistered on seeds disjoint from
 those that generated it; the wording study and the order-book diagnostics are
 exploratory and labelled as such. Of twelve registered predictions, six were
 confirmed (D1, D2, E1, G1, H1, H2), four failed (C1, C2, F1, and the original
 clause that modal decoding would be immune), one is unresolved (E2) and one is
-reported as not identified at the sample size reached (F2). A separate
-post-hoc mechanism account is withdrawn and identified as such. All are
-reported, including a disclosed deviation in which F1 and G1 were first run on
-the wrong population and reanalysed.
+reported as not identified at the sample size reached (F2). These results
+concern one model in a small simulated market; they do not establish effects
+on real-market liquidity or trader welfare.
 \end{abstract}
 
 \section{Introduction}
 
-A language model asked to choose among actions returns, in principle, a
-distribution. A common deployment choice is to discard it and take the mode.
+A typed decision service can return a distribution over actions. A deployment
+can consume this distribution by taking its mode or sampling from it.
 For a single decision this selects the most probable action, which is correct
 under 0--1 loss against the returned distribution. This paper
 asks what happens when many agents driven by the same model make related
 decisions at the same time.
 
-The answer, in a market, is that the market stops. Modal decoding makes agents
-conditioning on shared information act identically. In a setting that requires
-counterparties, unanimity is not consensus; it is the absence of trade. We
-measure this in a continuous double auction, isolate the mechanism, and confirm
-it with a prediction that could have failed and did not.
+In our simulated market, modal action selection increases non-trading periods.
+The elementary constraint is that trade requires buyers and sellers. Our
+contribution is to measure how changing the action-selection rule affects
+counterparty scarcity, its directional asymmetry, and its dependence on market
+size, including a replication with independent model calls. Throughout,
+``decoding'' means selecting from the returned action distribution; we do not
+vary the service's internal token-generation algorithm.
 
 Our contributions:
 
 \begin{enumerate}
-\item \textbf{A liquidity failure caused by decoding, not by reasoning.} The
+\item \textbf{A controlled action-selection intervention.} The
   model's modal action is \emph{correct} on both sides at every mispricing in
   our static probe grid, and at the shock itself in the market it takes the
   correct side in both directions. The failure is in the aggregation of
@@ -101,18 +101,16 @@ Our contributions:
   counterparty essentially always, while for symmetric baselines they do not.
   Agreement at the shock is itself directional---$90.0\%$ after a positive
   shock against $59.4\%$ after a negative one---so unanimity accounts for both
-  the magnitude of the halt and which shock it strikes. An earlier draft
-  posited a second component; Section~\ref{par:two} explains why that was an
-  artefact of reading a static probe as a market statistic, and withdraws it.
+  the observed halt and which shock it strikes.
 \item \textbf{A falsifiable size-scaling test.} The mechanism implies the
   effect must decay with market size at a rate set by the agreement rate. We
   registered this before running it; it held.
 \item \textbf{A prompt-sensitivity result, and a null.} Domain-idiomatic
   wording induces a large conviction asymmetry invisible to anyone reading only
-  the modal action. A preregistered test found it does not move pricing error.
+  the modal action. A preregistered test detected no effect on pricing error.
 \end{enumerate}
 
-We emphasise the failures, and state the registration record exactly.
+The registration record includes the following unsuccessful predictions.
 
 \textbf{Four preregistered predictions failed.} C1, that the wording asymmetry
 would move pricing error (a clean null, Section~\ref{sec:wording}); the
@@ -134,8 +132,8 @@ Separately, and not part of the registration record, we withdraw a
 \emph{post-hoc} two-component account of the mechanism that an earlier draft
 proposed (Section~\ref{par:two}). The preregistration for that run deliberately
 instrumented rather than predicted, so this was never a registered hypothesis
-and we do not count it as one. The result that survived did so against a test
-designed to kill it.
+and we do not count it as one. The full deviation history is retained in the
+preregistration record.
 
 \section{Related work}
 
@@ -588,14 +586,20 @@ curve is unresolved here.
 
 \section{Discussion}
 
-The practical claim is narrow and, we think, general in shape: \emph{the best
-way to use one model is not the best way to use many of them}. Modal decoding
-selects the most probable action for each agent and is collectively degenerate
-when agents share information and require counterparties. Sampling selects a
-less probable action some of the time; we did not measure per-agent trading
-surplus, so we do not claim it is individually worse in payoff terms. Here it
-was the difference between a market that cleared and one that did not. We do
-not claim it is the only remedy---any source of decision diversity might serve.
+The practical implication is that an action-selection rule should be evaluated
+at the system level when agents share information and require counterparties.
+In this market, selecting the most probable action concentrates orders on one
+side, while sampling sustains more frequent trading. We did not measure
+per-agent trading surplus or allocative welfare: greater trading frequency
+does not establish better economic outcomes. Other sources of decision
+diversity may also restore counterparties; we do not identify sampling as the
+optimal remedy.
+
+The underlying coordination problem does not require a language model.
+Concentrated algorithmic policies could produce the same failure. The
+contribution here is a controlled empirical demonstration in a model-driven
+market, with a measured mechanism and registered tests, rather than a claim
+that the failure is unique to language models.
 
 The failure is largely not a reasoning failure. At the shock the modal action
 takes the correct side in both directions, and across our static probe grid it
@@ -623,19 +627,21 @@ Mirror wording is if anything \emph{more} willing to sell at the shock than
 domain wording ($64.8\%$ against $59.4\%$), and the up-side figure is unmoved.
 Whatever produces the asymmetry survives making the question symmetric.
 
-A third candidate---the option naming in the response schema---is also ruled
-out by measurement. Our mirror wording places the above-price description on
+A third candidate is option naming in the response schema. Our mirror wording
+places the above-price description on
 \texttt{option\_a}, which maps to buy, so any preference for the first option
 would appear as exactly this bias. We asked the same 60 registered post-shock
 states under two arrangements differing only in which label carried which
-description. \textbf{All 60/60 states selected the same economic meaning under
-both}, so the paired shift is exactly zero and equivalence holds within any
-positive margin (G1). Option naming is not the residual, and the mirror control
-used in Section~\ref{sec:wording} is not contaminated by it.
+description. The registered probability-mass contrast shifts $P(\text{buy})$
+by $+0.33$ percentage points (90\% CI $[-0.33,+1.00]$), within the registered
+$\pm10$-point equivalence margin (G1). As a secondary result, all 60/60 states
+selected the same economic meaning. This supports equivalence within the
+specified margin on these states, not exact invariance or absence of naming
+effects in other populations.
 
 On the earlier, non-registered sample this comparison gave $48/50$ with a
 $+4.0$ point shift---in the opposite direction to a first-option preference.
-The corrected figure is stronger, and both are recorded.
+Both analyses are recorded, with the earlier sample labelled exploratory.
 
 What remains is the model itself, the task framing, or the state
 representation, which this design cannot separate. We flag it as the clearest
@@ -686,9 +692,9 @@ $60$ states are perfectly stable, but nine are not, and four substantially so,
 with modal shares between $0.76$ and $0.86$. We do not claim the modal policy
 is effectively deterministic, because it is not.
 
-\textbf{Non-unanimity probability, and why memoisation cannot explain the
-effect.} While memoisation is not immaterial (it enforces unanimity where
-independent calling shows instability), an earlier draft bounded the expected
+\textbf{Non-unanimity probability and counterparty availability.}
+Memoisation is not immaterial (it enforces unanimity where
+independent calling shows instability). An earlier draft bounded the expected
 \emph{majority share} at $+2.84$ points and compared it to the $25.8$-point
 liquidity gap; external review correctly objected that these are
 incommensurable, since the mechanism turns on whether decisions diverge from
@@ -702,7 +708,7 @@ posterior over each state's action distribution:
 \begin{center}
 \begin{tabular}{lrrr}
 \toprule
-& Memoised & Independent & Non-unanimity gain \\
+& \shortstack{Memoised\\unanimity} & \shortstack{Independent\\unanimity} & \shortstack{Non-unanimity\\gain} \\
 \midrule
 All states ($n=60$)        & $1.000$ & $0.899$ & $+10.1$pp \\
 After up shocks ($n=30$)   & $1.000$ & $0.899$ & $+10.1$pp \\
@@ -735,11 +741,11 @@ sixty states is $0.63\%$ ($0.50\%$ after up shocks, $0.75\%$ after down), a
 descriptive figure with no uncertainty adjustment, and one to two orders of
 magnitude below the non-unanimity gain.
 
-Second, and usefully, \textbf{memoisation cannot explain the direction of the
-effect}: the non-unanimity gain is balanced to a tenth of a point across shock
-directions ($10.1$ against $10.1$), arising from different compositions of
-unstable states on each side. Whatever unanimity memoisation adds, it adds
-symmetrically, so the up-versus-down halt asymmetry survives it.
+Second, the estimated non-unanimity gain is balanced to a tenth of a point
+across shock directions ($10.1$ against $10.1$). This static balance does not
+identify memoisation's dynamic effect: states and responses feed back into
+later market conditions. The independent-calling replication supplies the
+direct evidence that the asymmetric halt persists without memoisation.
 
 \textbf{Option naming is equivalent on its registered estimand.} G1 was
 registered on returned probability mass and first implemented, wrongly, as a
@@ -758,7 +764,8 @@ deleted. The sampling arm remains uncharacterised under repeated responses.
 \section{Reproducibility}
 
 Because the model is non-deterministic and has no seed, code alone does not
-reproduce these numbers. The repository retains three response stores: the
+reproduce these numbers. The repository
+(\url{https://github.com/dholzric/jevmarket}) retains three response stores: the
 content-addressed cache of unique request/response entries used by every
 memoised market run; the raw repeated-call records of the estimand test, stored
 separately because they deliberately bypass the cache; and, for the

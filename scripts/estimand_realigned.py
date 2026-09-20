@@ -6,8 +6,9 @@ claim rather than the claim itself.
 F2 measured the expected LARGEST ACTION SHARE among eight traders, and the
 paper compared its 2.84pp bound against a 25.8pp liquidity effect. Those are
 different quantities and the comparison does not hold. The mechanism is not
-linear in majority share: it turns on whether ANY trader takes the opposite
-side, which is `1 - sum_a p_a^N`. At p=0.986 the majority share is 1.4 points
+linear in majority share. The statistic `1 - sum_a p_a^N` measures action
+non-unanimity, including disagreements involving pass; it does not measure
+the supply of an opposite-side order. At p=0.986 the majority share is 1.4 points
 from unanimity while P(all eight agree) is 0.893 -- a tenfold difference in
 what matters.
 
@@ -59,7 +60,7 @@ def unanimity_probability(counts, repeats, n=TRADERS):
 
 
 def main() -> int:
-    # ---------- F2 realigned: counterparty availability -------------------
+    # ---------- F2 sensitivity: non-unanimity, not counterparties ----------
     raw = json.loads((DATA / "raw_repeats.json").read_text(encoding="utf-8"))
     by_state = collections.defaultdict(lambda: {"actions": [], "prov": None})
     for record in raw:
@@ -80,13 +81,13 @@ def main() -> int:
             # set is unanimous by construction.
             "p_unanimous_memoised": 1.0,
             "p_unanimous_independent": p_unanimous,
-            "counterparty_gain": 1.0 - p_unanimous,
+            "non_unanimity_gain": 1.0 - p_unanimous,
         })
 
-    print("=== F2 realigned: probability the market has NO counterparty ===")
-    print("    (all eight traders on the same side; this is the mechanism's")
-    print("     actual outcome, not the expected majority share)\n")
-    header = f"  {'states':>8} {'memoised':>10} {'independent':>13} {'counterparty gain':>19}"
+    print("=== F2 sensitivity: probability of action non-unanimity ===")
+    print("    Unanimity columns include buy, sell and pass. Breaking")
+    print("    unanimity does not necessarily supply a counterparty.\n")
+    header = f"  {'states':>8} {'memoised':>10} {'independent':>13} {'non-unanimity gain':>19}"
     print(header)
     print("  " + "-" * (len(header) - 2))
 
@@ -98,7 +99,7 @@ def main() -> int:
             continue
         memo = statistics.fmean(r["p_unanimous_memoised"] for r in subset)
         indep = statistics.fmean(r["p_unanimous_independent"] for r in subset)
-        gains = [r["counterparty_gain"] for r in subset]
+        gains = [r["non_unanimity_gain"] for r in subset]
         gain = statistics.fmean(gains)
         se = statistics.stdev(gains) / len(gains) ** 0.5 if len(gains) > 1 else float("nan")
         hi = gain + st.t.ppf(0.95, len(gains) - 1) * se if len(gains) > 1 else float("nan")
@@ -107,13 +108,13 @@ def main() -> int:
         print(f"  {label:>8} n={len(subset):<3} {memo:>8.3f} {indep:>13.3f} "
               f"{gain * 100:>17.1f}pp")
 
-    print(f"\n  Independent calling would supply a counterparty in "
+    print(f"\n  Independent calling would break action unanimity in "
           f"{summary['all']['gain'] * 100:.1f}% of post-shock states")
     print(f"  that memoisation renders unanimous (95% upper bound "
           f"{summary['all']['gain_upper95'] * 100:.1f}pp).")
-    print("  This is a STATIC bound on counterparty availability. It does not")
-    print("  identify the dynamic liquidity effect, which would require")
-    print("  replaying the market with independent calls throughout.")
+    print("  This static non-unanimity calculation does not identify the")
+    print("  dynamic liquidity effect. See independent_market.json for the")
+    print("  completed independent-calling market replication.")
 
     # ---------- G1 realigned: probability mass, not modal choice -----------
     # Restrict to the corrected population. The first (crashed) run wrote
@@ -165,7 +166,7 @@ def main() -> int:
     print(f"  (restricted to the {len(population)} states of the corrected population)")
 
     payload = {"f2_realigned": summary,
-               "f2_note": "static bound on counterparty availability, not the "
+               "f2_note": "static non-unanimity sensitivity, not counterparty availability or the "
                           "dynamic liquidity effect",
                "g1_realigned": {"n": len(paired), "mean_shift": mean,
                                 "ci90": [lo, hi], "tost_p": p_tost,

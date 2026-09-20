@@ -5,18 +5,24 @@ typed language model that returns a probability distribution over actions. We
 hold the model, the prompt, the market and the seeds fixed, and vary only how
 that distribution is consumed.
 
-**Result:** taking the model's modal action — a common deployment choice —
-makes the market stop trading after positive shocks. The gap is
+**Result:** selecting the model's modal action increases non-trading periods
+after positive shocks in this simulated market. The gap is
 29.1 percentage points (95% CI [19.1, 39.1], preregistered, n=20, with an
 independent live call for every trader decision); the original memoised
 confirmatory run gave 25.8 (95% CI [17.3, 34.2]). Sampling from the same
 distribution reduces it to 1.7 points (3.1 memoised). Two algorithmic
 baselines that are symmetric by construction show −0.4 and +1.0 points.
 
-The mechanism: every trader conditions on the same public signal, so a
-deterministic decoder makes them act identically, and a market of unanimous
+The mechanism: traders share a public signal, and modal action selection
+concentrates decisions on the same side. A market of unanimous
 buyers has no counterparty. 100% of silent periods under modal decoding had one
 side of the book empty, against 3.4% for the random baseline.
+
+Here “decoding” means selection from the returned action probabilities, not
+the service's internal token generation. The experiment covers one model and
+small simulated markets. More frequent trading does not establish better
+welfare or real-market performance; the coordination failure need not be
+unique to language models.
 
 "Jev" is [TypeSafe AI's System One model](https://docs.typesafe.ai/), chosen
 because it exposes its probabilities natively. Paper: [`paper/main.tex`](paper/main.tex).
@@ -51,8 +57,8 @@ was caught certifying something the paper contradicted:
   regenerated.
 - `audit_prose.py` reads the abstract, contributions, registration tally,
   discussion and limitations — which the table audit never touches. It asserts
-  withdrawn claims are absent and current ones present, and runs **eight
-  mutation tests** that reintroduce each past defect and require the audit to
+  withdrawn claims are absent and current ones present, and runs
+  mutation tests that reintroduce past defects and require the audit to
   fail. An audit that cannot be made to fail is not evidence.
 
 ## What is established
@@ -64,9 +70,9 @@ was caught certifying something the paper contradicted:
 | The gap exceeds sampling's | +22.7pp, t=6.01 (memoised); +27.4pp, t=5.83 (independent) | registered, confirmed (D2, H2) |
 | It collapses as the market grows | −0.112/doubling, t=−7.78 | registered, confirmed |
 | Domain wording skews stated conviction | +0.250 vs +0.005 mirror | exploratory, replicated |
-| Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
+| No detected wording effect on pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
 | Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
-| Modal policy is effectively deterministic | 51/60 stable at R=100, bound 0.887 | registered, **failed** (F1) |
+| Modal policy is effectively deterministic | R=5 lower bound 0.887; 51/60 stable at R=100 | registered, **failed** (F1) |
 | Memoisation's non-unanimity effect (static) | +10.1pp, upper bound 14.4pp, direction-balanced | non-unanimity bound (not counterparty availability); dynamic replication detects no difference |
 | Option naming shifts P(buy) | +0.33pp, TOST p<0.0001 | registered, confirmed (G1) |
 

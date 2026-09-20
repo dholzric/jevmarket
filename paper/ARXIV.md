@@ -17,16 +17,9 @@ with pypdf (they were text-identical at 4cd32cc). The bibliography is inline
 
 ## Decisions only the author can make
 
-1. **Repository link.** The paper says "the repository" (Reproducibility
-   section) without a URL, and `github.com/dholzric/jevmarket` is **private**.
-   arXiv readers cannot reproduce anything without it. Either make the repo
-   public and add the URL to the Reproducibility section and the comments
-   line, or leave the paper as is and accept that the reproducibility claims
-   are not checkable by readers. Making the repo public is a one-line change
-   in the paper plus `ALLOW_PUBLIC_REPO=1 gh repo edit dholzric/jevmarket --visibility public`
-   (the hook blocks it otherwise). Before flipping: the secret scan on tracked
-   files is clean as of 4cd32cc, and `data/cache` is gitignored (published as
-   `data/archive/*.tar.gz`).
+1. **Repository link.** DONE 2026-09-20: `github.com/dholzric/jevmarket` is
+   public (full git history scanned for secret values first, clean) and the
+   URL is in the Reproducibility section and the comments line.
 2. **Licence.** arXiv perpetual non-exclusive (minimal) or CC BY 4.0.
 3. **Categories.** Suggested primary `q-fin.TR`; cross-lists `cs.MA`, `cs.CL`,
    `econ.GN`. `cs.MA` primary is defensible if you want the multi-agent

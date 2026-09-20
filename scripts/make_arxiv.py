@@ -36,8 +36,8 @@ ARXIV_ABSTRACT_LIMIT = 1920
 METADATA_ABSTRACT = """\
 We populate a continuous double auction with traders whose decisions come from \
 a typed language model that returns a probability distribution over actions, \
-and vary only how that distribution is consumed. Taking the modal action, a \
-common deployment choice, makes the market stop trading after shocks: after a \
+and vary only how that distribution is consumed. Taking the modal action \
+increases non-trading periods after shocks in this simulated market: after a \
 positive shock the market clears in 63.2% of periods against 92.3% after a \
 negative one, a gap of 29.1 percentage points (95% CI [19.1, 39.1], t=6.08, \
 n=20, preregistered, with an independent live call for every trader decision). \
@@ -45,17 +45,18 @@ A memoised confirmatory run gave 25.8 points; the difference between regimes \
 is -3.3 points (95% CI [-13.9, +7.2]), so the halt is not an artefact of \
 memoisation. Sampling from the same distribution reduces the gap to 1.7 \
 points; two symmetric algorithmic baselines show none. The mechanism is \
-unanimity: every trader conditions on the same public signal, so modal \
-decoding makes them act identically, and a market of unanimous buyers has no \
+counterparty scarcity: a shared public signal and modal action selection \
+concentrate decisions on the same side, and unanimous buyers have no \
 counterparty. 100% of non-trading periods under modal decoding had one side of \
 the book empty, against 3.4% for a zero-intelligence baseline. A preregistered \
 prediction that could have failed held: the effect weakens as the market \
 grows, from 37.0 points at four traders to 4.2 at thirty-two (seed-paired \
 t=-7.78). Separately, ordinary domain wording induces a 25-point asymmetry in \
 the model's stated conviction that vanishes under mirror phrasing and, in a \
-preregistered test, does not move pricing error. Of twelve registered \
+preregistered test, has no detected effect on pricing error. Of twelve registered \
 predictions, six were confirmed, four failed, one is unresolved and one is not \
-identified at the sample size reached; all are reported."""
+identified at the sample size reached; all are reported. These results concern \
+one model and do not establish effects on real-market liquidity or welfare."""
 
 
 def plain_abstract(tex: str) -> str:
@@ -153,7 +154,7 @@ Suggested cross-lists:       cs.MA (Multiagent Systems); cs.CL (Computation and 
 
 Comments line (edit):
 {pages.group(1) if pages else '?'} pages, 2 figures. Preregistered; code, response archives and
-the registration record are in the repository named in the paper.
+the registration record at https://github.com/dholzric/jevmarket
 
 License: arXiv perpetual non-exclusive licence is the minimal choice; CC BY 4.0
 if you want reuse without asking. Your call.

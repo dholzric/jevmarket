@@ -25,7 +25,7 @@
       "gain_upper95": 0.16056345269867
     }
   },
-  "f2_note": "static bound on counterparty availability, not the dynamic liquidity effect",
+  "f2_note": "static non-unanimity sensitivity, not counterparty availability or the dynamic liquidity effect",
   "g1_realigned": {
     "n": 60,
     "mean_shift": 0.0033333333333333344,

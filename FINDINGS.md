@@ -282,6 +282,12 @@ net it out: it does not survive there.
 
 ## 13. Market-size sweep (prereg 10c): E1 confirmed, **E2 falsified**
 
+> **SUPERSEDED, see §16.** The "E2 falsified" conclusion below rests on a
+> pooled regression that treated 20 seeds x 4 sizes as 80 independent points.
+> Under the correct seed-paired analysis E1 is *stronger* (t=-7.78) and E2 is
+> **unresolved**, not falsified (t=-2.00, two-sided p=0.060). The section is
+> left unedited as the contemporaneous record; do not quote its conclusion.
+
 20 seeds per cell per size, 37,259 live calls, 90% cache hit rate, $1.21.
 
 | N | argmax gap | net of `zi` | `zi` gap | `nbr` gap | sample gap |

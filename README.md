@@ -5,8 +5,8 @@ typed language model that returns a probability distribution over actions. We
 hold the model, the prompt, the market and the seeds fixed, and vary only how
 that distribution is consumed.
 
-**Result:** taking the model's modal action — the default in nearly every
-deployment — makes the market stop trading after positive shocks. The gap is
+**Result:** taking the model's modal action — a common deployment choice —
+makes the market stop trading after positive shocks. The gap is
 25.8 percentage points (95% CI [17.3, 34.2], preregistered, n=20). Sampling
 from the same distribution reduces it to 3.1 points. Two algorithmic baselines
 that are symmetric by construction show −0.4 and +1.0 points.
@@ -30,17 +30,27 @@ reproduce these numbers** — only the saved responses do.
 tar -xzf data/archive/cache.tar.gz -C data/
 python -m pip install -e ".[dev]"
 
-python scripts/verify_paper.py       # recompute every claimed number from data/
-python scripts/audit_manuscript.py   # parse paper/main.tex and check it against data/
+python scripts/verify_paper.py       # data-regression test over pinned statistics
+python scripts/audit_manuscript.py   # parse main.tex: tables, provenance, strict build
+python scripts/audit_prose.py        # headline claims + mutation tests
 python -m pytest                     # test suite
 ```
 
-`audit_manuscript.py` reads the manuscript directly rather than a transcription
-of it: it re-derives every table cell from the named dataset, checks that levels
-quoted beside a gap actually produce that gap, compares provenance counts
-against a manifest generated from disk, and requires `pdflatex -halt-on-error`
-to exit 0. It exists because an earlier verifier that checked hard-coded claims
-reported "55/55 passing" while a table in the paper was internally inconsistent.
+The three gates cover different things, because over three review rounds each
+was caught certifying something the paper contradicted:
+
+- `verify_paper.py` is a **data-regression test** over statistics hard-coded in
+  itself. It cannot detect a paper that says otherwise, and says so in its own
+  output.
+- `audit_manuscript.py` parses `main.tex`: it re-derives every table cell from
+  its named dataset, checks that levels quoted beside a gap actually produce
+  that gap, compares provenance against a disk-generated manifest, and requires
+  `pdflatex -halt-on-error` to exit 0.
+- `audit_prose.py` reads the abstract, contributions, registration tally,
+  discussion and limitations — which the table audit never touches. It asserts
+  withdrawn claims are absent and current ones present, and runs **eight
+  mutation tests** that reintroduce each past defect and require the audit to
+  fail. An audit that cannot be made to fail is not evidence.
 
 ## What is established
 
@@ -53,8 +63,12 @@ reported "55/55 passing" while a table in the paper was internally inconsistent.
 | Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
 | Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
 
-Four preregistered predictions did not survive and are reported as such. The
-open question is why the arm is more decisive buying than selling at equal
+Of seven registered predictions, three were confirmed (D1, D2, E1), three
+failed (C1, C2, and the original clause that modal decoding would be immune)
+and one is unresolved (E2). A separate post-hoc mechanism account is withdrawn
+and identified as post-hoc rather than counted among the registered failures.
+
+The open question is why the arm is more decisive buying than selling at equal
 mispricing (90.0% vs 59.4% at the shock); it is not reproduced by either
 baseline and is not removed by mirror wording.
 
@@ -90,5 +104,12 @@ instruction or criterion changes.
 
 ## Cost
 
-$3.85 across 118,628 model calls, regenerated into `data/manifest.json` from
-disk rather than transcribed. Replaying from the archive is free.
+The archive holds 118,628 **unique** responses, one per distinct request — a
+lower bound on live calls rather than a count of them. Estimated spend from the
+archived token counts is $3.85. Both are regenerated into `data/manifest.json`
+from disk rather than transcribed. Replaying from the archive is free.
+
+Note on the estimand: requests are content-addressed, so traders rendering the
+same tick-rounded state share one stored response. This measures *one archived
+response per distinct state*, not N agents independently calling a
+non-deterministic service. The paper states this as a limitation.

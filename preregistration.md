@@ -449,6 +449,46 @@ each **R = 5** times live, bypassing the cache. For each state compute:
   which is why it is registered before running rather than after seeing it.
 - **Cost.** About 250 live calls, under \$0.05.
 
+## 10e. Option-naming control — REGISTERED 2026-09-19, BEFORE the run
+
+External review observed that our "neutral" mirror wording is not fully
+neutral: `option_a` always carries the above-price description and maps to buy,
+`option_b` always carries below-price and maps to sell. The earlier ordering
+check reversed the listing only at saturated mispricings, where the answer is
+overdetermined and order cannot matter. If the model has any preference for the
+first option, it would appear as a buy bias -- which is exactly the residual
+asymmetry the paper reports as unexplained.
+
+This matters beyond the residual. The mirror wording is the control condition
+for Experiment 1. If its option naming carries a directional pull, the control
+is contaminated.
+
+### Design
+
+Take the same 50 post-shock states used in the repeated-response test
+(prereg 10d). Ask each under two question sets that differ **only** in which
+label carries which description:
+
+- `mirror`: `option_a` = above price, `option_b` = below price
+- `mirror_swapped`: `option_a` = below price, `option_b` = above price
+
+Map both back to economic meaning before comparing. Diagnostic question sets,
+built inline; the frozen schemas are not modified.
+
+### Hypotheses
+
+| | Hypothesis | Test |
+|---|---|---|
+| **G1 (primary)** | the choice follows the description, not the label: P(buy) in meaning space shifts by less than 10pp when the labels swap | paired per-state comparison |
+| **G2 (primary)** | any shift is small relative to the residual asymmetry it would need to explain (roughly 25pp between up-side and down-side agreement) | same |
+
+- **Falsification, and what it would cost us.** If the choice follows the
+  **label** rather than the description, then (i) the residual directional
+  asymmetry is substantially an option-naming artefact and must be reported as
+  one, and (ii) the mirror wording is a contaminated control, which weakens the
+  Experiment 1 contrast. We would report both.
+- **Cost.** About 100 live calls, under \$0.01.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

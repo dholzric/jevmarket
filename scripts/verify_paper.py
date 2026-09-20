@@ -200,6 +200,14 @@ check("Estimand", "memoisation inflation = +2.1pp", 2.1, rr["inflation"] * 100, 
 check("Estimand", "F1 holds", True, rr["F1_holds"])
 check("Estimand", "F2 holds", True, rr["F2_holds"])
 
+# --- Option-naming control (prereg 10e) --------------------------------------
+on = load("option_naming.json")
+check("Estimand", "same meaning under swapped labels = 48/50",
+      "48/50", f"{on['same_meaning']}/{on['n_states']}")
+check("Estimand", "label shift in P(buy) = +4.0pp", 4.0, on["shift"]["buy"] * 100, 0.1)
+check("Estimand", "G1 holds", True, on["G1_holds"])
+check("Estimand", "G2 holds", True, on["G2_holds"])
+
 # --- Null calibration -------------------------------------------------------
 null = load("null.json")
 check("Design", "per-run noise sd = 0.74", 0.74, null["zi"]["sd"], 0.01)

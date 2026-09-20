@@ -1,0 +1,33 @@
+{
+  "n_states": 50,
+  "by_variant": {
+    "mirror": {
+      "buy": 0.46,
+      "sell": 0.52,
+      "pass": 0.02
+    },
+    "mirror_swapped": {
+      "buy": 0.5,
+      "sell": 0.48,
+      "pass": 0.02
+    }
+  },
+  "shift": {
+    "buy": 0.03999999999999998,
+    "sell": -0.040000000000000036,
+    "pass": 0.0
+  },
+  "same_meaning": 48,
+  "same_meaning_rate": 0.96,
+  "G1_holds": true,
+  "G2_holds": true,
+  "cost": {
+    "live_calls": 100,
+    "cache_hits": 0,
+    "input_tokens": 46708,
+    "output_tokens": 4200,
+    "spent_usd": 0.0018958240000000002,
+    "remaining_calls": null,
+    "remaining_usd": 0.248104176
+  }
+}

@@ -80,6 +80,7 @@ REQUIRED = [
     (r"one archived response per distinct state", "the estimand stated explicitly"),
     (r"\+2\.1", "measured memoisation inflation"),
     (r"0\.976", "measured mode stability"),
+    (r"48/50|\$48/50\$", "option-naming control result"),
 ]
 
 # Claims that must never be filed under the registration record.

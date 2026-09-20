@@ -1,13 +1,14 @@
 {
-  "unique_archived_responses": 118628,
-  "estimated_live_calls_lower_bound": 118628,
-  "responses": 118628,
-  "input_tokens": 93373204,
-  "output_tokens": 8801932,
-  "estimated_cost_usd": 3.8467,
+  "unique_archived_responses": 118728,
+  "estimated_live_calls_lower_bound": 118728,
+  "responses": 118728,
+  "input_tokens": 93419912,
+  "output_tokens": 8806132,
+  "estimated_cost_usd": 3.8486,
   "cost_basis": "summed from archived token counts at the fitted rate; not a provider invoice",
   "caches": {
     "cache": 118483,
+    "cache_naming": 100,
     "cache_probe": 40,
     "cache_rounding": 73,
     "cache_wording": 32
@@ -86,6 +87,10 @@
     "null.json": {
       "bytes": 2583,
       "sha256": "b8b43d1c4e3df620637e2f95ee2befe6d068d965b16282c97eace8be1d5d243e"
+    },
+    "option_naming.json": {
+      "bytes": 652,
+      "sha256": "71610b26b8127799aab55cf9839ed785f74382b3683468d67afde8aed8c7bcc5"
     },
     "probe.json": {
       "bytes": 4126,

@@ -439,3 +439,51 @@ pinned it. Three regression tests now do.
   state, which is not the same estimand as many agents independently calling a
   non-deterministic model. Codex is right that this should be stated and
   ideally tested.
+
+
+## 17. Two reviewer objections converted into measurements
+
+Both had been answered twice with prose. Both were cheaply measurable, and
+measuring beat arguing.
+
+### Cache estimand (prereg 10d): F1 and F2 both hold
+
+50 distinct states from the confirmatory runs, five live calls each, cache
+bypassed.
+
+| | |
+|---|---|
+| modal action identical across 5 repeats | 47/50 states |
+| mean mode stability | 0.976 |
+| agreement among 8 traders, memoised | 1.000 |
+| agreement among 8 traders, independent | 0.979 |
+| **inflation from memoisation** | **+2.1pp** (SE 1.2) |
+
+Against a measured liquidity effect of 25.8 points. Memoisation is not what
+drives the mechanism. Registered with its failure branches first: F1 failing
+would have meant rewriting the mechanism section, F2 failing would have meant
+reporting 25.8 as an upper bound. 250 calls, $0.008.
+
+### Option naming (prereg 10e): G1 and G2 both hold
+
+The mirror wording always puts the above-price description on `option_a`, which
+maps to buy. Same 50 states, two arrangements differing only in which label
+carried which description.
+
+| | mirror | mirror_swapped | shift |
+|---|---|---|---|
+| buy | 46.0% | 50.0% | **+4.0pp** |
+| sell | 52.0% | 48.0% | -4.0pp |
+
+48/50 states chose the same economic meaning under both. The shift runs
+*opposite* to a first-option preference: moving buy off `option_a` made it
+slightly more likely. At 4pp it explains at most a sixth of the ~25pp residual,
+and the mirror control is not contaminated. 100 calls, $0.002.
+
+### What is still unexplained
+
+The residual directional asymmetry -- 90.0% agreement at an up shock against
+59.4% at a down shock. Four candidate causes are now ruled out by measurement:
+the market's construction (symmetric baselines), our question wording (mirror),
+state rounding (rounding probe), and option naming (above). What remains is the
+model, the task framing, or the state representation.

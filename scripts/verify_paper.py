@@ -190,6 +190,16 @@ for direction, claimed in (("up", 100.0), ("down", 96.2)):
     check("Mechanism", f"argmax 'no seller' share after {direction} = {claimed}%",
           claimed, silence[direction].get("bids only (no seller)", 0) / total * 100, 0.2)
 
+# --- Repeated-response sensitivity (prereg 10d) ------------------------------
+rr = load("repeated_response.json")
+check("Estimand", "mode stability = 0.976", 0.976, rr["mean_mode_stability"], 0.002)
+check("Estimand", "states fully stable = 47/50",
+      "47/50", f"{rr['fully_stable_states']}/{rr['states']}")
+check("Estimand", "independent agreement = 0.979", 0.979, rr["independent_agreement"], 0.002)
+check("Estimand", "memoisation inflation = +2.1pp", 2.1, rr["inflation"] * 100, 0.1)
+check("Estimand", "F1 holds", True, rr["F1_holds"])
+check("Estimand", "F2 holds", True, rr["F2_holds"])
+
 # --- Null calibration -------------------------------------------------------
 null = load("null.json")
 check("Design", "per-run noise sd = 0.74", 0.74, null["zi"]["sd"], 0.01)

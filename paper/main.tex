@@ -592,23 +592,42 @@ service is non-deterministic, that is not the same system as $N$ agents each
 calling it independently.
 
 What we measure is therefore \emph{one archived response per distinct state,
-reused across agents and periods}. Under modal decoding the two coincide more
-closely than one might expect---the rounding probe shows the model is decisive
-across the whole realistic range of private values, so independent calls would
-very often return the same mode anyway---but they are not identical, and
-memoisation can only increase within-state agreement. For the sampling arm the
-gap is larger: our traders draw independently from \emph{one frozen
-distribution} per state, whereas independent callers would draw from
-distributions that themselves vary.
+reused across agents and periods}, and memoisation can only increase
+within-state agreement.
 
-The consequence is a scoping one. The argmax result is evidence about memoised
-model agents under shared information; generalising it to every deployment of
-modal decoding requires a repeated-response condition we have not run. It also
-qualifies the sentence ``a deterministic decoder makes them act identically'':
-a deterministic decoder returns identical actions only for identical input
-distributions, and memoisation is part of what makes the inputs identical here.
-A sensitivity analysis drawing several live responses per state is the right
-follow-up.
+\paragraph{How much it inflates agreement, measured.} Rather than leave this as
+a caveat we bounded it, on a preregistered test that could only hurt the
+result. We drew 50 distinct states the confirmatory runs actually visited and
+called each five times live, bypassing the cache.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Modal action identical across five live repeats & $47/50$ states \\
+Mean mode stability & $0.976$ \\
+\midrule
+Agreement among eight traders, memoised & $1.000$ \\
+Agreement among eight traders, each calling independently & $0.979$ \\
+\midrule
+Inflation attributable to memoisation & $+2.1$pp (SE $1.2$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both registered criteria held: mode stability at least $0.95$ (F1), and
+inflation under ten percentage points (F2). Memoisation raises within-state
+agreement by about two percentage points, against a measured liquidity effect
+of $25.8$ points. The mechanism does not depend on it, and the argmax result
+carries over to independent callers with that bound attached. Had either
+criterion failed, the preregistration required rewriting the mechanism section
+or reporting the headline number as an upper bound.
+
+The caveat that remains is narrower and applies to the sampling arm: our
+traders draw independently from \emph{one frozen distribution} per state,
+whereas independent callers would draw from distributions that themselves vary
+slightly. The measured variation is small---probabilities move by about
+$\pm 0.01$ between repeats---but we have not run the sampling arm under
+repeated responses.
 
 \section{Reproducibility}
 

@@ -1,0 +1,1224 @@
+{
+  "states": 50,
+  "repeats": 5,
+  "traders": 8,
+  "mean_mode_stability": 0.976,
+  "fully_stable_states": 47,
+  "memoised_agreement": 1.0,
+  "independent_agreement": 0.9794625,
+  "inflation": 0.0205375,
+  "inflation_se": 0.011613336397022526,
+  "F1_holds": true,
+  "F2_holds": true,
+  "cost": {
+    "live_calls": 250,
+    "cache_hits": 0,
+    "input_tokens": 198770,
+    "output_tokens": 18250,
+    "spent_usd": 0.00812056,
+    "remaining_calls": null,
+    "remaining_usd": 0.49187944
+  },
+  "rows": [
+    {
+      "state": {
+        "best_ask": 91,
+        "best_bid": 86,
+        "last_trade_price": 88,
+        "spread": 5,
+        "your_private_value": 99,
+        "your_signal": 90
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.978,
+        "sell": 0.01,
+        "pass": 0.012
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 92,
+        "last_trade_price": 96,
+        "spread": null,
+        "your_private_value": 88,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.032,
+        "sell": 0.8539999999999999,
+        "pass": 0.11399999999999999
+      }
+    },
+    {
+      "state": {
+        "best_ask": 92,
+        "best_bid": 87,
+        "last_trade_price": 90,
+        "spread": 5,
+        "your_private_value": 76,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.01,
+        "sell": 0.874,
+        "pass": 0.11599999999999999
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 108,
+        "last_trade_price": 96,
+        "spread": null,
+        "your_private_value": 104,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9019999999999999,
+        "sell": 0.05,
+        "pass": 0.048
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 101,
+        "last_trade_price": 101,
+        "spread": null,
+        "your_private_value": 118,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.99,
+        "sell": 0.002,
+        "pass": 0.008
+      }
+    },
+    {
+      "state": {
+        "best_ask": 92,
+        "best_bid": 87,
+        "last_trade_price": 89,
+        "spread": 5,
+        "your_private_value": 84,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.04,
+        "sell": 0.796,
+        "pass": 0.164
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 111,
+        "last_trade_price": 96,
+        "spread": null,
+        "your_private_value": 109,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.8,
+        "sell": 0.11600000000000002,
+        "pass": 0.08399999999999999
+      }
+    },
+    {
+      "state": {
+        "best_ask": 106,
+        "best_bid": 102,
+        "last_trade_price": 104,
+        "spread": 4,
+        "your_private_value": 99,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.038,
+        "sell": 0.754,
+        "pass": 0.20800000000000002
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 88,
+        "last_trade_price": 92,
+        "spread": null,
+        "your_private_value": 89,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "buy",
+        "buy",
+        "sell"
+      ],
+      "mode_stability": 0.6,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.32999999999999996,
+        "sell": 0.44400000000000006,
+        "pass": 0.22599999999999998
+      }
+    },
+    {
+      "state": {
+        "best_ask": 117,
+        "best_bid": 116,
+        "last_trade_price": 118,
+        "spread": 1,
+        "your_private_value": 119,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.834,
+        "sell": 0.10400000000000001,
+        "pass": 0.062
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 107,
+        "last_trade_price": 96,
+        "spread": null,
+        "your_private_value": 91,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.072,
+        "sell": 0.736,
+        "pass": 0.192
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 97,
+        "last_trade_price": 94,
+        "spread": null,
+        "your_private_value": 101,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.974,
+        "sell": 0.01,
+        "pass": 0.016
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 107,
+        "last_trade_price": 80,
+        "spread": null,
+        "your_private_value": 108,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.8880000000000001,
+        "sell": 0.032,
+        "pass": 0.08
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 109,
+        "last_trade_price": 101,
+        "spread": null,
+        "your_private_value": 116,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.8640000000000001,
+        "sell": 0.046,
+        "pass": 0.09
+      }
+    },
+    {
+      "state": {
+        "best_ask": 90,
+        "best_bid": 81,
+        "last_trade_price": 88,
+        "spread": 9,
+        "your_private_value": 83,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.24,
+        "sell": 0.528,
+        "pass": 0.23199999999999998
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 87,
+        "last_trade_price": 89,
+        "spread": null,
+        "your_private_value": 84,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.044,
+        "sell": 0.876,
+        "pass": 0.08
+      }
+    },
+    {
+      "state": {
+        "best_ask": 87,
+        "best_bid": 81,
+        "last_trade_price": 92,
+        "spread": 6,
+        "your_private_value": 100,
+        "your_signal": 90
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.942,
+        "sell": 0.036,
+        "pass": 0.022
+      }
+    },
+    {
+      "state": {
+        "best_ask": 102,
+        "best_bid": 99,
+        "last_trade_price": 95,
+        "spread": 3,
+        "your_private_value": 97,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "sell",
+        "buy",
+        "buy",
+        "sell"
+      ],
+      "mode_stability": 0.6,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.386,
+        "sell": 0.354,
+        "pass": 0.26
+      }
+    },
+    {
+      "state": {
+        "best_ask": 102,
+        "best_bid": 101,
+        "last_trade_price": 105,
+        "spread": 1,
+        "your_private_value": 98,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.046,
+        "sell": 0.766,
+        "pass": 0.188
+      }
+    },
+    {
+      "state": {
+        "best_ask": 116,
+        "best_bid": 112,
+        "last_trade_price": 114,
+        "spread": 4,
+        "your_private_value": 106,
+        "your_signal": 110
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.014000000000000002,
+        "sell": 0.858,
+        "pass": 0.128
+      }
+    },
+    {
+      "state": {
+        "best_ask": 98,
+        "best_bid": 93,
+        "last_trade_price": 95,
+        "spread": 5,
+        "your_private_value": 100,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.982,
+        "sell": 0.008,
+        "pass": 0.01
+      }
+    },
+    {
+      "state": {
+        "best_ask": 91,
+        "best_bid": 90,
+        "last_trade_price": 92,
+        "spread": 1,
+        "your_private_value": 88,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.02,
+        "sell": 0.8640000000000001,
+        "pass": 0.11600000000000002
+      }
+    },
+    {
+      "state": {
+        "best_ask": 107,
+        "best_bid": 105,
+        "last_trade_price": 102,
+        "spread": 2,
+        "your_private_value": 98,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.09,
+        "sell": 0.654,
+        "pass": 0.256
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 114,
+        "last_trade_price": 106,
+        "spread": null,
+        "your_private_value": 116,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9259999999999999,
+        "sell": 0.02,
+        "pass": 0.054000000000000006
+      }
+    },
+    {
+      "state": {
+        "best_ask": 99,
+        "best_bid": 90,
+        "last_trade_price": 92,
+        "spread": 9,
+        "your_private_value": 88,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.06,
+        "sell": 0.646,
+        "pass": 0.29400000000000004
+      }
+    },
+    {
+      "state": {
+        "best_ask": 108,
+        "best_bid": 107,
+        "last_trade_price": 109,
+        "spread": 1,
+        "your_private_value": 104,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.01,
+        "sell": 0.9040000000000001,
+        "pass": 0.086
+      }
+    },
+    {
+      "state": {
+        "best_ask": 104,
+        "best_bid": 101,
+        "last_trade_price": 102,
+        "spread": 3,
+        "your_private_value": 110,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.966,
+        "sell": 0.01,
+        "pass": 0.024
+      }
+    },
+    {
+      "state": {
+        "best_ask": 93,
+        "best_bid": 91,
+        "last_trade_price": 93,
+        "spread": 2,
+        "your_private_value": 96,
+        "your_signal": 90
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9,
+        "sell": 0.044,
+        "pass": 0.05600000000000001
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 102,
+        "last_trade_price": 105,
+        "spread": null,
+        "your_private_value": 91,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.024,
+        "sell": 0.9120000000000001,
+        "pass": 0.064
+      }
+    },
+    {
+      "state": {
+        "best_ask": 105,
+        "best_bid": 101,
+        "last_trade_price": 102,
+        "spread": 4,
+        "your_private_value": 98,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.0461010101010101,
+        "sell": 0.7253333333333333,
+        "pass": 0.22856565656565656
+      }
+    },
+    {
+      "state": {
+        "best_ask": 115,
+        "best_bid": 111,
+        "last_trade_price": 113,
+        "spread": 4,
+        "your_private_value": 118,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.8859999999999999,
+        "sell": 0.042,
+        "pass": 0.072
+      }
+    },
+    {
+      "state": {
+        "best_ask": 94,
+        "best_bid": 93,
+        "last_trade_price": 94,
+        "spread": 1,
+        "your_private_value": 101,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9960000000000001,
+        "sell": 0.004,
+        "pass": 0.0
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 101,
+        "last_trade_price": 87,
+        "spread": null,
+        "your_private_value": 88,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "sell",
+        "buy",
+        "buy",
+        "sell"
+      ],
+      "mode_stability": 0.6,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.45999999999999996,
+        "sell": 0.374,
+        "pass": 0.16599999999999998
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 100,
+        "last_trade_price": 108,
+        "spread": null,
+        "your_private_value": 92,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.05800000000000001,
+        "sell": 0.826,
+        "pass": 0.11600000000000002
+      }
+    },
+    {
+      "state": {
+        "best_ask": 99,
+        "best_bid": 90,
+        "last_trade_price": 98,
+        "spread": 9,
+        "your_private_value": 89,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.032,
+        "sell": 0.76,
+        "pass": 0.20800000000000002
+      }
+    },
+    {
+      "state": {
+        "best_ask": 115,
+        "best_bid": 110,
+        "last_trade_price": 114,
+        "spread": 5,
+        "your_private_value": 119,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.882,
+        "sell": 0.028000000000000004,
+        "pass": 0.09
+      }
+    },
+    {
+      "state": {
+        "best_ask": 111,
+        "best_bid": 104,
+        "last_trade_price": 104,
+        "spread": 7,
+        "your_private_value": 96,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.054000000000000006,
+        "sell": 0.716,
+        "pass": 0.23000000000000004
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 118,
+        "last_trade_price": 98,
+        "spread": null,
+        "your_private_value": 112,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.876,
+        "sell": 0.064,
+        "pass": 0.06
+      }
+    },
+    {
+      "state": {
+        "best_ask": 102,
+        "best_bid": 100,
+        "last_trade_price": 103,
+        "spread": 2,
+        "your_private_value": 109,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9359999999999999,
+        "sell": 0.024,
+        "pass": 0.04
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 119,
+        "last_trade_price": 96,
+        "spread": null,
+        "your_private_value": 111,
+        "your_signal": 110
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.892,
+        "sell": 0.052000000000000005,
+        "pass": 0.05600000000000001
+      }
+    },
+    {
+      "state": {
+        "best_ask": 113,
+        "best_bid": 111,
+        "last_trade_price": 108,
+        "spread": 2,
+        "your_private_value": 101,
+        "your_signal": 110
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.042,
+        "sell": 0.764,
+        "pass": 0.194
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 104,
+        "last_trade_price": 85,
+        "spread": null,
+        "your_private_value": 95,
+        "your_signal": 100
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.792,
+        "sell": 0.132,
+        "pass": 0.076
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 118,
+        "last_trade_price": 109,
+        "spread": null,
+        "your_private_value": 104,
+        "your_signal": 110
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.046,
+        "sell": 0.782,
+        "pass": 0.17200000000000001
+      }
+    },
+    {
+      "state": {
+        "best_ask": 89,
+        "best_bid": 86,
+        "last_trade_price": 89,
+        "spread": 3,
+        "your_private_value": 76,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.022,
+        "sell": 0.884,
+        "pass": 0.094
+      }
+    },
+    {
+      "state": {
+        "best_ask": null,
+        "best_bid": 112,
+        "last_trade_price": 104,
+        "spread": null,
+        "your_private_value": 96,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.05,
+        "sell": 0.804,
+        "pass": 0.146
+      }
+    },
+    {
+      "state": {
+        "best_ask": 93,
+        "best_bid": 89,
+        "last_trade_price": 87,
+        "spread": 4,
+        "your_private_value": 95,
+        "your_signal": 90
+      },
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "buy",
+      "mean_probs": {
+        "buy": 0.9338787878787878,
+        "sell": 0.02204040404040404,
+        "pass": 0.04408080808080808
+      }
+    },
+    {
+      "state": {
+        "best_ask": 93,
+        "best_bid": 87,
+        "last_trade_price": 92,
+        "spread": 6,
+        "your_private_value": 84,
+        "your_signal": 90
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.024,
+        "sell": 0.79,
+        "pass": 0.186
+      }
+    },
+    {
+      "state": {
+        "best_ask": 101,
+        "best_bid": 98,
+        "last_trade_price": 103,
+        "spread": 3,
+        "your_private_value": 91,
+        "your_signal": 100
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.028000000000000004,
+        "sell": 0.8480000000000001,
+        "pass": 0.124
+      }
+    },
+    {
+      "state": {
+        "best_ask": 93,
+        "best_bid": 90,
+        "last_trade_price": 94,
+        "spread": 3,
+        "your_private_value": 93,
+        "your_signal": 90
+      },
+      "actions": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "pass",
+      "mean_probs": {
+        "buy": 0.1703030303030303,
+        "sell": 0.2945656565656566,
+        "pass": 0.5351313131313131
+      }
+    },
+    {
+      "state": {
+        "best_ask": 111,
+        "best_bid": 107,
+        "last_trade_price": 111,
+        "spread": 4,
+        "your_private_value": 104,
+        "your_signal": 110
+      },
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "mode_stability": 1.0,
+      "modal_action": "sell",
+      "mean_probs": {
+        "buy": 0.01,
+        "sell": 0.884,
+        "pass": 0.10600000000000001
+      }
+    }
+  ]
+}

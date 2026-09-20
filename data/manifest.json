@@ -91,6 +91,10 @@
       "bytes": 4126,
       "sha256": "52f5b5a713c9409208b34cf0a12fd3c0ce8dcbe37798a2653f3101937238226f"
     },
+    "repeated_response.json": {
+      "bytes": 25605,
+      "sha256": "39591e8966071ac583be225ace583b12a3c094d0a2f7c41dab85875bb6a2829a"
+    },
     "rounding.json": {
       "bytes": 746,
       "sha256": "0017bf5a19ff8b022903735d709921ede6175e4e27fe85bb3843993c1a1aa479"

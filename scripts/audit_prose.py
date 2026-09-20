@@ -78,6 +78,8 @@ REQUIRED = [
      "the withdrawn mechanism identified as post-hoc, not registered"),
     (r"memoised|memoized", "the cache estimand limitation"),
     (r"one archived response per distinct state", "the estimand stated explicitly"),
+    (r"\+2\.1", "measured memoisation inflation"),
+    (r"0\.976", "measured mode stability"),
 ]
 
 # Claims that must never be filed under the registration record.

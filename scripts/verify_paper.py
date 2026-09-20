@@ -1,10 +1,21 @@
-"""Regenerate every number claimed in the paper from the saved data files.
+"""Recompute a FIXED LIST of statistics from the saved data files.
 
-Intended for review: a second reader should be able to run this and see, for
-each claim in the paper, the value the data actually produces. Any mismatch is
-a bug in the paper, not in the reviewer's reading.
+SCOPE, stated plainly because overstating it caused two review failures.
+This script checks that numbers hard-coded *in this script* still match
+data/*.json. It does not read the manuscript. "55/55" therefore means the
+data has not shifted under the analysis -- it is a data-regression test, not
+a manuscript audit, and it cannot detect a paper that says something else.
 
-Makes no API calls. Reads only data/*.json.
+Some entries below are deliberately retained as SUPERSEDED: they are the
+pooled statistics the paper used before the seed-aware reanalysis. Keeping
+them pinned documents what changed and stops the old numbers being quietly
+rederived. They are labelled, and must not be cited as current.
+
+For the manuscript itself use:
+    scripts/audit_manuscript.py   tables, provenance, build
+    scripts/audit_prose.py        headline claims, with mutation tests
+
+Makes no API calls.
 
     python scripts/verify_paper.py
 """
@@ -109,14 +120,39 @@ for arm, label, claimed_slope, claimed_t in (
     ("jev_argmax", "E1", -0.112, -6.91),
     ("jev_sample", "E2", -0.016, -2.53),
 ):
+    # SUPERSEDED: pooled OLS over 80 observations that are 20 seeds x 4 sizes.
+    # The paper now reports the seed-paired estimates (checked just below).
     xs, ys = [], []
     for n in sizes:
         for g in cell[f"{arm}|{n}"]["gaps"]:
             xs.append(np.log2(n))
             ys.append(g)
     fit = st.linregress(xs, ys)
-    check("Exp 3", f"{label} slope = {claimed_slope}", claimed_slope, fit.slope, 0.001)
-    check("Exp 3", f"{label} t = {claimed_t}", claimed_t, fit.slope / fit.stderr, 0.02)
+    check("Exp 3 [superseded]", f"{label} pooled slope = {claimed_slope}",
+          claimed_slope, fit.slope, 0.001)
+    check("Exp 3 [superseded]", f"{label} pooled t = {claimed_t}",
+          claimed_t, fit.slope / fit.stderr, 0.02)
+
+# The statistics the paper actually reports.
+clustered = load("size_slope_clustered.json")
+for label, arm, slope_t in (("E1", "jev_argmax", -7.78), ("E2", "jev_sample", -2.00)):
+    check("Exp 3 [current]", f"{label} seed-paired t = {slope_t}",
+          slope_t, clustered[arm]["paired_t"], 0.02)
+check("Exp 3 [current]", "E2 two-sided p = 0.060", 0.060,
+      clustered["jev_sample"]["two_sided_p"], 0.002)
+
+# Agreement at the shock, which replaced the static-probe figures as the
+# mechanism evidence.
+lag = load("lag_flow.json")
+check("Mechanism [current]", "agreement at shock, up = 90.0%", 90.0,
+      lag["0"]["up"]["buy"] * 100, 0.2)
+check("Mechanism [current]", "agreement at shock, down = 59.4%", 59.4,
+      lag["0"]["down"]["sell"] * 100, 0.2)
+lag_mirror = load("lag_flow_mirror.json")
+check("Mechanism [current]", "mirror agreement at shock, up = 89.8%", 89.8,
+      lag_mirror["0"]["up"]["buy"] * 100, 0.2)
+check("Mechanism [current]", "mirror agreement at shock, down = 64.8%", 64.8,
+      lag_mirror["0"]["down"]["sell"] * 100, 0.2)
 check("Exp 3", "N=4 zi floor = 33% traded", 33.0,
       (cell["zi|4"]["up"] + cell["zi|4"]["down"]) / 2 * 100, 1.5)
 
@@ -174,7 +210,10 @@ for sec, claim, claimed, actual, ok in checks:
         failures += 1
     print(f"  [{mark}] {claim:<{width}} data: {shown}")
 
-print(f"\n{len(checks) - failures}/{len(checks)} claims match the saved data.")
+print(f"\n{len(checks) - failures}/{len(checks)} pinned statistics match the saved data.")
+print("This is a DATA-REGRESSION test, not a manuscript audit: it checks numbers")
+print("hard-coded in this script, and cannot detect a paper that says otherwise.")
+print("For the manuscript run scripts/audit_manuscript.py and scripts/audit_prose.py.")
 if failures:
     print(f"{failures} MISMATCH(ES) -- the paper is wrong, not the reviewer.")
 sys.exit(1 if failures else 0)

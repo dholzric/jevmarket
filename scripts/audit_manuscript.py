@@ -135,8 +135,11 @@ manifest = DATA / "manifest.json"
 if manifest.is_file():
     m = json.loads(manifest.read_text(encoding="utf-8"))
     for pattern, value, what in (
-        (r"([\d,]+)\s+of them", m["responses"], "archived responses"),
-        (r"roughly\s+([\d,]+)\{?,?\}?\s*live calls", m["live_calls"], "live calls"),
+        (r"([\d,]+)\s+of them", m["unique_archived_responses"], "archived responses"),
+        (r"All\s+([\d,]+)\s+archived responses", m["unique_archived_responses"],
+         "archived responses (non-determinism section)"),
+        (r"archive holds \$?([\d,]+)", m["unique_archived_responses"],
+         "unique archived responses"),
     ):
         for match in re.findall(pattern, tex.replace("{,}", ",")):
             got = int(match.replace(",", ""))

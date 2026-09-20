@@ -69,11 +69,18 @@ def main() -> int:
         results[f.name] = {"bytes": f.stat().st_size, "sha256": sha256(f)}
 
     manifest = {
+        # A cache file is one surviving DISTINCT request, not a counted wire
+        # round-trip. Retries, repeated uncached requests and overwrites of the
+        # same key do not appear separately, so this is a lower bound on live
+        # calls, not a meter. Labelled accordingly after external review.
+        "unique_archived_responses": responses,
+        "estimated_live_calls_lower_bound": responses,
         "responses": responses,
-        "live_calls": responses,  # one cached entry per distinct live request
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
         "estimated_cost_usd": round(cost, 4),
+        "cost_basis": "summed from archived token counts at the fitted rate; "
+                      "not a provider invoice",
         "caches": per_cache,
         "archive_bundles": bundles,
         "result_files": results,

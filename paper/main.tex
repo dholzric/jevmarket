@@ -27,35 +27,38 @@ in a Market of Language-Model Traders}
 We populate a continuous double auction with traders whose decisions are made
 by a typed language model that returns a probability distribution over actions,
 and vary only how that distribution is consumed. Taking the model's modal
-action---the default in virtually every deployment---makes the market stop
-trading after shocks: following a positive shock, the market clears in
-$65.6\%$ of periods against $91.3\%$ after a negative shock, a gap of
-$25.8$ percentage points (95\% CI $[17.3, 34.2]$, $t=6.37$, $n=20$
-preregistered). Sampling from the same distribution reduces the gap to
-$3.1$ points. Two algorithmic baselines that are symmetric by construction show
-no gap. The mechanism is direct and observable: $100\%$ of non-trading periods
-under modal decoding had one side of the order book entirely empty, against
-$3.4\%$ for the zero-intelligence baseline. Because every trader conditions on
-the same public signal, a deterministic policy makes them act identically, and
-a market of unanimous buyers has no counterparty. The effect decomposes into
-two parts: unanimity sets its magnitude, while a standing directional bias in
-the arm's order flow determines which shock it strikes.
+action---a common deployment choice---makes the market stop trading after
+shocks: following a positive shock, the market clears in $65.6\%$ of periods
+against $91.3\%$ after a negative shock, a gap of $25.8$ percentage points
+(95\% CI $[17.3, 34.2]$, $t=6.37$, $n=20$, preregistered). Sampling from the
+same distribution reduces the gap to $3.1$ points. Two algorithmic baselines
+that are symmetric by construction show no gap.
 
-We test this mechanism with a preregistered prediction it could have failed:
-if unanimity is the cause, the effect must vanish as the market grows. It does,
-from $37.0$ points at four traders to $4.2$ at thirty-two
-($-0.112$ per doubling, $t=-6.91$). A companion prediction---that sampling
-would show no such decay---was falsified: sampling herds too, seven times more
-weakly, on the same curve. We therefore report a single mechanism whose
-strength is set by how sharply the decode rule collapses the model's
-distribution, rather than two regimes.
+The mechanism is a single one. Every trader conditions on the same public
+signal, so a deterministic decoder makes them act identically, and a market of
+unanimous buyers has no counterparty. Measured at the shock itself, $90.0\%$ of
+traders take the same side after a positive shock against $59.4\%$ after a
+negative one, and $100\%$ of non-trading periods under modal decoding had one
+side of the order book entirely empty, against $3.4\%$ for the
+zero-intelligence baseline.
+
+We test that mechanism with a preregistered prediction it could have failed: if
+unanimity is the cause, the effect must vanish as the market grows. It does,
+from $37.0$ points at four traders to $4.2$ at thirty-two ($-0.112$ per
+doubling, seed-paired $t=-7.78$). A companion prediction---that sampling would
+show no such decay---is \emph{unresolved}: the seed-paired estimate is
+$t=-2.00$, two-sided $p=0.060$, which neither falsifies it nor, absent a
+preregistered equivalence margin, confirms it.
 
 Separately, we find that ordinary domain wording induces a $25$-point
 asymmetry in the model's stated conviction between buying and selling at equal
 mispricing, which vanishes under mirror-image phrasing. A preregistered test
 found this does \emph{not} move pricing error, and we report that null.
 
-All experiments were preregistered, including the two hypotheses that failed.
+Every confirmatory hypothesis test was preregistered on seeds disjoint from
+those that generated it; the wording study and the order-book diagnostics are
+exploratory and labelled as such. Four preregistered predictions did not
+survive, and each is reported.
 \end{abstract}
 
 \section{Introduction}
@@ -80,12 +83,14 @@ Our contributions:
   our static probe grid, and at the shock itself in the market it takes the
   correct side in both directions. The failure is in the aggregation of
   decisions that are individually defensible.
-\item \textbf{A directly observed mechanism, in two parts.} We instrument both
-  sides of the order book and show that under modal decoding, non-trading
-  periods lack a counterparty essentially always, while for symmetric baselines
-  they do not. Unanimity sets the magnitude; a standing directional bias in
-  order flow sets which shock it strikes. Our own first account used only the
-  former and is corrected in Section~\ref{par:two}.
+\item \textbf{A mechanism measured in the market.} We instrument both sides of
+  the order book and show that under modal decoding, non-trading periods lack a
+  counterparty essentially always, while for symmetric baselines they do not.
+  Agreement at the shock is itself directional---$90.0\%$ after a positive
+  shock against $59.4\%$ after a negative one---so unanimity accounts for both
+  the magnitude of the halt and which shock it strikes. An earlier draft
+  posited a second component; Section~\ref{par:two} explains why that was an
+  artefact of reading a static probe as a market statistic, and withdraws it.
 \item \textbf{A falsifiable size-scaling test.} The mechanism implies the
   effect must decay with market size at a rate set by the agreement rate. We
   registered this before running it; it held.
@@ -94,12 +99,14 @@ Our contributions:
   the modal action. A preregistered test found it does not move pricing error.
 \end{enumerate}
 
-We emphasise the failures. Four preregistered predictions in this project did
-not survive, and each is reported: the wording-to-prices hypothesis (C1, a
-clean null), the original mechanism (Section~\ref{sec:wording}),
-the sampling-amplification prediction, and the claim that sampling would show no
-size decay (Section~\ref{sec:size}). The result that survived did so against
-tests designed to kill it.
+We emphasise the failures. Four preregistered predictions did not survive, and
+each is reported where it occurred: the wording-to-prices hypothesis (C1, a
+clean null, Section~\ref{sec:wording}), the claim that modal decoding would be
+immune to the effect, the prediction that sampling would \emph{amplify} it, and
+the two-component mechanism this draft withdraws (Section~\ref{par:two}). A
+fifth registered prediction, E2, is unresolved rather than failed
+(Section~\ref{sec:size}). The result that survived did so against a test
+designed to kill it.
 
 \section{Related work}
 
@@ -261,7 +268,7 @@ and $2.74$ and buy probabilities of $0.98$, $0.99$, $0.99$, $0.99$. There is no
 seed parameter. Run-to-run noise is roughly $\pm 0.05$ on a $0$--$4$ urgency
 scale and $\pm 0.01$ on probabilities. \emph{Reproducibility therefore requires
 the response archive, not merely the code}: a rerun without it does not
-reproduce. All 110{,}805 responses are retained and every reported figure is
+reproduce. All 118{,}628 archived responses are retained and every reported figure is
 regenerable from them.
 
 \paragraph{Quantisation.} Probabilities are returned to two decimal places, so
@@ -512,28 +519,35 @@ information and require counterparties or diversity. Sampling is individually
 worse---it deliberately takes a less likely action some of the time---and here
 it was the difference between a market that cleared and one that did not.
 
-The failure is not a reasoning failure. The model's modal action was correct on
-both sides at every mispricing tested. Nothing in its judgement was wrong; the
-loss occurred in aggregation. Evaluation of a single agent's decisions cannot
-detect this, which is what makes it worth reporting.
+The failure is largely not a reasoning failure. At the shock the modal action
+takes the correct side in both directions, and across our static probe grid it
+is correct at every mispricing. The loss occurs in aggregation, and evaluation
+of a single agent's decisions cannot detect it. We do not claim the judgement
+is flawless: $34.6\%$ of decisions at a negative shock are buys at a mispricing
+of roughly ten ticks, which is the residual discussed below.
 
 \section{Limitations}
 
-\paragraph{The origin of the directional bias.} Section~\ref{par:two}
-establishes \emph{that} the modal arm carries a standing buy bias and that this
-bias determines which shock the halt strikes. It does not establish \emph{why}.
+\paragraph{The asymmetry in initial agreement.} Section~\ref{par:two}
+establishes that agreement at the shock is directional---$90.0\%$ take the same
+side after a positive shock against $59.4\%$ after a negative one---and that
+this accounts for which shock the halt strikes. It does not establish why the
+arm is so much more decisive buying than selling at comparable mispricing.
 
 Two candidate explanations are not reproduced. It does not appear in the
 symmetric baselines at any market size, though a market feature could in
 principle produce an asymmetry for one policy and not another. And it is not
-removed by our question wording: under the mirror phrasing of Section~\ref{sec:wording}, which
-removes the stated conviction asymmetry entirely ($+0.005$ against $+0.250$),
-the order-flow bias is unchanged---$48.1\%$ buys against $45.7\%$ sells after a
-down shock, versus $48.8\%$ against $42.3\%$ under domain wording. Whatever
-produces the bias survives making the question symmetric.
+removed by the question wording. Under the mirror phrasing of
+Section~\ref{sec:wording}, which eliminates the stated conviction asymmetry
+($+0.005$ against $+0.250$), agreement at the shock is
+$89.8\%$ after a positive shock against $64.8\%$ selling after a negative one.
+Mirror wording is if anything \emph{more} willing to sell at the shock than
+domain wording ($64.8\%$ against $59.4\%$), and the up-side figure is unmoved.
+Whatever produces the asymmetry survives making the question symmetric.
 
-What remains is the model itself, the task framing, or the state
-representation, and we cannot presently separate these. We flag it as the
+What remains is the model itself, the task framing, the option naming in the
+response schema, or the state representation, and we cannot separate these
+here. We flag it as the
 clearest target for follow-up work.
 
 \paragraph{One model.} All results are for a single typed-decision model. We
@@ -559,9 +573,15 @@ Because the model is non-deterministic and has no seed, code alone does not
 reproduce these numbers. Every response is archived---118{,}628 of them---and
 the analysis can be replayed against the archive with live calls disabled, in
 which case a cache miss raises rather than silently contacting the API. Total
-spend was approximately \$3.85 across roughly 118{,}628 live calls. These figures, and SHA-256 hashes of every result file and archive bundle, are generated from disk into 	exttt{data/manifest.json} rather than transcribed.
+The archive holds $118{,}628$ \emph{unique} responses, one per distinct
+request. That is a lower bound on live calls rather than a count of them:
+retries, repeated uncached requests and overwrites of the same key would not
+appear separately. Estimated spend from the archived token counts is
+\$$3.85$, consistent with the provider's reported balance. These figures, and
+SHA-256 hashes of every result file and archive bundle, are generated from disk
+into \texttt{data/manifest.json} rather than transcribed.
 
-The preregistrations, including the falsified hypotheses and the reasons the
+The preregistrations, including the predictions that failed and the reasons the
 outcome measure changed between Experiments~1 and~2, are in the repository with
 their commit timestamps.
 

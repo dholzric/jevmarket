@@ -1,9 +1,11 @@
 {
+  "unique_archived_responses": 118628,
+  "estimated_live_calls_lower_bound": 118628,
   "responses": 118628,
-  "live_calls": 118628,
   "input_tokens": 93373204,
   "output_tokens": 8801932,
   "estimated_cost_usd": 3.8467,
+  "cost_basis": "summed from archived token counts at the fitted rate; not a provider invoice",
   "caches": {
     "cache": 118483,
     "cache_probe": 40,
@@ -65,6 +67,14 @@
       "bytes": 30243,
       "sha256": "a1370146e24842394dc058d5a7ca7385591f0fccfed6f0fedd95d799f135f5f9"
     },
+    "lag_flow.json": {
+      "bytes": 1494,
+      "sha256": "48659ec12a56369aa3f4cfec67b9a2980094aa5dc2bb048cd0a8865a1a50deff"
+    },
+    "lag_flow_mirror.json": {
+      "bytes": 1528,
+      "sha256": "1e96c62a7f40315d2929b9f244c85b7e0cf03a0dc5e4794afc38419f1c2dccf7"
+    },
     "market_size.json": {
       "bytes": 9046,
       "sha256": "466487fc6be28dd19621c99afe9de210ae01a06bed8ca29e8a8535e2c6c77dd0"
@@ -84,6 +94,10 @@
     "rounding.json": {
       "bytes": 746,
       "sha256": "0017bf5a19ff8b022903735d709921ede6175e4e27fe85bb3843993c1a1aa479"
+    },
+    "size_slope_clustered.json": {
+      "bytes": 1999,
+      "sha256": "1e5c7a50d72212a264baa6c2c1f191f87feb47e562d5f2787eead13c78e008c2"
     },
     "wording.json": {
       "bytes": 9632,

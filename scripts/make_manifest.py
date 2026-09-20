@@ -62,6 +62,30 @@ def main() -> int:
                 "sha256": sha256(bundle),
             }
 
+    # Prereg 10h: ordered per-run archives of independent live calls. These are
+    # raw round-trips, one per trader decision, NOT unique-per-state entries,
+    # so they are counted separately from the content-addressed caches.
+    independent = {}
+    independent_calls = 0
+    independent_input = 0
+    independent_output = 0
+    independent_dir = DATA / "independent"
+    if independent_dir.is_dir():
+        import gzip
+        for f in sorted(independent_dir.glob("*.json.gz")):
+            with gzip.open(f, "rt", encoding="utf-8") as fh:
+                entries = json.load(fh)
+            calls = len(entries)
+            inp = sum(int(e["response"].get("input_tokens", 0) or 0) for e in entries)
+            out = sum(int(e["response"].get("output_tokens", 0) or 0) for e in entries)
+            independent[f.name] = {"calls": calls, "bytes": f.stat().st_size,
+                                   "sha256": sha256(f)}
+            independent_calls += calls
+            independent_input += inp
+            independent_output += out
+    independent_cost = (independent_input * INPUT_PER_MTOK
+                        + independent_output * OUTPUT_PER_MTOK) / 1_000_000
+
     results = {}
     for f in sorted(DATA.glob("*.json")):
         if f.name == "manifest.json":
@@ -83,6 +107,11 @@ def main() -> int:
                       "not a provider invoice",
         "caches": per_cache,
         "archive_bundles": bundles,
+        "independent_calls": independent_calls,
+        "independent_input_tokens": independent_input,
+        "independent_output_tokens": independent_output,
+        "independent_estimated_cost_usd": round(independent_cost, 4),
+        "independent_archives": independent,
         "result_files": results,
     }
     (DATA / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -93,6 +122,8 @@ def main() -> int:
     print(f"input tokens   {input_tokens:,}")
     print(f"output tokens  {output_tokens:,}")
     print(f"estimated cost ${cost:.2f}")
+    print(f"independent calls (10h archives)  {independent_calls:,}  "
+          f"${independent_cost:.2f}")
     print(f"\nwrote {DATA / 'manifest.json'}")
     return 0
 

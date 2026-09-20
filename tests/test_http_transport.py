@@ -207,3 +207,47 @@ def test_a_long_sweep_survives_a_burst_of_transient_failures():
     opener = FakeOpener((503, {}), (429, {}), (529, {}), (502, {}), (200, OK_BODY))
     assert transport(opener, max_retries=6).send(build_request(observation())).model
     assert len(opener.sent) == 5
+
+
+class FlakyOpener(FakeOpener):
+    """Raises the queued exception instead of returning, when one is queued."""
+
+    def __call__(self, url, body, headers, timeout):
+        self.sent.append({"url": url, "body": body, "headers": headers})
+        item = self.queue.pop(0)
+        if isinstance(item, BaseException):
+            raise item
+        status, payload = item
+        return status, json.dumps(payload).encode("utf-8")
+
+
+def test_a_connection_reset_is_retried_not_fatal():
+    """Observed live during the 10h sweep, one run in forty:
+
+        URLError: <urlopen error [WinError 10054] An existing connection was
+                   forcibly closed by the remote host>
+
+    A socket-level failure never reaches the status handling, so it killed the
+    run outright and lost its partial archive. It is as transient as a 503.
+    """
+    import urllib.error
+
+    opener = FlakyOpener(urllib.error.URLError("[WinError 10054] forcibly closed"),
+                         (200, OK_BODY))
+    response = transport(opener).send(build_request(observation()))
+    assert response.input_tokens == 314
+    assert len(opener.sent) == 2
+
+
+def test_a_socket_timeout_is_retried_not_fatal():
+    opener = FlakyOpener(TimeoutError("timed out"), (200, OK_BODY))
+    assert transport(opener).send(build_request(observation())).input_tokens == 314
+
+
+def test_persistent_connection_failures_still_give_up():
+    import urllib.error
+
+    opener = FlakyOpener(*[urllib.error.URLError("reset")] * 3)
+    with pytest.raises(JevOverloaded):
+        transport(opener, max_retries=2).send(build_request(observation()))
+    assert len(opener.sent) == 3

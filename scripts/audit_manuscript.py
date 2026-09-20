@@ -140,6 +140,10 @@ if manifest.is_file():
          "archived responses (non-determinism section)"),
         (r"archive holds \$?([\d,]+)", m["unique_archived_responses"],
          "unique archived responses"),
+        # Prereg 10h: ordered archives of independent live calls, counted
+        # separately because they are raw round-trips, not unique entries.
+        (r"\$?([\d,]+)\$?\s+independent(?:-call)?\s+(?:live\s+)?(?:calls|responses)",
+         m.get("independent_calls", 0), "independent-call responses (10h archives)"),
     ):
         for match in re.findall(pattern, tex.replace("{,}", ",")):
             got = int(match.replace(",", ""))

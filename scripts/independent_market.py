@@ -214,6 +214,44 @@ def main(argv=None) -> int:
         if up and down:
             print(f"  {arm:>10}  after UP {statistics.fmean(up):.1%}  after DOWN {statistics.fmean(down):.1%}")
 
+    # Why the static counterparty bound (10g, +10.1pp) need not show up in the
+    # market: it counted ANY disagreement among eight callers, and a minority
+    # that passes breaks unanimity without supplying a counterparty. Classify
+    # the minority actions in the unstable repeated-call states.
+    minority = None
+    raw = ROOT / "data" / "raw_repeats.json"
+    if raw.is_file() and not args.mock:
+        import collections
+        by_state = collections.defaultdict(list)
+        for record in json.loads(raw.read_text(encoding="utf-8")):
+            by_state[json.dumps(record["state"], sort_keys=True)].append(
+                record["answers"]["action"]["choice"])
+        opposite = {"buy": "sell", "sell": "buy"}
+        unstable = []
+        for actions in by_state.values():
+            counts = collections.Counter(actions)
+            modal, n = counts.most_common(1)[0]
+            if n < len(actions):
+                others = {a: k for a, k in counts.items() if a != modal}
+                unstable.append({
+                    "modal": modal, "modal_share": n / len(actions),
+                    "opposite_side_share": others.get(opposite.get(modal), 0) / len(actions),
+                    "pass_share": others.get("pass", 0) / len(actions),
+                })
+        minority = {
+            "states": len(by_state), "unstable": len(unstable),
+            "unstable_with_opposite_side_minority": sum(1 for u in unstable if u["opposite_side_share"] > 0),
+            "max_opposite_side_share": max((u["opposite_side_share"] for u in unstable), default=0.0),
+            "unstable_with_pass_minority_or_pass_mode": sum(
+                1 for u in unstable if u["pass_share"] > 0 or u["modal"] == "pass"),
+            "detail": sorted(unstable, key=lambda u: u["modal_share"]),
+        }
+        print("\n=== static bound decomposition (EXPLORATORY, from data/raw_repeats.json) ===")
+        print(f"  {minority['unstable']}/{minority['states']} unstable states; "
+              f"{minority['unstable_with_opposite_side_minority']} have any opposite-side minority "
+              f"(largest {minority['max_opposite_side_share']:.0%}); "
+              f"{minority['unstable_with_pass_minority_or_pass_mode']} involve pass")
+
     sources = {f"{arm}_seed{seed}": src for (arm, seed), (_, _, src) in outcomes.items()}
     calls = {f"{arm}_seed{seed}": n for (arm, seed), (_, n, _) in outcomes.items()}
     print("\n=== cost (this invocation's live calls only) ===")
@@ -230,6 +268,7 @@ def main(argv=None) -> int:
                "sample_gap_mean": statistics.fmean(sample), "n": len(common)},
         "holm": holm,
         "h3": h3,
+        "static_bound_decomposition": minority,
         "calls_per_run": calls,
         "sources": sources,
         "cost_this_invocation": gate.summary(),

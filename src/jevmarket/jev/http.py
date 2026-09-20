@@ -105,7 +105,19 @@ class HttpTransport:
 
         started = time.monotonic()
         for attempt in range(self.max_retries + 1):
-            status, raw = self.opener(self.url, body, headers, self.timeout_s)
+            try:
+                status, raw = self.opener(self.url, body, headers, self.timeout_s)
+            except (urllib.error.URLError, OSError) as error:
+                # Socket-level failure: connection reset, refused, or timed out
+                # before any status arrived. Seen live as WinError 10054 during
+                # the 10h sweep. As transient as a 503, and retried the same way.
+                if attempt == self.max_retries:
+                    raise JevOverloaded(
+                        f"connection failure against {self.url} after "
+                        f"{attempt + 1} attempts: {error}"
+                    ) from error
+                self.sleep(self.backoff_base * (2**attempt))
+                continue
 
             if status == 200:
                 return self._parse(raw, time.monotonic() - started)

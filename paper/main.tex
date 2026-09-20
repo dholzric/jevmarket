@@ -624,51 +624,72 @@ What we measure is therefore \emph{one archived response per distinct state,
 reused across agents and periods}, and memoisation can only increase
 within-state agreement.
 
-\paragraph{How much it inflates agreement, measured.} Rather than leave this as
-a caveat we bounded it, on a preregistered test that could only hurt the
-result. We drew 60 distinct states from the registered population---those
-rendered inside the fifteen-period post-shock windows of the confirmatory
-\texttt{jev\_argmax} runs, seeds 24--43---and called each five times live,
-bypassing the cache. Every raw response is archived.
+\paragraph{How much it matters, measured.} Rather than leave this as a caveat
+we measured it, on registered tests that could only hurt the result. We drew 60
+distinct states from the registered population---those rendered inside the
+fifteen-period post-shock windows of the confirmatory \texttt{jev\_argmax}
+runs, seeds 24--43---and called each one hundred times live, bypassing the
+cache. Every raw response is archived.
+
+\textbf{F1 fails: the modal policy is not certifiably stable.} At $R=5$ the
+proportion of fully stable states was $0.950$ with a lower confidence bound of
+$0.887$, below the registered $0.95$. At $R=100$ the picture sharpens: $51$ of
+$60$ states are perfectly stable, but nine are not, and four substantially so,
+with modal shares between $0.76$ and $0.86$. We do not claim the modal policy
+is effectively deterministic, because it is not.
+
+\textbf{The claim-aligned quantity is counterparty availability, and
+memoisation is not immaterial.} An earlier draft bounded the expected
+\emph{majority share} at $+2.84$ points and compared it to the $25.8$-point
+liquidity gap; external review correctly objected that these are
+incommensurable, since the mechanism turns on whether \emph{any} trader takes
+the opposite side---$1-\sum_a p_a^8$, which is nonlinear in the share. That
+comparison, and the sentence it supported, are withdrawn.
+
+Measured on the aligned outcome, with a Jeffreys posterior over each state's
+action distribution:
 
 \begin{center}
-\begin{tabular}{lrr}
+\begin{tabular}{lrrr}
 \toprule
-& Estimate & Registered criterion \\
+& Memoised & Independent & Counterparty gain \\
 \midrule
-F1: states fully stable over five repeats & $57/60 = 0.950$ & \\
-\quad Jeffreys one-sided 95\% lower bound & $0.887$ & must exceed $0.95$ \\
-\quad \emph{verdict} & \multicolumn{2}{r}{\textbf{does not hold}} \\
-\midrule
-F2: inflation in agreement from memoisation & $+1.43$pp & \\
-\quad one-sided 95\% upper bound & $+2.84$pp & must be under $10$pp \\
-\quad \emph{verdict} & \multicolumn{2}{r}{\textbf{holds}} \\
+All states ($n=60$)        & $1.000$ & $0.899$ & $+10.1$pp \\
+After up shocks ($n=30$)   & $1.000$ & $0.899$ & $+10.1$pp \\
+After down shocks ($n=30$) & $1.000$ & $0.899$ & $+10.1$pp \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\textbf{F1 does not hold.} The proportion of states whose modal action is
-identical across five repeats is $0.950$, but its lower confidence bound is
-$0.887$, so at this sample size we cannot certify stability above the
-registered threshold. We therefore do not claim the modal policy is effectively
-deterministic.
+Independent calling would supply at least one counterparty in roughly $10\%$ of
+post-shock states that memoisation renders unanimous (one-sided 95\% upper
+bound $14.4$ points; about $3.8$ points of the $10.1$ is residual posterior
+width at $R=100$, the rest observed instability). Two consequences follow.
 
-\textbf{F2 holds, and it is the claim that matters.} Memoisation inflates
-within-state agreement by at most $2.84$ percentage points with 95\%
-confidence, against a measured liquidity effect of $25.8$ points. The mechanism
-does not rest on memoisation. What we may assert is the bound, not the stronger
-statement that the argmax result transfers unchanged to independent callers.
+First, the headline liquidity gap of $25.8$ points is a property of the
+\emph{memoised} regime, and under fully independent calling it would plausibly
+be smaller. We report it as such; the dynamic experiment---replaying the
+market with independent draws throughout---remains unrun.
 
-An earlier version of this analysis reported both criteria as holding. It
-sampled the whole response archive rather than the registered post-shock
-population, and scored F1 on mean within-state stability rather than the
-registered proportion. That deviation, and this correction, are recorded in the
-preregistration; the earlier numbers are retained there as exploratory.
+Second, and usefully, \textbf{memoisation cannot explain the direction of the
+effect}: the counterparty gain is balanced to a tenth of a point across shock
+directions ($10.1$ against $10.1$), arising from different compositions of
+unstable states on each side. Whatever unanimity memoisation adds, it adds
+symmetrically, so the up-versus-down halt asymmetry survives it.
 
-Two narrower caveats remain. The sampling arm draws from \emph{one frozen
-distribution} per state, and we have not run it under repeated responses.
-And F2 bounds instability conditional on the sampled states; it does not
-re-run the dynamic market with independent calls throughout.
+\textbf{Option naming is equivalent on its registered estimand.} G1 was
+registered on returned probability mass and first implemented, wrongly, as a
+test of the modal choice. Reanalysed on mass over the same 60 states: swapping
+the labels shifts $P(\text{buy})$ by $+0.33$ points, 90\% CI
+$[-0.33, +1.00]$, TOST $p<0.0001$ against a $\pm 10$-point margin. Modal
+agreement was $60/60$, reported as secondary. The first analysis had also
+silently pooled these states with an earlier, wrongly sampled population; the
+figures above are restricted to the registered one.
+
+The full deviation history of these tests---wrong population, wrong statistic,
+point-estimate decisions, and the realignment---is in the preregistration
+(sections 10f--10g), with the flawed runs retained as exploratory rather than
+deleted. The sampling arm remains uncharacterised under repeated responses.
 
 \section{Reproducibility}
 

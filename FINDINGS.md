@@ -530,3 +530,41 @@ that every response is retained remains true.
 `scripts/check_all.py` runs every gate in dependency order, regenerating the
 provenance manifest first. A previous "all green" was reported from a run whose
 inputs changed immediately afterwards.
+
+## 19. F2 and G1 realigned to their claims; the memoisation story ends honestly
+
+Fifth-pass review found both corrected tests measured a quantity adjacent to
+the claim drawn from them. Both were realigned (prereg 10g, logged before the
+identifying run finished), and the R=100 run settles it.
+
+**F1 (R=100):** 51/60 states perfectly stable; nine unstable, four
+substantially (modal shares 0.76-0.86). The modal policy is not certifiably
+deterministic, and the paper no longer says it is.
+
+**F2, claim-aligned:** the mechanism turns on whether ANY counterparty exists
+(1 - sum p^8), not on majority share. The old "+2.84pp vs 25.8pp" comparison is
+withdrawn as incommensurable. Measured properly:
+
+| | memoised | independent | counterparty gain |
+|---|---|---|---|
+| all (n=60) | 1.000 | 0.899 | +10.1pp (upper bound 14.4) |
+| after up (n=30) | 1.000 | 0.899 | +10.1pp |
+| after down (n=30) | 1.000 | 0.899 | +10.1pp |
+
+Memoisation is NOT immaterial: independent calling would supply a counterparty
+in ~10% of post-shock states it renders unanimous. The 25.8pp headline is a
+property of the memoised regime. But the gain is balanced to 0.01pp across
+shock directions, from different unstable-state compositions on each side --
+so memoisation cannot explain WHICH shock halts. The asymmetry survives it.
+
+**G1, realigned to registered probability mass:** +0.33pp shift, 90% CI
+[-0.33, +1.00], TOST p<0.0001, restricted to the corrected population after
+finding the naming cache contaminated by the crashed run's empty-book states.
+Holds, and more strongly than the modal version suggested.
+
+Cost of the whole estimand saga: ~7,700 live calls, ~$0.25. The rendered PDF
+was text-extracted and scanned for mangle signatures before commit.
+
+Registration scorecard, final: confirmed D1, D2, E1, G1; failed C1, C2, F1,
+original-immunity; unresolved E2; not identified F2. Ten registered, all
+reported.

@@ -200,27 +200,33 @@ check("Estimand", "memoisation inflation = +2.1pp", 2.1, rr["inflation"] * 100, 
 check("Estimand", "F1 holds", True, rr["F1_holds"])
 check("Estimand", "F2 holds", True, rr["F2_holds"])
 
-# --- Corrected estimand tests (prereg 10d/10e as revised by 10f) -------------
+# --- Estimand tests, realigned (prereg 10d/10e/10f/10g) ----------------------
 ec = load("estimand_corrected.json")
-check("Estimand", "F1 fully stable = 57/60",
-      "57/60", f"{ec['fully_stable']}/{ec['n_states']}")
-check("Estimand", "F1 lower bound = 0.887", 0.887, ec["f1_lower_bound"], 0.002)
+check("Estimand", "R = 100 repeats per state", 100, ec["repeats"])
+check("Estimand", "fully stable at R=100 = 51/60",
+      "51/60", f"{ec['fully_stable']}/{ec['n_states']}")
 check("Estimand", "F1 DOES NOT hold", False, ec["F1_holds"])
-check("Estimand", "F2 inflation upper bound = +2.84pp", 2.84,
-      ec["inflation_upper_bound"] * 100, 0.05)
-check("Estimand", "F2 holds", True, ec["F2_holds"])
-check("Estimand", "G1 same meaning = 60/60",
-      "60/60", f"{ec['same_meaning']}/{ec['n_states']}")
-check("Estimand", "G1 holds", True, ec["G1_holds"])
 
-# SUPERSEDED: the first F/G run sampled the whole archive rather than the
-# registered post-shock population and scored an unregistered statistic for F1.
-# Pinned so the deviation stays visible; must not be cited as current.
+er = load("estimand_realigned.json")
+check("Estimand", "counterparty gain (all) = 10.1pp", 10.1,
+      er["f2_realigned"]["all"]["gain"] * 100, 0.1)
+check("Estimand", "counterparty gain upper bound = 14.4pp", 14.4,
+      er["f2_realigned"]["all"]["gain_upper95"] * 100, 0.1)
+check("Estimand", "gain after up = gain after down (to 0.1pp)", True,
+      abs(er["f2_realigned"]["after up"]["gain"]
+          - er["f2_realigned"]["after down"]["gain"]) < 0.001)
+check("Estimand", "G1 mass shift = +0.33pp", 0.33,
+      er["g1_realigned"]["mean_shift"] * 100, 0.05)
+check("Estimand", "G1 TOST p < 0.0001", True, er["g1_realigned"]["tost_p"] < 0.0001)
+check("Estimand", "G1 pairs restricted to corrected population = 60",
+      60, er["g1_realigned"]["n"])
+
+# SUPERSEDED twice over: the first F/G run sampled the wrong population and
+# scored unregistered statistics; the second compared majority share to a
+# liquidity gap. Pinned so the history stays visible; never cite as current.
 rr = load("repeated_response.json")
 check("Estimand [superseded]", "old F1 sample 47/50",
       "47/50", f"{rr['fully_stable_states']}/{rr['states']}")
-check("Estimand [superseded]", "old mean stability = 0.976", 0.976,
-      rr["mean_mode_stability"], 0.002)
 
 # --- Null calibration -------------------------------------------------------
 null = load("null.json")

@@ -63,11 +63,18 @@ was caught certifying something the paper contradicted:
 | Domain wording skews stated conviction | +0.250 vs +0.005 mirror | exploratory, replicated |
 | Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
 | Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
+| Modal policy is effectively deterministic | 51/60 stable at R=100, bound 0.887 | registered, **failed** (F1) |
+| Memoisation's counterparty effect | +10.1pp, upper bound 14.4pp, direction-balanced | measured bound; not identified as immaterial |
+| Option naming shifts P(buy) | +0.33pp, TOST p<0.0001 | registered, confirmed (G1) |
 
-Of seven registered predictions, three were confirmed (D1, D2, E1), three
-failed (C1, C2, and the original clause that modal decoding would be immune)
-and one is unresolved (E2). A separate post-hoc mechanism account is withdrawn
-and identified as post-hoc rather than counted among the registered failures.
+Of ten registered predictions, four were confirmed (D1, D2, E1, G1), four
+failed (C1, C2, F1, and the original clause that modal decoding would be
+immune), one is unresolved (E2) and one is not identified at the sample size
+reached (F2's claim-aligned form). A separate post-hoc mechanism account is
+withdrawn and identified as post-hoc rather than counted among the registered
+failures. The F/G tests were first run on the wrong population with the wrong
+statistics; the deviation, the correction, and the realignment of both tests to
+their registered estimands are in preregistration sections 10f-10g.
 
 The open question is why the arm is more decisive buying than selling at equal
 mispricing (90.0% vs 59.4% at the shock); it is not reproduced by either

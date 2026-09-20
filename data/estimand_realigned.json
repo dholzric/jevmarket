@@ -3,26 +3,26 @@
     "all": {
       "n": 60,
       "memoised": 1.0,
-      "independent": 0.7820165819349012,
-      "gain": 0.21798341806509874,
-      "gain_se": 0.025242637882636223,
-      "gain_upper95": 0.2601662143357166
+      "independent": 0.8986691673939041,
+      "gain": 0.10133083260609596,
+      "gain_se": 0.02582187656447779,
+      "gain_upper95": 0.14448159060170418
     },
     "after up": {
       "n": 30,
       "memoised": 1.0,
-      "independent": 0.7962531888034236,
-      "gain": 0.20374681119657634,
-      "gain_se": 0.03507195916881131,
-      "gain_upper95": 0.26333852489378295
+      "independent": 0.8987424573521562,
+      "gain": 0.10125754264784385,
+      "gain_se": 0.03874020753699761,
+      "gain_upper95": 0.16708207628747318
     },
     "after down": {
       "n": 30,
       "memoised": 1.0,
-      "independent": 0.7677799750663789,
-      "gain": 0.23222002493362115,
-      "gain_se": 0.036724473334801756,
-      "gain_upper95": 0.2946195701119916
+      "independent": 0.898595877435652,
+      "gain": 0.10140412256434807,
+      "gain_se": 0.034817485220641126,
+      "gain_upper95": 0.16056345269867
     }
   },
   "f2_note": "static bound on counterparty availability, not the dynamic liquidity effect",

@@ -414,7 +414,10 @@ NBR        & up   & $51.6\%$ & $48.4\%$ & $0.0\%$ \
 \caption{Order flow in the fifteen periods after a shock. Both algorithmic
 baselines respond to shock direction symmetrically. The modal arm does not: it
 issues more buys than sells even after a down shock, which is why the down-side
-halt is mild and the up-side halt severe.}
+halt is mild and the up-side halt severe. The bias is \emph{unchanged} under
+the mirror wording of Section~\ref{sec:wording}, which eliminates the stated
+conviction asymmetry entirely---so the two findings are independent, and the
+bias is not an artefact of our phrasing.}
 \label{tab:flow}
 \end{table}
 
@@ -488,12 +491,20 @@ detect this, which is what makes it worth reporting.
 \section{Limitations}
 
 \paragraph{The origin of the directional bias.} Section~\ref{par:two}
-establishes \emph{that} the modal arm carries a standing buy bias, and that
-this bias determines which shock the halt strikes. It does not establish
-\emph{why} the bias exists. Both symmetric baselines are balanced at every
-market size, so it is not an artefact of the market's construction, but we
-cannot presently attribute it to the model, to the task framing, or to the
-state representation.
+establishes \emph{that} the modal arm carries a standing buy bias and that this
+bias determines which shock the halt strikes. It does not establish \emph{why}.
+
+Two explanations are ruled out. It is not the market's construction: both
+symmetric baselines are balanced at every market size. And it is not our
+question wording: under the mirror phrasing of Section~\ref{sec:wording}, which
+removes the stated conviction asymmetry entirely ($+0.005$ against $+0.250$),
+the order-flow bias is unchanged---$48.1\%$ buys against $45.7\%$ sells after a
+down shock, versus $48.8\%$ against $42.3\%$ under domain wording. Whatever
+produces the bias survives making the question symmetric.
+
+What remains is the model itself, the task framing, or the state
+representation, and we cannot presently separate these. We flag it as the
+clearest target for follow-up work.
 
 \paragraph{One model.} All results are for a single typed-decision model. We
 have no evidence about others, and cannot say whether the agreement rate that

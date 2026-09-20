@@ -1,0 +1,45 @@
+{
+  "arm": "jev_argmax",
+  "pre_jump_depth": {
+    "up": {
+      "bids": 2.15,
+      "asks": 0.95
+    },
+    "down": {
+      "bids": 3.283333333333333,
+      "asks": 0.85
+    }
+  },
+  "post_jump_depth": {
+    "up": {
+      "bids": 4.0344444444444445,
+      "asks": 0.7522222222222222
+    },
+    "down": {
+      "bids": 1.6066666666666667,
+      "asks": 1.3166666666666667
+    }
+  },
+  "order_flow": {
+    "up": {
+      "buy": 4911,
+      "sell": 1994,
+      "pass": 295
+    },
+    "down": {
+      "sell": 3288,
+      "buy": 3460,
+      "pass": 452
+    }
+  },
+  "silence_reasons": {
+    "up": {
+      "bids only (no seller)": 337,
+      "both sides, no cross": 1
+    },
+    "down": {
+      "both sides, no cross": 2,
+      "bids only (no seller)": 26
+    }
+  }
+}

@@ -338,3 +338,32 @@ Established, on registered tests with fresh data:
 
 Still unexplained: why halting is worse after UP jumps than DOWN jumps. The
 per-size controls show this is not a structural artefact of the market.
+
+## 15. The directional bias is NOT our wording
+
+The trade-cessation effect decomposes into two parts (§12-13). Unanimity sets
+its magnitude and produces the size-scaling. A standing **buy bias** sets which
+shock it strikes: after a down shock, where every trader's value lies below the
+prevailing price and selling is plainly indicated, the modal arm still issues
+more buys than sells, so the bias and the shock cancel and the market keeps
+clearing. After an up shock they compound and it halts.
+
+The obvious suspect was our own question wording, which §5 showed induces a
++0.250 conviction asymmetry. It is not the cause. Order flow under the mirror
+wording, which removes that asymmetry entirely (+0.005):
+
+| wording | after UP | after DOWN | silent from "no seller" |
+|---|---|---|---|
+| domain (original) | 65.9% buy / 28.2% sell | 48.8% / 42.3% | 100.0% / 96.2% |
+| **mirror** | **68.2% buy / 27.7% sell** | **48.1% / 45.7%** | 99.7% / 92.9% |
+
+Unchanged, if anything slightly stronger. Asking the question symmetrically
+removes the model's stated conviction asymmetry but not its revealed
+directional bias.
+
+**Consequences.** The wording result (§5) and the liquidity result (§12-13) are
+**independent findings**, not one causal chain, and the paper's two-experiment
+structure is correct. Two explanations for the bias are now ruled out -- the
+market's construction (both symmetric baselines are balanced at every size) and
+our phrasing. What remains is the model, the task framing, or the state
+representation, which this design cannot separate.

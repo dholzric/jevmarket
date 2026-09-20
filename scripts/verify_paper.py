@@ -139,6 +139,15 @@ for direction, claimed in (("up", (65.9, 28.2)), ("down", (48.8, 42.3))):
           claimed[0], counts["buy"] / total * 100, 0.2)
     check("Mechanism", f"argmax sell share after {direction} = {claimed[1]}%",
           claimed[1], counts["sell"] / total * 100, 0.2)
+mirror = load("asym_argmax_mirror.json")
+for direction, claimed in (("up", (68.2, 27.7)), ("down", (48.1, 45.7))):
+    counts = mirror["order_flow"][direction]
+    total = sum(counts.values())
+    check("Mechanism", f"mirror buy share after {direction} = {claimed[0]}%",
+          claimed[0], counts["buy"] / total * 100, 0.2)
+    check("Mechanism", f"mirror sell share after {direction} = {claimed[1]}%",
+          claimed[1], counts["sell"] / total * 100, 0.2)
+
 silence = flow["silence_reasons"]
 for direction, claimed in (("up", 100.0), ("down", 96.2)):
     total = sum(silence[direction].values())

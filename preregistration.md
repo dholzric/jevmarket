@@ -126,32 +126,12 @@ second economy.
 
 ## 2. Hypotheses
 
-> **[ACTION REQUIRED — the plan file was not in the workspace.]**
-> H1–H5 must be pasted in **verbatim** from the locked plan before any Jev call
-> is made. The drafts below are the author's reconstruction from the stated
-> primary outcomes and are **not yet the preregistered text**. Replace this
-> whole block, then delete this warning. Do not reword H1–H5 to fit them.
-
-<!-- BEGIN PLACEHOLDER — REPLACE WITH VERBATIM H1-H5 -->
-
-**H1 (discovery).** Under delayed/noisy information, both Jev arms achieve a
-lower post-jump RMSE than `zi`, and no worse than `nbr`.
-
-**H2 (no free lunch under full information).** Under full information the
-arms are indistinguishable on post-jump RMSE: the signal is the fundamental,
-so there is nothing for judgement to add.
-
-**H3 (calibration).** Jev's stated `confidence` is miscalibrated — ECE for
-both Jev arms exceeds ECE for `nbr`, in the direction of overconfidence.
-
-**H4 (confidently wrong).** Jev's confidently-wrong rate exceeds `nbr`'s, and
-the gap is larger under delayed/noisy information than under full information.
-
-**H5 (sampling vs argmax).** `jev_sample` is better calibrated than
-`jev_argmax` (lower ECE) at equal or worse post-jump RMSE — decoding trades
-accuracy for honesty.
-
-<!-- END PLACEHOLDER -->
+**SUPERSEDED.** H1-H5 were the hypotheses of the original four-brain design,
+written before the Phase 3 measurements that retired it (see 1.1). They were
+never tested and no result in the paper rests on them. The live registrations
+are 10a (C1/C2), 10b (D1/D2) and 10c (E1/E2), each committed before its data
+existed. The placeholder that stood here is removed rather than left to imply
+a pending action.
 
 ---
 

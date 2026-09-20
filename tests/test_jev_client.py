@@ -220,3 +220,60 @@ def test_the_mock_never_returns_something_the_contract_rejects():
         decision, _ = client.decide(observation(private_value=value, signal=value))
         assert sum(decision.action_probabilities.values()) == pytest.approx(1.0)
         assert 0.0 <= decision.already_priced <= 1.0
+
+
+# --- sampling independence across traders -----------------------------------
+
+
+class FixedResponse:
+    """Returns the same distribution to every trader, isolating the RNG."""
+
+    def decide(self, observation, wording="original"):
+        from jevmarket.decision import Decision
+
+        return Decision.create(
+            action="buy", aggressiveness=0.5, already_priced=0.1,
+            action_probabilities={"buy": 0.5, "sell": 0.3, "pass": 0.2},
+        ), None
+
+
+def _traders(n, base_seed=0):
+    """Seeded exactly as simulation.py does: config.seed * 100_003 + index."""
+    return [
+        JevSample(trader_id=f"t{i:03d}", client=FixedResponse(), seed=base_seed * 100_003 + i)
+        for i in range(n)
+    ]
+
+
+def test_sampling_is_independent_across_traders():
+    """Regression guard. An external review read agents/jev.py in isolation,
+    saw no trader_id in the RNG key, and concluded every trader drew the same
+    number -- which would make the sampling arm a common-random-number
+    treatment and invalidate D2. It does not: the trader index arrives inside
+    `seed`. That is implicit, so this test pins it."""
+    actions = {b.decide(observation(period=3)).action for b in _traders(8)}
+    assert len(actions) > 1, (
+        "all traders chose identically from an identical distribution; "
+        "sampling is not independent across traders"
+    )
+
+
+def test_traders_sharing_one_seed_would_collapse():
+    """The failure mode the test above rules out, demonstrated deliberately."""
+    shared = [
+        JevSample(trader_id=f"t{i:03d}", client=FixedResponse(), seed=0)
+        for i in range(8)
+    ]
+    assert len({b.decide(observation(period=3)).action for b in shared}) == 1
+
+
+def test_pooled_draws_recover_the_returned_distribution():
+    brains = _traders(8)
+    counts = {"buy": 0, "sell": 0, "pass": 0}
+    for period in range(400):
+        for brain in brains:
+            counts[brain.decide(observation(period=period)).action.value] += 1
+    total = sum(counts.values())
+    assert counts["buy"] / total == pytest.approx(0.5, abs=0.03)
+    assert counts["sell"] / total == pytest.approx(0.3, abs=0.03)
+    assert counts["pass"] / total == pytest.approx(0.2, abs=0.03)

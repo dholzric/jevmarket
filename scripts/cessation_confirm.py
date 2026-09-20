@@ -116,9 +116,17 @@ def main(argv=None) -> int:
         se = statistics.stdev(series) / len(series) ** 0.5
         print(f"{name:>22}  n={len(series):>2}  gap {mean:>+7.1%}  SE {se:>5.1%}  t={mean/se:>+5.2f}")
 
-    common = sorted(set(gaps["jev_argmax/original"]) & set(gaps["jev_sample/original"]))
-    argmax = [gaps["jev_argmax/original"][s] for s in common]
-    sample = [gaps["jev_sample/original"][s] for s in common]
+    # Pair by explicit seed key. Zipping dict values happens to work while
+    # insertion order matches, which is a silent correctness dependency.
+    argmax_by_seed = gaps["jev_argmax/original"]
+    sample_by_seed = gaps["jev_sample/original"]
+    common = sorted(set(argmax_by_seed) & set(sample_by_seed))
+    assert set(argmax_by_seed) == set(sample_by_seed), (
+        f"cells cover different seeds: "
+        f"{sorted(set(argmax_by_seed) ^ set(sample_by_seed))}"
+    )
+    argmax = [argmax_by_seed[s] for s in common]
+    sample = [sample_by_seed[s] for s in common]
 
     def one_sided_t(values, alternative="greater"):
         mean, sd = statistics.fmean(values), statistics.stdev(values)

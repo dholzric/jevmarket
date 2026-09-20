@@ -367,3 +367,69 @@ structure is correct. Two explanations for the bias are now ruled out -- the
 market's construction (both symmetric baselines are balanced at every size) and
 our phrasing. What remains is the model, the task framing, or the state
 representation, which this design cannot separate.
+
+## 16. External review (Codex and Grok), and what it changed
+
+Two independent adversarial reviews at commit `74ca20f`. Both found real
+defects. Their overlapping findings were the most serious.
+
+### Confirmed and fixed
+
+| Finding | Raised by | Status |
+|---|---|---|
+| Table 1 mixed exploratory levels with confirmatory gaps; 93.8 - 66.6 = 27.2, not the stated 25.8 | both | fixed; table now one dataset |
+| `verify_paper.py` checks hard-coded claims, not the manuscript, so it blessed that table | both | new `audit_manuscript.py` parses `main.tex` |
+| `pdflatex -halt-on-error` exits 1; 18 table rows ended in `\` not `\` | Codex | fixed; build gated at exit 0 |
+| Size sweep pooled 20 seeds x 4 sizes as 80 independent points | both | reanalysed per-seed |
+| E2 "falsified" does not survive the correct analysis | both | withdrawn; reported unresolved |
+| Provenance counts stale (110,805 vs 118,628 on disk) | both | `make_manifest.py` generates from disk |
+| "Ruled out" too strong for the symmetric-baseline and mirror evidence | Codex | softened to "not reproduced" |
+| Mechanism diagnostic presented as confirmatory | Codex | labelled exploratory |
+| "Never short of buyers in any arm" false for sampling (4-7%) | Grok | corrected |
+| D2 paired by `zip` over dict values | Codex | keyed by seed, with an assertion |
+| README, `pyproject` deps, prereg placeholder stale | both | fixed |
+
+### The substantive scientific correction
+
+Grok's second must-fix was the most valuable single item in either review. The
+paper claimed the modal arm "never reaches a sell majority", citing window
+averages while narrating the jump instant. Replaying the confirmatory runs by
+lag:
+
+| period | after up (buy/sell/pass) | after down (buy/sell/pass) |
+|---|---|---|
+| **t** | **90.0 / 7.9 / 2.1** | **34.6 / 59.4 / 6.0** |
+| t+1 | 72.7 / 23.1 / 4.2 | 51.0 / 37.7 / 11.2 |
+| window | 65.9 / 28.2 / 5.8 | 48.8 / 42.3 / 8.8 |
+
+At the shock the arm **does** sell, 59.4% against 34.6%. The sell majority is
+gone by t+1 once the book moves. So the claim was false, and the "standing buy
+bias" second mechanism we invented to explain the direction was unnecessary:
+market agreement at the shock is 90% after up and 59% after down, which is
+already directional. The static probe's 96% down-side agreement was never a
+market fact -- that probe freezes the book and sets signal equal to private
+value.
+
+The paper is simpler for it: one mechanism, measured in the market.
+
+### Where a reviewer was wrong
+
+Codex's top release blocker was that `JevSample` shares one RNG draw across
+traders, making the sampling arm a common-random-number treatment and
+invalidating D2. It does not: the trader index arrives inside `self.seed`,
+which the runner sets to `config.seed * 100_003 + i`. Eight traders given an
+identical returned distribution produce mixed actions, and 4,000 pooled draws
+recover 0.506/0.302/0.192 against a 0.5/0.3/0.2 target.
+
+The underlying concern was fair -- trader identity was implicit, and nothing
+pinned it. Three regression tests now do.
+
+### Not yet done
+
+- Grok's suggested `option_map` swap (`option_a` always maps to buy), a cheap
+  confirmatory cell that could shrink the unexplained directional remainder.
+- Equivalence testing for E2 with a declared margin.
+- Repeated-response sensitivity: the cache memoises one response per distinct
+  state, which is not the same estimand as many agents independently calling a
+  non-deterministic model. Codex is right that this should be stated and
+  ideally tested.

@@ -4,6 +4,8 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{amsmath}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \usepackage{natbib}
@@ -74,9 +76,10 @@ Our contributions:
 
 \begin{enumerate}
 \item \textbf{A liquidity failure caused by decoding, not by reasoning.} The
-  model's modal action is \emph{correct} on both sides at every mispricing we
-  tested. Nothing about its judgement is wrong. The failure is entirely in the
-  aggregation of correct decisions.
+  model's modal action is \emph{correct} on both sides at every mispricing in
+  our static probe grid, and at the shock itself in the market it takes the
+  correct side in both directions. The failure is in the aggregation of
+  decisions that are individually defensible.
 \item \textbf{A directly observed mechanism, in two parts.} We instrument both
   sides of the order book and show that under modal decoding, non-trading
   periods lack a counterparty essentially always, while for symmetric baselines
@@ -91,8 +94,9 @@ Our contributions:
   the modal action. A preregistered test found it does not move pricing error.
 \end{enumerate}
 
-We emphasise the failures. Three preregistered predictions in this project were
-wrong, and each is reported: the original mechanism (Section~\ref{sec:wording}),
+We emphasise the failures. Four preregistered predictions in this project did
+not survive, and each is reported: the wording-to-prices hypothesis (C1, a
+clean null), the original mechanism (Section~\ref{sec:wording}),
 the sampling-amplification prediction, and the claim that sampling would show no
 size decay (Section~\ref{sec:size}). The result that survived did so against
 tests designed to kill it.
@@ -335,20 +339,22 @@ direction $d$ in which at least one trade occurred.
 \cmidrule(lr){2-3}
 Arm & after up & after down & Gap \\
 \midrule
-Jev-argmax   & $66.6\%$ & $93.8\%$ & $+25.8$ \\
-Jev-sample   & $93.0\%$ & $93.9\%$ & $+3.1$ \\
-ZI           & $77.3\%$ & $75.0\%$ & $-0.4$ \\
-NBR          & $99.8\%$ & $99.3\%$ & $+1.0$ \\
+Jev-argmax   & $65.6\%$ & $91.3\%$ & $+25.8$ \\
+Jev-sample   & $92.2\%$ & $95.3\%$ & $+3.1$ \\
+ZI           & $76.0\%$ & $75.6\%$ & $-0.4$ \\
+NBR          & $98.7\%$ & $99.7\%$ & $+1.0$ \\
 \bottomrule
 \end{tabular}
-\caption{Preregistered confirmatory test, twenty fresh seeds. D1: the
-Jev-argmax gap exceeds zero, $t=6.37$, eighteen of twenty seeds positive.
-D2: it exceeds the Jev-sample gap by $22.7$ points, $t=6.01$. Both
-Holm-significant.}
+\caption{Preregistered confirmatory test, seeds 24--43. Levels and gaps are
+both computed from the same run; the gap column is the mean of per-seed gaps,
+which is why it need not equal the difference of the pooled levels exactly.
+D1: the Jev-argmax gap exceeds zero, $t=6.37$, Holm $p<10^{-5}$, eighteen of
+twenty seeds positive. D2: it exceeds the Jev-sample gap by $22.7$ points,
+$t=6.01$, Holm $p<10^{-5}$.}
 \label{tab:liquidity}
 \end{table}
 
-\paragraph{Mechanism, observed.} We instrument resting depth on both sides at
+\paragraph{Mechanism (exploratory diagnostic).} We instrument resting depth on both sides at
 the close of every period, which separates two failures: \emph{no counterparty}
 (one side empty) and \emph{no crossing} (both sides present, prices do not
 meet). Table~\ref{tab:silence} classifies every silent post-shock period.
@@ -357,16 +363,16 @@ meet). Table~\ref{tab:silence} classifies every silent post-shock period.
 \centering
 \begin{tabular}{llrrr}
 \toprule
-Arm & Shock & No seller & No buyer & Both sides, no cross \
+Arm & Shock & No seller & No buyer & Both sides, no cross \\
 \midrule
-Jev-argmax & up   & $\mathbf{100.0\%}$ & $0.0\%$ & $0.0\%$ \
-           & down & $96.2\%$ & $0.0\%$ & $3.8\%$ \
-Jev-sample & up   & $71.4\%$ & $4.3\%$ & $24.3\%$ \
-           & down & $57.1\%$ & $7.1\%$ & $35.7\%$ \
-ZI         & up   & $0.9\%$  & $2.8\%$ & $96.3\%$ \
-           & down & $2.3\%$  & $1.8\%$ & $95.9\%$ \
-NBR        & up   & $8.3\%$  & $0.0\%$ & $91.7\%$ \
-           & down & $0.0\%$  & $0.0\%$ & $100.0\%$ \
+Jev-argmax & up   & $\mathbf{100.0\%}$ & $0.0\%$ & $0.0\%$ \\
+           & down & $96.2\%$ & $0.0\%$ & $3.8\%$ \\
+Jev-sample & up   & $71.4\%$ & $4.3\%$ & $24.3\%$ \\
+           & down & $57.1\%$ & $7.1\%$ & $35.7\%$ \\
+ZI         & up   & $0.9\%$  & $2.8\%$ & $96.3\%$ \\
+           & down & $2.3\%$  & $1.8\%$ & $95.9\%$ \\
+NBR        & up   & $8.3\%$  & $0.0\%$ & $91.7\%$ \\
+           & down & $0.0\%$  & $0.0\%$ & $100.0\%$ \\
 \bottomrule
 \end{tabular}
 \caption{Why each silent post-shock period was silent, twenty seeds. Under
@@ -376,59 +382,72 @@ prices failing to meet.}
 \label{tab:silence}
 \end{table}
 
-The failure is unambiguous and one-sided: the market runs out of
-\emph{sellers}. It is never short of buyers in any arm.
+The failure is one-sided: the market runs out of \emph{sellers}. It is
+essentially never short of buyers ($0\%$ of argmax silences, $4$--$7\%$ of
+sampling silences). This classification was added after the effect was found
+and is exploratory corroboration, not an independent confirmatory test; E1 is
+the preregistered mechanism prediction.
 
-\paragraph{Two components, not one.}
+\paragraph{Unanimity is directional in the market.}
 \label{par:two}
-Unanimity alone does not account for the direction of the effect, and we report
-this because our own account of it was initially wrong. Measured directly, the
-agreement rate is \emph{higher} after down shocks ($96\%$) than up shocks
-($92\%$), while the halt is far worse after up shocks. A pure unanimity story
-predicts the opposite ordering.
+A static probe of the model, holding the book fixed at its pre-shock level,
+returns agreement of $92\%$ after an up shock and $96\%$ after a down shock.
+Taken at face value that inverts the result: more agreement on the side that
+halts less. We initially took this to mean unanimity could not account for the
+direction, and posited a second mechanism. That was wrong, and the error was
+using a probe statistic as though it were a market statistic. The probe holds
+the book frozen and sets the trader's signal equal to its own private value;
+the market does neither.
 
-Order flow resolves it (Table~\ref{tab:flow}). The modal arm carries a standing
-buy bias, and the two shocks interact with it differently. After an up shock
-the bias compounds with the shock and order flow becomes overwhelmingly
-one-sided. After a down shock---where every trader's value lies below the
-prevailing price and selling is plainly indicated---the arm still issues
-\emph{more buys than sells}. It never reaches a sell majority. The bias and the
-shock roughly cancel, flow stays mixed, and the market continues to clear.
+Measured in the market, agreement is already directional
+(Table~\ref{tab:flow}). In the first period after a shock, $90.0\%$ of traders
+buy following an up shock, while after a down shock $59.4\%$ sell against
+$34.6\%$ buying. Unanimity after an up shock is near-total; after a down shock
+it is far weaker. That ordering matches the halt, and no second mechanism is
+required.
 
 \begin{table}[t]
 \centering
-\begin{tabular}{llrrr}
+\begin{tabular}{lrrrrrr}
 \toprule
-Arm & Shock & Buy & Sell & Pass \
+& \multicolumn{3}{c}{After up shock} & \multicolumn{3}{c}{After down shock} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Period & Buy & Sell & Pass & Buy & Sell & Pass \\
 \midrule
-Jev-argmax & up   & $65.9\%$ & $28.2\%$ & $5.8\%$ \
-           & down & $\mathbf{48.8\%}$ & $\mathbf{42.3\%}$ & $8.8\%$ \
-Jev-sample & up   & $44.3\%$ & $34.9\%$ & $20.8\%$ \
-           & down & $41.2\%$ & $39.0\%$ & $19.8\%$ \
-ZI         & up   & $46.2\%$ & $44.1\%$ & $9.8\%$ \
-           & down & $44.8\%$ & $45.9\%$ & $9.3\%$ \
-NBR        & up   & $51.6\%$ & $48.4\%$ & $0.0\%$ \
-           & down & $47.9\%$ & $52.1\%$ & $0.0\%$ \
+$t$   & $\mathbf{90.0\%}$ & $7.9\%$  & $2.1\%$ & $34.6\%$ & $\mathbf{59.4\%}$ & $6.0\%$ \\
+$t+1$ & $72.7\%$ & $23.1\%$ & $4.2\%$ & $51.0\%$ & $37.7\%$ & $11.2\%$ \\
+$t+2$ & $72.1\%$ & $23.1\%$ & $4.8\%$ & $47.9\%$ & $40.4\%$ & $11.7\%$ \\
+$t+3$ & $69.0\%$ & $25.8\%$ & $5.2\%$ & $47.5\%$ & $44.4\%$ & $8.1\%$ \\
+$t+4$ & $67.5\%$ & $26.5\%$ & $6.0\%$ & $47.1\%$ & $45.0\%$ & $7.9\%$ \\
+\midrule
+window & $65.9\%$ & $28.2\%$ & $5.8\%$ & $48.8\%$ & $42.3\%$ & $8.8\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Order flow in the fifteen periods after a shock. Both algorithmic
-baselines respond to shock direction symmetrically. The modal arm does not: it
-issues more buys than sells even after a down shock, which is why the down-side
-halt is mild and the up-side halt severe. The bias is \emph{unchanged} under
-the mirror wording of Section~\ref{sec:wording}, which eliminates the stated
-conviction asymmetry entirely---so the two findings are independent, and the
-bias is not an artefact of our phrasing.}
+\caption{Jev-argmax order flow by period after a shock, twenty seeds. At the
+shock itself the arm is near-unanimous on the up side and takes the correct
+side on the down side. The sell majority is gone by $t+1$, once the book has
+begun to move, so the fifteen-period window average understates what happens at
+the moment that matters. Reporting only the window would suggest the arm never
+reaches a sell majority, which is false.}
 \label{tab:flow}
 \end{table}
 
-So the effect decomposes. \textbf{Unanimity} sets its magnitude and produces
-the size-scaling of Section~\ref{sec:size}: with more traders, the chance that
-every one of them agrees falls, and the halt fades. \textbf{A directional bias}
-sets which shock it strikes, by determining whether the bias reinforces or
-offsets the shock. The sampling arm exhibits the same bias in muted form
-($41.2\%$ versus $39.0\%$ after a down shock), consistent with the falsified E2
-of Section~\ref{sec:size}: sampling dilutes correlation rather than removing
-it.
+The effect therefore has a single mechanism. Unanimity is near-total after up
+shocks and materially weaker after down shocks, which sets both the magnitude
+of the halt and which shock it strikes; and it dissolves with market size
+exactly as Section~\ref{sec:size} predicts. The sampling arm exhibits weaker
+correlation throughout, consistent with the size results.
+
+\paragraph{What remains unexplained.} Why the arm is more decisive on the buy
+side than the sell side at equal absolute mispricing---$90.0\%$ against
+$59.4\%$ at the shock---is not established here. It is not reproduced by either
+symmetric baseline, and it is not removed by the mirror wording of
+Section~\ref{sec:wording}, which eliminates the \emph{stated} conviction
+asymmetry entirely. Candidate explanations we cannot separate with this design
+include the model itself, the option naming in the response schema, the
+under-specified referent of ``the current market price'' in the instructions,
+and the omission of inventory from the state. We flag it as the clearest target
+for follow-up.
 
 \paragraph{A control that does not quite hold.} NBR returns $+1.0$ points
 ($t=3.33$), small but distinguishable from zero, indicating a slight genuine
@@ -457,22 +476,32 @@ $4.2$ points is attributable to the arm.}
 \label{fig:size}
 \end{figure}
 
+\paragraph{Statistics.} The sweep reuses the same twenty seeds at every market
+size, so pooling all eighty observations into one regression would treat
+repeated measures as independent. We estimate a slope within each seed and test
+over seeds. We note also that the $N=8$ argmax cell is the same data as D1.
+
 \paragraph{E1 confirmed.} The gap falls from $37.0$ points at $N=4$ to $4.2$ at
-$N=32$; slope $-0.112$ per doubling, $t=-6.91$. It is robust to dropping the
-$N=4$ point, which we flagged in advance as floor-constrained because the
-symmetric baselines themselves trade in only $33\%$ of periods there
-($-0.108$, $t=-4.21$).
+$N=32$: slope $-0.112$ per doubling, seed-paired $t=-7.78$, nineteen of twenty
+seed slopes negative. (The pooled estimate, $t=-6.91$, understates it.) It is
+robust to dropping the $N=4$ point, which we flagged in advance as
+floor-constrained because the symmetric baselines themselves trade in only
+$33\%$ of periods there.
 
-\paragraph{E2 falsified.} We predicted sampling would show no decay. It shows
-$-0.016$ per doubling, $t=-2.53$. The available rescue---attributing it to the
-floor-constrained $N=4$ point---fails: dropping that point makes the decay
-\emph{more} significant ($t=-3.53$).
+\paragraph{E2 not resolved.} We predicted sampling would show no decay. The
+seed-paired estimate is $-0.016$ per doubling, $t=-2.00$, two-sided $p=0.060$,
+with thirteen of twenty seed slopes negative. That does not falsify E2 at
+conventional levels. It also does not confirm it: no equivalence margin was
+preregistered, so a non-significant slope is not evidence of no slope. An
+earlier draft of this paper reported E2 as falsified on the pooled $t=-2.53$;
+that was an artefact of ignoring the repeated-measures structure, and we
+withdraw it.
 
-The corrected account is better than the prediction. Sampling herds as well,
-seven times more weakly, on the same curve. At a buy probability of $0.99$,
-most sampled traders still choose to buy; sampling does not abolish correlation
-but dilutes it. There is one mechanism, whose strength is set by how sharply
-the decode rule collapses the distribution, rather than two regimes.
+What can be said is weaker and still useful. Sampling's gap is small at every
+size ($4.3$, $3.1$, $-0.1$, $0.0$ points) and its slope is roughly a seventh of
+the argmax slope, though the ratio rests on a marginally estimated denominator.
+Sampling does not abolish correlation; whether it decays with size on the same
+curve is unresolved here.
 
 \section{Discussion}
 
@@ -494,9 +523,10 @@ detect this, which is what makes it worth reporting.
 establishes \emph{that} the modal arm carries a standing buy bias and that this
 bias determines which shock the halt strikes. It does not establish \emph{why}.
 
-Two explanations are ruled out. It is not the market's construction: both
-symmetric baselines are balanced at every market size. And it is not our
-question wording: under the mirror phrasing of Section~\ref{sec:wording}, which
+Two candidate explanations are not reproduced. It does not appear in the
+symmetric baselines at any market size, though a market feature could in
+principle produce an asymmetry for one policy and not another. And it is not
+removed by our question wording: under the mirror phrasing of Section~\ref{sec:wording}, which
 removes the stated conviction asymmetry entirely ($+0.005$ against $+0.250$),
 the order-flow bias is unchanged---$48.1\%$ buys against $45.7\%$ sells after a
 down shock, versus $48.8\%$ against $42.3\%$ under domain wording. Whatever
@@ -526,10 +556,10 @@ extrapolation to larger markets is the fitted decay, not a measurement.
 \section{Reproducibility}
 
 Because the model is non-deterministic and has no seed, code alone does not
-reproduce these numbers. Every response is archived---110{,}805 of them---and
+reproduce these numbers. Every response is archived---118{,}628 of them---and
 the analysis can be replayed against the archive with live calls disabled, in
 which case a cache miss raises rather than silently contacting the API. Total
-spend was approximately \$3.30 across roughly 95{,}000 live calls.
+spend was approximately \$3.85 across roughly 118{,}628 live calls. These figures, and SHA-256 hashes of every result file and archive bundle, are generated from disk into 	exttt{data/manifest.json} rather than transcribed.
 
 The preregistrations, including the falsified hypotheses and the reasons the
 outcome measure changed between Experiments~1 and~2, are in the repository with

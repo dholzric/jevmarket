@@ -1,46 +1,62 @@
 # jevmarket
 
-A continuous double auction in one abstract good, used to compare LLM traders
-against zero-intelligence and noisy best-response baselines under full vs.
-delayed/noisy information.
+A continuous double auction populated by traders whose decisions come from a
+typed language model that returns a probability distribution over actions. We
+hold the model, the prompt, the market and the seeds fixed, and vary only how
+that distribution is consumed.
 
-The engine owns matching, budgets, order sizes and the book. A brain answers
-three typed questions: direction (`choice`), urgency (`score`), and whether the
-signal is already priced (`noul`). That contract -- including the exact question
-wording, hash-locked -- is frozen in
-[`schema/schema_jev_v1.json`](schema/schema_jev_v1.json).
+**Result:** taking the model's modal action — the default in nearly every
+deployment — makes the market stop trading after positive shocks. The gap is
+25.8 percentage points (95% CI [17.3, 34.2], preregistered, n=20). Sampling
+from the same distribution reduces it to 3.1 points. Two algorithmic baselines
+that are symmetric by construction show −0.4 and +1.0 points.
 
-"Jev" is [TypeSafe AI's System One model](https://docs.typesafe.ai/), which
-returns typed decisions with their probability distributions rather than text.
-Confidence is therefore never self-reported: it is the mass the arm put on the
-action it took, which ZI, NBR and both Jev arms all have.
+The mechanism: every trader conditions on the same public signal, so a
+deterministic decoder makes them act identically, and a market of unanimous
+buyers has no counterparty. 100% of silent periods under modal decoding had one
+side of the book empty, against 3.4% for the random baseline.
 
-Read [`preregistration.md`](preregistration.md) first — the hypotheses and the
-three primary outcomes were written before any result existed.
+"Jev" is [TypeSafe AI's System One model](https://docs.typesafe.ai/), chosen
+because it exposes its probabilities natively. Paper: [`paper/main.tex`](paper/main.tex).
+Findings log: [`FINDINGS.md`](FINDINGS.md). Registrations:
+[`preregistration.md`](preregistration.md).
 
-## Quick start
+## Reproducing
+
+The model is non-deterministic and exposes no seed, so **code alone does not
+reproduce these numbers** — only the saved responses do.
 
 ```bash
+tar -xzf data/archive/cache.tar.gz -C data/
 python -m pip install -e ".[dev]"
-python -m pytest                 # 170 tests, ~4s, no network
-python scripts/zi_price_path.py  # writes figures/zi_price_path.png
+
+python scripts/verify_paper.py       # recompute every claimed number from data/
+python scripts/audit_manuscript.py   # parse paper/main.tex and check it against data/
+python -m pytest                     # test suite
 ```
 
-`scripts/zi_price_path.py` prints the run summary and the primary outcomes,
-and saves the price path against the fundamental:
+`audit_manuscript.py` reads the manuscript directly rather than a transcription
+of it: it re-derives every table cell from the named dataset, checks that levels
+quoted beside a gap actually produce that gap, compares provenance counts
+against a manifest generated from disk, and requires `pdflatex -halt-on-error`
+to exit 0. It exists because an earlier verifier that checked hard-coded claims
+reported "55/55 passing" while a table in the paper was internally inconsistent.
 
-```
-periods              600
-traders              40
-jumps                8
-trades               6055
-periods with a trade 600 / 600
-rejected orders      4
-cash conserved       4000000
-units conserved      2000
-RMSE vs F_t          1.290
-post-jump RMSE (20)  1.784
-```
+## What is established
+
+| | Result | Status |
+|---|---|---|
+| Modal decoding halts the market asymmetrically | +25.8pp, t=6.37 | registered, confirmed |
+| The gap exceeds sampling's | +22.7pp, t=6.01 | registered, confirmed |
+| It collapses as the market grows | −0.112/doubling, t=−7.78 | registered, confirmed |
+| Domain wording skews stated conviction | +0.250 vs +0.005 mirror | exploratory, replicated |
+| Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
+| Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
+
+Four preregistered predictions did not survive and are reported as such. The
+open question is why the arm is more decisive buying than selling at equal
+mispricing (90.0% vs 59.4% at the shock); it is not reproduced by either
+baseline and is not removed by mirror wording.
 
 ## Layout
 
@@ -48,52 +64,31 @@ post-jump RMSE (20)  1.784
 src/jevmarket/
   book.py          limit order book: price-time priority, self-trade prevention
   exchange.py      accounts, budget/inventory constraints, settlement, invariants
-  fundamental.py   jumping F_t and the two information treatments
-  decision.py      the frozen Jev contract, mirrored by schema_jev_v1.json
+  fundamental.py   jumping F_t, matched-jump process, information treatments
+  decision.py      the frozen contract, mirrored by schema_jev_v1*.json
   quoting.py       aggressiveness in [0,1] -> an integer tick, clamped at value
-  agents/          one class per brain; all share Observation -> Decision
+  agents/          one class per arm; all share Observation -> Decision
   jev/             transport, live HTTP client, cache, spend gate, mock
   simulation.py    the run loop
-  metrics.py       the three pre-declared primary outcomes
-tests/             conservation, matching, schema freeze, metrics, end-to-end
-schema/            schema_jev_v1.json  (FROZEN — changing it needs a v2 + rerun)
-scripts/           figure and run entry points
+  metrics.py       the pre-declared outcomes
+scripts/           experiments, diagnostics, audits, figures
+schema/            frozen question wordings, hash-locked
+data/archive/      the response archive (421 MB of JSON, 18 MB compressed)
 ```
 
-## The invariants
+## Invariants
 
-`Exchange.check_invariants()` is called after every submission in the property
-tests. It asserts that total cash and total units are exactly what they were at
-endowment, that no account is negative, that no trader has committed more than
-it holds, and that the book is never crossed. `tests/test_conservation.py` runs
-20,000 random submissions against it.
+`Exchange.check_invariants()` asserts that total cash and total units are
+exactly their endowed values, that no account is negative, that no trader has
+committed more than it holds, and that the book is never crossed.
+`tests/test_conservation.py` submits 20,000 random orders and checks after
+every one. `quoting.py` is checked over 20,000 random cases to confirm no quote
+is ever on the wrong side of its own private value.
 
-## Status
+The question wordings are hash-locked: `tests/test_decision.py` fails if any
+instruction or criterion changes.
 
-Phase 0–2. See the open items at the end of the preregistration — H1–H5 are
-still placeholders and no live Jev call has been made.
+## Cost
 
-## Cost control
-
-Jev calls go through `JevClient`, which sits in front of a content-addressed
-cache and a `SpendGate`. Two things are load-bearing:
-
-- `render_state` excludes the period number, cash and inventory, and rounds
-  prices to whole ticks. Measured on a 400-decision run, that takes the cache
-  hit rate from 1% to 31%. `tests/test_simulation.py` guards the regression.
-- `SpendGate` refuses a dollar cap it cannot compute (TypeSafe does not publish
-  pricing), and a cached answer never consumes the gate.
-
-`DecisionCache(path, read_only=True)` raises `CacheMiss` rather than calling the
-API, which is what lets Phase 6 publish a repo that provably reproduces every
-figure from cache.
-
-| Phase | Output | State |
-|---|---|---|
-| 0 | Prereg, frozen schema, CDA chosen | done, pending verbatim H1–H5 |
-| 1 | Engine, ZI + NBR, conservation tests | ZI done; NBR next |
-| 2 | Jev client, mock, cache | done (live transport untested against the real API) |
-| 3 | Live Jev, N=50, reliability diagram, real $/call | not started |
-| 4 | Core sweep N=200, >=5 seeds then 30 | not started |
-| 5 | Figures, robustness, LLM subsample | not started |
-| 6 | Draft, public repo from cache | not started |
+$3.85 across 118,628 model calls, regenerated into `data/manifest.json` from
+disk rather than transcribed. Replaying from the archive is free.

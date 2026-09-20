@@ -106,6 +106,37 @@ for row in liquidity:
     else:
         notes.append(f"tab:liquidity {arm}: levels, gap and subtraction agree")
 
+# --- 1b. the independent-calling table against its dataset (prereg 10h) -----
+independent = found.get("tab:independent", [])
+if (DATA / "independent_market.json").is_file():
+    im = load("independent_market.json")
+    for row in independent:
+        arm = row.split("&")[0].strip()
+        key = {"Jev-argmax": "jev_argmax", "Jev-sample": "jev_sample"}.get(arm)
+        if key is None:
+            continue
+        vals = numbers(row)
+        if len(vals) < 3:
+            continue
+        up, down, gap = vals[0], vals[1], vals[2]
+        real_up = im["levels"][key]["up"] * 100
+        real_down = im["levels"][key]["down"] * 100
+        real_gap = statistics.fmean(im["gaps"][key].values()) * 100
+        if abs(up - real_up) > 0.1 or abs(down - real_down) > 0.1:
+            problems.append(f"tab:independent {arm}: levels {up}/{down} do not match "
+                            f"data/independent_market.json ({real_up:.1f}/{real_down:.1f})")
+        if abs(gap - real_gap) > 0.1:
+            problems.append(f"tab:independent {arm}: gap {gap} != data {real_gap:.1f}")
+        if abs((down - up) - gap) > 1.5:
+            problems.append(f"tab:independent {arm}: {down} - {up} = {down - up:.1f}, "
+                            f"but the row states a gap of {gap}")
+        else:
+            notes.append(f"tab:independent {arm}: levels, gap and subtraction agree")
+    if not independent:
+        problems.append("tab:independent missing from the manuscript; the 10h result is unreported")
+else:
+    problems.append("data/independent_market.json missing; tab:independent cannot be audited")
+
 # --- 2. order-flow table against its dataset --------------------------------
 flow = load("lag_flow.json") if (DATA / "lag_flow.json").is_file() else None
 if flow:

@@ -568,3 +568,60 @@ was text-extracted and scanned for mangle signatures before commit.
 Registration scorecard, final: confirmed D1, D2, E1, G1; failed C1, C2, F1,
 original-immunity; unresolved E2; not identified F2. Ten registered, all
 reported.
+
+## 20. The dynamic replication under independent calling: the halt is not a memoisation artefact
+
+Section 19 ended with the paper saying the 25.8pp headline "is a property of
+the memoised regime" and that the dynamic experiment "remains unrun". It has
+now been run, as prereg 10h, registered and committed before the code and
+before any call.
+
+**Design.** The 10b confirmatory design unchanged in every respect but one:
+every trader decision is a fresh live call. The content-addressed cache is
+neither read (that would memoise) nor written (that would overwrite the entries
+the memoised runs replay from). Every response is appended in call order to
+`data/independent/<arm>_seed<k>.json.gz`, and a replay transport serves them
+back, refusing any request whose key differs from the archived one. Two
+replays produce a byte-identical `data/independent_market.json`, and the live
+analysis matches the replayed one on every statistic. 2 arms x 20 seeds x 8
+traders x 155 periods = 49,600 live calls, about $1.61, run ten seeds at a
+time (0.3-0.4 s per call, no penalty for concurrency).
+
+**Results.**
+
+| | independent calling | memoised (10b) |
+|---|---|---|
+| jev_argmax traded share after up / down | 63.2% / 92.3% | 65.6% / 91.3% |
+| jev_argmax gap (H1 / D1) | +29.1pp, SE 4.8, t=6.08, 95% CI [19.1, 39.1], 19/20 seeds | +25.8pp, t=6.37, 18/20 |
+| jev_sample gap | +1.7pp | +3.1pp |
+| argmax minus sample (H2 / D2) | +27.4pp, t=5.83, CI [17.6, 37.3] | +22.7pp, t=6.01 |
+| Holm across H1/H2 | both p < 0.0001 | |
+| H3: memoised minus independent, paired by seed | -3.3pp, SE 5.0, 95% CI [-13.9, +7.2], 7/20 seeds positive | |
+| one-sided book in silent periods, up / down | 100.0% / 98.1% | 100% / -- |
+
+H1 and H2 hold. H3's interval spans zero and its point estimate has the wrong
+sign for the memoisation story: the independent gap is, if anything, larger.
+The registered interpretation rule says the independent-regime number becomes
+the headline and the memoised number is reported alongside it; the abstract,
+intro, README and Experiment 2 now do that.
+
+**Why the static bound was loose (exploratory, free, from `raw_repeats.json`).**
+Section 19's +10.1pp counterparty gain counted ANY disagreement among eight
+callers, `1 - sum p_a^8`. But of the nine unstable states at R=100, seven
+involve `pass` (either a pass minority or a pass mode with a sell minority),
+and a trader that passes breaks unanimity without supplying a counterparty.
+Only three states show any opposite-side minority, and the largest is 2 of
+100 calls. The bound was an honest upper bound on a quantity that mostly
+consisted of passes.
+
+**One deviation, disclosed.** One sampling run (seed 26) died on a socket-level
+connection reset (WinError 10054) that the transport did not retry: it handled
+HTTP 5xx but not failures before any status arrived. The run was redone from
+scratch after adding the retry (tests first). The 550 responses of the failed
+attempt were discarded, not archived, because an archive is written only when
+its run completes. So the archives hold every response of every completed run,
+not every round-trip; the paper says so. Logged in the prereg deviation table.
+
+**Registration scorecard, updated:** confirmed D1, D2, E1, G1, H1, H2; failed
+C1, C2, F1, original-immunity; unresolved E2; not identified F2. Twelve
+registered, all reported.

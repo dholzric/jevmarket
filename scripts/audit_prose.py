@@ -69,6 +69,12 @@ FORBIDDEN = [
     (r"virtually every deployment", "uncited breadth claim"),
     (r"never short of buyers in any arm", "false for the sampling arm (4-7%)"),
     (r"It is never short of buyers", "false for the sampling arm (4-7%)"),
+    # Prereg 10h ran the dynamic experiment; these sentences predate it.
+    (r"remains unrun", "the independent-calling replication has been run (10h)"),
+    (r"would plausibly\s+be smaller", "measured: the independent gap is not smaller"),
+    (r"is a property of the\s+\\emph\{memoised\} regime",
+     "withdrawn: the halt replicates under independent calling"),
+    (r"Of ten registered", "twelve registered predictions after H1/H2"),
 ]
 
 # (pattern, why it must appear) -- the corrected headline claims.
@@ -85,7 +91,11 @@ REQUIRED = [
     # "four preregistered predictions" let a post-hoc mechanism story be filed
     # among registered failures for two drafts; only the IDs pin it.
     (r"four failed \(C1, C2, F1", "C1, C2 and F1 named as the failures"),
-    (r"four were\s+confirmed \(D1, D2, E1, G1\)", "D1/D2/E1/G1 named as confirmed"),
+    (r"six were\s+confirmed \(D1, D2, E1, G1, H1, H2\)", "D1/D2/E1/G1/H1/H2 named as confirmed"),
+    (r"t=6\.08", "H1 statistic under independent calling"),
+    (r"29\.1", "the independent-calling gap"),
+    (r"\[-13\.9, \+7\.2\]", "H3 interval: memoised minus independent"),
+    (r"not an artefact of memoisation", "the 10h conclusion stated"),
     (r"unresolved \(E2\)", "E2 named as unresolved"),
     (r"post-hoc two-component account|\\emph\{post-hoc\} two-component",
      "the withdrawn mechanism identified as post-hoc, not registered"),
@@ -158,6 +168,11 @@ def main() -> int:
          lambda s: s.replace("$p \\approx 0.90$", "$p \x07pprox 0.90$")),
         ("eat a backslash into a bare command name",
          lambda s: s.replace("\\texttt{data/manifest.json}", "exttt{data/manifest.json}")),
+        ("restore the pre-10h claim that the dynamic experiment is unrun",
+         lambda s: s + "\nThe dynamic experiment remains unrun.\n"),
+        ("drop H1/H2 from the confirmed tally",
+         lambda s: s.replace("six were\nconfirmed (D1, D2, E1, G1, H1, H2)",
+                             "four were\nconfirmed (D1, D2, E1, G1)")),
     ]
     mutation_failures = []
     for name, mutate in mutations:

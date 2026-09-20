@@ -28,15 +28,20 @@ We populate a continuous double auction with traders whose decisions are made
 by a typed language model that returns a probability distribution over actions,
 and vary only how that distribution is consumed. Taking the model's modal
 action---a common deployment choice---makes the market stop trading after
-shocks: following a positive shock, the market clears in $65.6\%$ of periods
-against $91.3\%$ after a negative shock, a gap of $25.8$ percentage points
-(95\% CI $[17.3, 34.2]$, $t=6.37$, $n=20$, preregistered). Sampling from the
-same distribution reduces the gap to $3.1$ points. Two algorithmic baselines
-that are symmetric by construction show no gap.
+shocks: following a positive shock, the market clears in $63.2\%$ of periods
+against $92.3\%$ after a negative shock, a gap of $29.1$ percentage points
+(95\% CI $[19.1, 39.1]$, $t=6.08$, $n=20$, preregistered, with an independent
+live call for every trader decision). The original confirmatory run, which
+memoised one response per distinct state, gave $25.8$ points (95\% CI
+$[17.3, 34.2]$, $t=6.37$); the difference between the two regimes is $-3.3$
+points (95\% CI $[-13.9, +7.2]$), so the halt is not an artefact of
+memoisation. Sampling from the same distribution reduces the gap to $1.7$
+points ($3.1$ memoised). Two algorithmic baselines that are symmetric by
+construction show no gap.
 
 The mechanism is a single one. Every trader conditions on the same public
-signal, so a decoder that takes the mode of one stored response makes them act
-identically, and a market of
+signal, so a decoder that takes the mode of the returned distribution makes
+them act identically, and a market of
 unanimous buyers has no counterparty. Measured at the shock itself, $90.0\%$ of
 traders take the same side after a positive shock against $59.4\%$ after a
 negative one, and $100\%$ of non-trading periods under modal decoding had one
@@ -59,9 +64,9 @@ found this does \emph{not} move pricing error, and we report that null.
 
 Every confirmatory hypothesis test was preregistered on seeds disjoint from
 those that generated it; the wording study and the order-book diagnostics are
-exploratory and labelled as such. Of ten registered predictions, four were
-confirmed (D1, D2, E1, G1), four failed (C1, C2, F1, and the original clause
-that modal decoding would be immune), one is unresolved (E2) and one is
+exploratory and labelled as such. Of twelve registered predictions, six were
+confirmed (D1, D2, E1, G1, H1, H2), four failed (C1, C2, F1, and the original
+clause that modal decoding would be immune), one is unresolved (E2) and one is
 reported as not identified at the sample size reached (F2). A separate
 post-hoc mechanism account is withdrawn and identified as such. All are
 reported, including a disclosed deviation in which F1 and G1 were first run on
@@ -118,7 +123,9 @@ $p=0.80$); and F1, that the modal action is stable enough across repeated live
 calls to certify the policy as effectively deterministic
 (Section~\ref{sec:estimand}).
 
-\textbf{Four were confirmed}: D1, D2, E1 and G1. \textbf{One is unresolved}: E2
+\textbf{Six were confirmed}: D1, D2, E1 and G1, and H1 and H2, the
+replication of D1 and D2 with an independent live call for every decision
+(Section~\ref{sec:independent}). \textbf{One is unresolved}: E2
 (Section~\ref{sec:size}). \textbf{One is not identified} at the sample size we
 reached: F2, whose claim-aligned form is discussed in
 Section~\ref{sec:estimand}.
@@ -388,6 +395,45 @@ $t=6.01$, Holm $p<10^{-5}$.}
 \label{tab:liquidity}
 \end{table}
 
+\paragraph{Replication under independent calling (preregistered, H1/H2).}
+\label{sec:independent}
+The run above is memoised: two traders rendering the same tick-rounded state
+read one stored response (Section~\ref{sec:estimand}), which can only raise
+within-state agreement. We therefore registered a replication
+(preregistration 10h) that changes exactly one thing. Every trader decision is
+a fresh live call; the cache is neither read nor written; and every response is
+archived in call order, so the run replays from disk to a byte-identical result
+file. Same engine, seeds, fundamental paths, market size and windows.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+& \multicolumn{2}{c}{Traded share} & \\
+\cmidrule(lr){2-3}
+Arm & after up & after down & Gap \\
+\midrule
+Jev-argmax   & $63.2\%$ & $92.3\%$ & $+29.1$ \\
+Jev-sample   & $92.9\%$ & $94.6\%$ & $+1.7$ \\
+\bottomrule
+\end{tabular}
+\caption{Preregistered replication with an independent live call per decision,
+seeds 24--43, $49{,}600$ calls. H1: the Jev-argmax gap exceeds zero, $t=6.08$,
+95\% CI $[19.1, 39.1]$, Holm $p<10^{-4}$, nineteen of twenty seeds positive.
+H2: it exceeds the Jev-sample gap by $27.4$ points, $t=5.83$, Holm
+$p<10^{-4}$. The ZI and NBR baselines do not call the model and are unchanged
+from Table~\ref{tab:liquidity}.}
+\label{tab:independent}
+\end{table}
+
+Both primaries hold. The registered secondary estimate, memoised minus
+independent gap paired by seed, is $-3.3$ points (95\% CI $[-13.9, +7.2]$,
+seven of twenty seeds positive): the static bound of
+Section~\ref{sec:estimand} predicted the gap would shrink without memoisation,
+and it did not. The one-sided-book diagnostic is unchanged, $100\%$ of silent
+periods after an up shock and $98.1\%$ after a down shock under modal decoding.
+The halt is not an artefact of memoisation.
+
 \paragraph{Mechanism (exploratory diagnostic).} We instrument resting depth on both sides at
 the close of every period, which separates two failures: \emph{no counterparty}
 (one side empty) and \emph{no crossing} (both sides present, prices do not
@@ -612,17 +658,19 @@ effect.
 \paragraph{Scale.} Markets of four to thirty-two traders over 160 periods. The
 extrapolation to larger markets is the fitted decay, not a measurement.
 
-\paragraph{The estimand is memoised, and this narrows the claim.}
+\paragraph{The confirmatory estimand is memoised; the replication is not.}
 \label{sec:estimand}
-Requests are
+In the confirmatory run, requests are
 content-addressed: when two traders render the same tick-rounded state, the
 second receives the stored response rather than a fresh call. Because the
 service is non-deterministic, that is not the same system as $N$ agents each
 calling it independently.
 
-What we measure is therefore \emph{one archived response per distinct state,
-reused across agents and periods}, and memoisation can only increase
-within-state agreement.
+What that run measures is therefore
+\emph{one archived response per distinct state, reused across agents and
+periods}, and memoisation can only increase within-state agreement. The replication of Section~\ref{sec:independent}
+removes this by construction, with a fresh live call for every decision, and
+reproduces the result.
 
 \paragraph{How much it matters, measured.} Rather than leave this as a caveat
 we measured it, on registered tests that could only hurt the result. We drew 60
@@ -666,10 +714,16 @@ post-shock states that memoisation renders unanimous (one-sided 95\% upper
 bound $14.4$ points; about $3.8$ points of the $10.1$ is residual posterior
 width at $R=100$, the rest observed instability). Two consequences follow.
 
-First, the headline liquidity gap of $25.8$ points is a property of the
-\emph{memoised} regime, and under fully independent calling it would plausibly
-be smaller. We report it as such; the dynamic experiment---replaying the
-market with independent draws throughout---remains unrun.
+First, this is a static bound on what memoisation \emph{could} contribute, and
+the dynamic replication (Section~\ref{sec:independent}) shows it contributed
+nothing measurable: the gap under independent calling is $29.1$ points against
+$25.8$ memoised, a difference of $-3.3$ points (95\% CI $[-13.9, +7.2]$). An
+exploratory decomposition of the same sixty repeated-call states explains why
+the bound was loose. Of the nine unstable states, seven involve \emph{pass},
+which breaks unanimity without supplying a counterparty; only three show any
+opposite-side minority, and the largest is $2\%$ of calls. Counting
+disagreement of any kind, as $1-\sum_a p_a^8$ does, overstates the supply of
+counterparties.
 
 Second, and usefully, \textbf{memoisation cannot explain the direction of the
 effect}: the counterparty gain is balanced to a tenth of a point across shock
@@ -694,12 +748,23 @@ deleted. The sampling arm remains uncharacterised under repeated responses.
 \section{Reproducibility}
 
 Because the model is non-deterministic and has no seed, code alone does not
-reproduce these numbers. The repository retains two response stores: the
+reproduce these numbers. The repository retains three response stores: the
 content-addressed cache of unique request/response entries used by every
-market run, and the raw repeated-call records of the estimand test, stored
-separately because they deliberately bypass the cache. The analysis can be
-replayed against the cache with live calls disabled, in which case a cache
-miss raises rather than silently contacting the API.
+memoised market run; the raw repeated-call records of the estimand test, stored
+separately because they deliberately bypass the cache; and, for the
+independent-calling replication, one ordered archive per run holding every
+response in call order. The analysis can be replayed against the cache with
+live calls disabled, in which case a cache miss raises rather than silently
+contacting the API; the replication replays from its archives through a
+transport that refuses any request whose key differs from the one archived at
+that position, and two replays produce byte-identical result files.
+
+The replication archives hold $49{,}600$ independent live calls, one file per
+run under \texttt{data/independent/}. One sampling run failed on a connection
+reset partway through and was redone from scratch; the $550$ responses of the
+failed attempt were discarded rather than archived, so the archives hold every
+response of every completed run, not every round-trip. Estimated spend for the
+replication is \$$1.61$.
 
 The archive holds $118{,}968$ \emph{unique} cached request/response entries, one per distinct
 request. That is a lower bound on live calls rather than a count of them:

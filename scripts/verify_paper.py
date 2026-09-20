@@ -102,6 +102,52 @@ check("Exp 2", "D2 t = 6.01", 6.01, d2t, 0.02)
 check("Exp 2", "zi control = -0.4pp", -0.4, statistics.fmean(cc["zi"].values()) * 100, 0.1)
 check("Exp 2", "nbr control = +1.0pp", 1.0, statistics.fmean(cc["nbr"].values()) * 100, 0.1)
 
+# --- Experiment 2, replication under independent calling (H1/H2/H3, prereg 10h)
+im = load("independent_market.json")
+ind_argmax = [im["gaps"]["jev_argmax"][str(s)] for s in sorted(map(int, im["gaps"]["jev_argmax"]))]
+ind_sample = [im["gaps"]["jev_sample"][str(s)] for s in sorted(map(int, im["gaps"]["jev_sample"]))]
+mean, se, t, p, lo, hi = one_sided_t(ind_argmax)
+check("Exp 2 indep", "H1 gap = +29.1pp", 29.1, mean * 100, 0.1)
+check("Exp 2 indep", "H1 CI = [19.1, 39.1]", 19.1, lo * 100, 0.1)
+check("Exp 2 indep", "H1 CI high = 39.1", 39.1, hi * 100, 0.1)
+check("Exp 2 indep", "H1 t = 6.08", 6.08, t, 0.02)
+check("Exp 2 indep", "H1 seeds positive = 19/20",
+      "19/20", f"{sum(1 for v in ind_argmax if v > 0)}/{len(ind_argmax)}")
+check("Exp 2 indep", "independent sampling gap = +1.7pp", 1.7, statistics.fmean(ind_sample) * 100, 0.1)
+h2mean, h2se, h2t, h2p, h2lo, h2hi = one_sided_t([a - b for a, b in zip(ind_argmax, ind_sample)])
+check("Exp 2 indep", "H2 difference = +27.4pp", 27.4, h2mean * 100, 0.1)
+check("Exp 2 indep", "H2 t = 5.83", 5.83, h2t, 0.02)
+check("Exp 2 indep", "H2 CI = [17.6, 37.3]", 17.6, h2lo * 100, 0.1)
+check("Exp 2 indep", "H2 CI high = 37.3", 37.3, h2hi * 100, 0.1)
+# H3: memoised minus independent, paired by seed against the 10b run
+memo = cc["jev_argmax/original"]
+h3 = [memo[str(s)] - im["gaps"]["jev_argmax"][str(s)] for s in sorted(map(int, im["gaps"]["jev_argmax"]))]
+h3mean = statistics.fmean(h3)
+h3se = statistics.stdev(h3) / len(h3) ** 0.5
+h3lo, h3hi = st.t.interval(0.95, len(h3) - 1, loc=h3mean, scale=h3se)
+check("Exp 2 indep", "H3 memoised - independent = -3.3pp", -3.3, h3mean * 100, 0.1)
+check("Exp 2 indep", "H3 CI = [-13.9, +7.2]", -13.9, h3lo * 100, 0.1)
+check("Exp 2 indep", "H3 CI high = +7.2", 7.2, h3hi * 100, 0.1)
+check("Exp 2 indep", "H3 seeds positive = 7/20", "7/20", f"{sum(1 for v in h3 if v > 0)}/{len(h3)}")
+# levels in the independent-calling table
+check("Exp 2 indep", "argmax traded after up = 63.2%", 63.2, im["levels"]["jev_argmax"]["up"] * 100, 0.1)
+check("Exp 2 indep", "argmax traded after down = 92.3%", 92.3, im["levels"]["jev_argmax"]["down"] * 100, 0.1)
+check("Exp 2 indep", "sample traded after up = 92.9%", 92.9, im["levels"]["jev_sample"]["up"] * 100, 0.1)
+check("Exp 2 indep", "sample traded after down = 94.6%", 94.6, im["levels"]["jev_sample"]["down"] * 100, 0.1)
+# one-sided-book share of silent periods (exploratory)
+check("Exp 2 indep", "argmax one-sided silences after up = 100.0%", 100.0,
+      statistics.fmean(im["diagnostics"]["jev_argmax"]["up"]) * 100, 0.1)
+check("Exp 2 indep", "argmax one-sided silences after down = 98.1%", 98.1,
+      statistics.fmean(im["diagnostics"]["jev_argmax"]["down"]) * 100, 0.1)
+# static-bound decomposition (exploratory)
+sbd = im["static_bound_decomposition"]
+check("Exp 2 indep", "unstable repeated-call states = 9/60", "9/60", f"{sbd['unstable']}/{sbd['states']}")
+check("Exp 2 indep", "unstable states with any opposite-side minority = 3", 3,
+      sbd["unstable_with_opposite_side_minority"], 0)
+check("Exp 2 indep", "largest opposite-side minority = 2%", 2.0, sbd["max_opposite_side_share"] * 100, 0.1)
+check("Exp 2 indep", "unstable states involving pass = 7", 7,
+      sbd["unstable_with_pass_minority_or_pass_mode"], 0)
+
 # levels quoted in the abstract
 cell = load("market_size.json")
 check("Exp 2", "argmax traded after up = 65.6%", 65.6, cell["jev_argmax|8"]["up"] * 100, 0.1)

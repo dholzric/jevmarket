@@ -7,9 +7,11 @@ that distribution is consumed.
 
 **Result:** taking the model's modal action — a common deployment choice —
 makes the market stop trading after positive shocks. The gap is
-25.8 percentage points (95% CI [17.3, 34.2], preregistered, n=20). Sampling
-from the same distribution reduces it to 3.1 points. Two algorithmic baselines
-that are symmetric by construction show −0.4 and +1.0 points.
+29.1 percentage points (95% CI [19.1, 39.1], preregistered, n=20, with an
+independent live call for every trader decision); the original memoised
+confirmatory run gave 25.8 (95% CI [17.3, 34.2]). Sampling from the same
+distribution reduces it to 1.7 points (3.1 memoised). Two algorithmic
+baselines that are symmetric by construction show −0.4 and +1.0 points.
 
 The mechanism: every trader conditions on the same public signal, so a
 deterministic decoder makes them act identically, and a market of unanimous
@@ -57,20 +59,23 @@ was caught certifying something the paper contradicted:
 
 | | Result | Status |
 |---|---|---|
-| Modal decoding halts the market asymmetrically | +25.8pp, t=6.37 | registered, confirmed |
-| The gap exceeds sampling's | +22.7pp, t=6.01 | registered, confirmed |
+| Modal decoding halts the market asymmetrically | +25.8pp, t=6.37 (memoised) | registered, confirmed (D1) |
+| It replicates with an independent live call per decision | +29.1pp, t=6.08; memoised − independent = −3.3pp, CI [−13.9, +7.2] | registered, confirmed (H1) |
+| The gap exceeds sampling's | +22.7pp, t=6.01 (memoised); +27.4pp, t=5.83 (independent) | registered, confirmed (D2, H2) |
 | It collapses as the market grows | −0.112/doubling, t=−7.78 | registered, confirmed |
 | Domain wording skews stated conviction | +0.250 vs +0.005 mirror | exploratory, replicated |
 | Wording does **not** move pricing error | −0.184, CI [−0.479, +0.111] | registered, **null** |
 | Sampling shows no size decay | t=−2.00, p=0.060 | registered, **unresolved** |
 | Modal policy is effectively deterministic | 51/60 stable at R=100, bound 0.887 | registered, **failed** (F1) |
-| Memoisation's counterparty effect | +10.1pp, upper bound 14.4pp, direction-balanced | measured bound; not identified as immaterial |
+| Memoisation's counterparty effect (static) | +10.1pp, upper bound 14.4pp, direction-balanced | measured bound; the dynamic replication (H1) shows no measurable contribution |
 | Option naming shifts P(buy) | +0.33pp, TOST p<0.0001 | registered, confirmed (G1) |
 
-Of ten registered predictions, four were confirmed (D1, D2, E1, G1), four
-failed (C1, C2, F1, and the original clause that modal decoding would be
+Of twelve registered predictions, six were confirmed (D1, D2, E1, G1, H1, H2),
+four failed (C1, C2, F1, and the original clause that modal decoding would be
 immune), one is unresolved (E2) and one is not identified at the sample size
-reached (F2's claim-aligned form). A separate post-hoc mechanism account is
+reached (F2's claim-aligned form). H1 and H2 (preregistration 10h) are the
+dynamic replication of D1 and D2 with the cache bypassed: a fresh live call for
+every trader decision, 49,600 calls, every response archived in call order. A separate post-hoc mechanism account is
 withdrawn and identified as post-hoc rather than counted among the registered
 failures. The F/G tests were first run on the wrong population with the wrong
 statistics; the deviation, the correction, and the realignment of both tests to
@@ -96,6 +101,7 @@ src/jevmarket/
 scripts/           experiments, diagnostics, audits, figures
 schema/            frozen question wordings, hash-locked
 data/archive/      the response archive (421 MB of JSON, 18 MB compressed)
+data/independent/  ordered per-run archives of the independent-calling replication
 ```
 
 ## Invariants
@@ -117,7 +123,13 @@ lower bound on live calls rather than a count of them. Estimated spend from the
 archived token counts is $3.85. Both are regenerated into `data/manifest.json`
 from disk rather than transcribed. Replaying from the archive is free.
 
-Note on the estimand: requests are content-addressed, so traders rendering the
-same tick-rounded state share one stored response. This measures *one archived
-response per distinct state*, not N agents independently calling a
-non-deterministic service. The paper states this as a limitation.
+The independent-calling replication (prereg 10h) adds 49,600 archived live
+calls in `data/independent/` (one gzipped, ordered archive per run, 5 MB) at an
+estimated $1.61; `python scripts/independent_market.py --replay` reproduces
+`data/independent_market.json` byte for byte from them without a key.
+
+Note on the estimand: in the memoised runs, requests are content-addressed, so
+traders rendering the same tick-rounded state share one stored response. That
+measures *one archived response per distinct state*, not N agents independently
+calling a non-deterministic service. The replication removes this by
+construction and reproduces the result (+29.1pp against +25.8pp memoised).

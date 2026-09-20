@@ -653,3 +653,4 @@ Any departure from this document gets a dated row here, with the reason,
 | Date | Section | Change | Reason |
 |---|---|---|---|
 | 2026-09-18 | — | Document created. | Phase 0. |
+| 2026-09-19 | 10h | One `jev_sample` run (seed 26) died on a socket-level connection reset the transport did not retry; the run was redone from scratch after adding the retry. The 550 responses of the failed attempt were discarded, not archived, since an archive is written only when its run completes. The archives therefore hold every response of every completed run, not every round-trip. | Transport handled HTTP 5xx but not failures before any status arrived. No analysis was affected: the failed attempt produced no result. |

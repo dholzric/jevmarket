@@ -1,0 +1,374 @@
+{
+  "registration": "10h",
+  "design": {
+    "seeds": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "traders": 8,
+    "periods": 160,
+    "burn_in": 5,
+    "window": 15,
+    "cache": "bypassed"
+  },
+  "gaps": {
+    "jev_argmax": {
+      "24": 0.022222222222222143,
+      "25": 0.11111111111111116,
+      "26": 0.3111111111111111,
+      "27": 0.24444444444444446,
+      "28": 0.33333333333333337,
+      "29": 0.7333333333333334,
+      "30": 0.37777777777777777,
+      "31": 0.06666666666666676,
+      "32": 0.48888888888888893,
+      "33": 0.0888888888888889,
+      "34": 0.28888888888888886,
+      "35": 0.5111111111111112,
+      "36": -0.1333333333333333,
+      "37": 0.5555555555555556,
+      "38": 0.3111111111111112,
+      "39": 0.4666666666666666,
+      "40": 0.4888888888888889,
+      "41": 0.28888888888888886,
+      "42": 0.19999999999999996,
+      "43": 0.06666666666666654
+    },
+    "jev_sample": {
+      "24": 0.0,
+      "25": -0.022222222222222254,
+      "26": 0.0,
+      "27": -0.022222222222222143,
+      "28": -0.022222222222222365,
+      "29": 0.0888888888888889,
+      "30": 0.022222222222222365,
+      "31": -0.06666666666666676,
+      "32": 0.04444444444444451,
+      "33": -0.022222222222222365,
+      "34": 0.0,
+      "35": 0.022222222222222143,
+      "36": 0.11111111111111094,
+      "37": 0.06666666666666665,
+      "38": -0.022222222222222143,
+      "39": 0.06666666666666654,
+      "40": -0.022222222222222254,
+      "41": 0.022222222222222143,
+      "42": 0.0,
+      "43": 0.0888888888888889
+    }
+  },
+  "levels": {
+    "jev_argmax": {
+      "up": 0.6322222222222222,
+      "down": 0.9233333333333335
+    },
+    "jev_sample": {
+      "up": 0.928888888888889,
+      "down": 0.9455555555555556
+    }
+  },
+  "diagnostics": {
+    "jev_argmax": {
+      "up": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "down": [
+        0.6666666666666666,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "jev_sample": {
+      "up": [
+        1.0,
+        1.0,
+        1.0,
+        0.3333333333333333,
+        0.5,
+        1.0,
+        1.0,
+        0.8333333333333333,
+        1.0,
+        0.25,
+        0.3333333333333333,
+        0.6,
+        0.5,
+        0.8888888888888888,
+        0.0,
+        0.8333333333333333,
+        1.0,
+        0.41666666666666663
+      ],
+      "down": [
+        0.3333333333333333,
+        1.0,
+        1.0,
+        0.25,
+        0.6666666666666666,
+        0.0,
+        1.0,
+        0.5,
+        1.0,
+        0.5,
+        0.6666666666666666,
+        0.25,
+        1.0,
+        0.5,
+        1.0,
+        0.5,
+        0.5,
+        1.0,
+        0.5,
+        0.0
+      ]
+    }
+  },
+  "h1": {
+    "mean": 0.29111111111111115,
+    "se": 0.047849123936269576,
+    "t": 6.083938161518759,
+    "p": 3.7585447166795577e-06,
+    "ci95": [
+      0.19096174373013675,
+      0.39126047849208556
+    ],
+    "seeds_positive": 19,
+    "n": 20
+  },
+  "h2": {
+    "mean": 0.2744444444444445,
+    "se": 0.047037650991373116,
+    "t": 5.834569513149767,
+    "p": 6.389361089629133e-06,
+    "ci95": [
+      0.17599350945663988,
+      0.3728953794322491
+    ],
+    "sample_gap_mean": 0.016666666666666642,
+    "n": 20
+  },
+  "holm": {
+    "H1": 7.517089433359115e-06,
+    "H2": 6.389361089629133e-06
+  },
+  "h3": {
+    "n": 20,
+    "memoised_mean": 0.2577777777777778,
+    "independent_mean": 0.29111111111111115,
+    "difference_mean": -0.03333333333333331,
+    "se": 0.05032706543471073,
+    "ci95": [
+      -0.13866909187596152,
+      0.0720024252092949
+    ],
+    "seeds_positive": 7
+  },
+  "static_bound_decomposition": {
+    "states": 60,
+    "unstable": 9,
+    "unstable_with_opposite_side_minority": 3,
+    "max_opposite_side_share": 0.02,
+    "unstable_with_pass_minority_or_pass_mode": 7,
+    "detail": [
+      {
+        "modal": "pass",
+        "modal_share": 0.76,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.0
+      },
+      {
+        "modal": "pass",
+        "modal_share": 0.77,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.0
+      },
+      {
+        "modal": "sell",
+        "modal_share": 0.79,
+        "opposite_side_share": 0.02,
+        "pass_share": 0.19
+      },
+      {
+        "modal": "sell",
+        "modal_share": 0.86,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.14
+      },
+      {
+        "modal": "sell",
+        "modal_share": 0.96,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.04
+      },
+      {
+        "modal": "sell",
+        "modal_share": 0.98,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.02
+      },
+      {
+        "modal": "buy",
+        "modal_share": 0.98,
+        "opposite_side_share": 0.02,
+        "pass_share": 0.0
+      },
+      {
+        "modal": "pass",
+        "modal_share": 0.99,
+        "opposite_side_share": 0.0,
+        "pass_share": 0.0
+      },
+      {
+        "modal": "buy",
+        "modal_share": 0.99,
+        "opposite_side_share": 0.01,
+        "pass_share": 0.0
+      }
+    ]
+  },
+  "calls_per_run": {
+    "jev_argmax_seed24": 1240,
+    "jev_argmax_seed25": 1240,
+    "jev_argmax_seed26": 1240,
+    "jev_argmax_seed27": 1240,
+    "jev_argmax_seed28": 1240,
+    "jev_argmax_seed29": 1240,
+    "jev_argmax_seed30": 1240,
+    "jev_argmax_seed31": 1240,
+    "jev_argmax_seed32": 1240,
+    "jev_argmax_seed33": 1240,
+    "jev_argmax_seed34": 1240,
+    "jev_argmax_seed35": 1240,
+    "jev_argmax_seed36": 1240,
+    "jev_argmax_seed37": 1240,
+    "jev_argmax_seed38": 1240,
+    "jev_argmax_seed39": 1240,
+    "jev_argmax_seed40": 1240,
+    "jev_argmax_seed41": 1240,
+    "jev_argmax_seed42": 1240,
+    "jev_argmax_seed43": 1240,
+    "jev_sample_seed24": 1240,
+    "jev_sample_seed25": 1240,
+    "jev_sample_seed26": 1240,
+    "jev_sample_seed27": 1240,
+    "jev_sample_seed28": 1240,
+    "jev_sample_seed29": 1240,
+    "jev_sample_seed30": 1240,
+    "jev_sample_seed31": 1240,
+    "jev_sample_seed32": 1240,
+    "jev_sample_seed33": 1240,
+    "jev_sample_seed34": 1240,
+    "jev_sample_seed35": 1240,
+    "jev_sample_seed36": 1240,
+    "jev_sample_seed37": 1240,
+    "jev_sample_seed38": 1240,
+    "jev_sample_seed39": 1240,
+    "jev_sample_seed40": 1240,
+    "jev_sample_seed41": 1240,
+    "jev_sample_seed42": 1240,
+    "jev_sample_seed43": 1240
+  },
+  "sources": {
+    "jev_argmax_seed24": "archive",
+    "jev_argmax_seed25": "archive",
+    "jev_argmax_seed26": "archive",
+    "jev_argmax_seed27": "archive",
+    "jev_argmax_seed28": "archive",
+    "jev_argmax_seed29": "archive",
+    "jev_argmax_seed30": "archive",
+    "jev_argmax_seed31": "archive",
+    "jev_argmax_seed32": "archive",
+    "jev_argmax_seed33": "archive",
+    "jev_argmax_seed34": "archive",
+    "jev_argmax_seed35": "archive",
+    "jev_argmax_seed36": "archive",
+    "jev_argmax_seed37": "archive",
+    "jev_argmax_seed38": "archive",
+    "jev_argmax_seed39": "archive",
+    "jev_argmax_seed40": "archive",
+    "jev_argmax_seed41": "archive",
+    "jev_argmax_seed42": "archive",
+    "jev_argmax_seed43": "archive",
+    "jev_sample_seed24": "archive",
+    "jev_sample_seed25": "archive",
+    "jev_sample_seed26": "archive",
+    "jev_sample_seed27": "archive",
+    "jev_sample_seed28": "archive",
+    "jev_sample_seed29": "archive",
+    "jev_sample_seed30": "archive",
+    "jev_sample_seed31": "archive",
+    "jev_sample_seed32": "archive",
+    "jev_sample_seed33": "archive",
+    "jev_sample_seed34": "archive",
+    "jev_sample_seed35": "archive",
+    "jev_sample_seed36": "archive",
+    "jev_sample_seed37": "archive",
+    "jev_sample_seed38": "archive",
+    "jev_sample_seed39": "archive",
+    "jev_sample_seed40": "archive",
+    "jev_sample_seed41": "archive",
+    "jev_sample_seed42": "archive",
+    "jev_sample_seed43": "archive"
+  },
+  "cost_this_invocation": {
+    "live_calls": 0,
+    "cache_hits": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "spent_usd": 0.0,
+    "remaining_calls": null,
+    "remaining_usd": 2.5
+  }
+}

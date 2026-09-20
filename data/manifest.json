@@ -35,6 +35,212 @@
       "sha256": "7effc184bf85ba64a441e80a0c9c0b1848c8ffb9c8a3a0c8bf83790b4fe3867f"
     }
   },
+  "independent_calls": 49600,
+  "independent_input_tokens": 39429104,
+  "independent_output_tokens": 3620800,
+  "independent_estimated_cost_usd": 1.6109,
+  "independent_archives": {
+    "jev_argmax_seed24.json.gz": {
+      "calls": 1240,
+      "bytes": 132948,
+      "sha256": "f8240e530271d8f69c0837b6c68ad729b48be2e80c7de291d15ae4576e2caf9a"
+    },
+    "jev_argmax_seed25.json.gz": {
+      "calls": 1240,
+      "bytes": 132627,
+      "sha256": "28d11e09b89bf90da416a179cf98ff8be10fb4e3a14be84fb00c1bce6c8f8841"
+    },
+    "jev_argmax_seed26.json.gz": {
+      "calls": 1240,
+      "bytes": 129201,
+      "sha256": "b06c8fcff0b8fc5b6202f8195e252ff56bc3c0abf7d4fbf2cc77a96dd3edceec"
+    },
+    "jev_argmax_seed27.json.gz": {
+      "calls": 1240,
+      "bytes": 132630,
+      "sha256": "e3ee944476751127f68a0d10b28ddebede3a642dd679fc3e8e5ceb9c4f008d28"
+    },
+    "jev_argmax_seed28.json.gz": {
+      "calls": 1240,
+      "bytes": 130596,
+      "sha256": "f28d2ad0fb1e5bebab473997a6615f91b8c4c8046f2e7fb755c07c21dbe42765"
+    },
+    "jev_argmax_seed29.json.gz": {
+      "calls": 1240,
+      "bytes": 125931,
+      "sha256": "72337dc97b86bb99503c762a58c5cb04f92bbd5693ea8232c793e914f481bb86"
+    },
+    "jev_argmax_seed30.json.gz": {
+      "calls": 1240,
+      "bytes": 129441,
+      "sha256": "8301cb2aba24ac4da106a20f6a77c15b00fd6453a7937c6ade4d70f2635cb93f"
+    },
+    "jev_argmax_seed31.json.gz": {
+      "calls": 1240,
+      "bytes": 131849,
+      "sha256": "16cdac14c46ed27e6c294944676e52381f4ada9d6c34d31f94199fd8c97c6964"
+    },
+    "jev_argmax_seed32.json.gz": {
+      "calls": 1240,
+      "bytes": 129104,
+      "sha256": "fa856ea53fa4fd2bebd1e06239d4e06f0b6838f5b96780dc520f569871becfb7"
+    },
+    "jev_argmax_seed33.json.gz": {
+      "calls": 1240,
+      "bytes": 132919,
+      "sha256": "ff79c8307cb954860cbf98b9ef04cf1745022653a02536f16084dd33c350ef7e"
+    },
+    "jev_argmax_seed34.json.gz": {
+      "calls": 1240,
+      "bytes": 130637,
+      "sha256": "24190d90c3e4c5f64cf480c257824757f388c0aa57c4696c3afc533ba8252c30"
+    },
+    "jev_argmax_seed35.json.gz": {
+      "calls": 1240,
+      "bytes": 130477,
+      "sha256": "e1ff1b273783b2ba3e03dfdd25f355cb9dcf2a6d6a754d5b4cac35d48a4ec605"
+    },
+    "jev_argmax_seed36.json.gz": {
+      "calls": 1240,
+      "bytes": 131721,
+      "sha256": "68d011d5726392ba40ad5f9b449f73e10592885460817b2f1c78ca64a23836e8"
+    },
+    "jev_argmax_seed37.json.gz": {
+      "calls": 1240,
+      "bytes": 128729,
+      "sha256": "156ec68926ccc334006b424bd281596bd55721ca2f7e9c84aa9c1911f7e3955c"
+    },
+    "jev_argmax_seed38.json.gz": {
+      "calls": 1240,
+      "bytes": 132587,
+      "sha256": "9525ffb1c4d4198f11ac33395c5b7b718d1d6ae5f36ef3d37168b3c007afd9ce"
+    },
+    "jev_argmax_seed39.json.gz": {
+      "calls": 1240,
+      "bytes": 128032,
+      "sha256": "e3f841c4070bf5c8081402e603edddc73321886ebbdb9bf919dfe351fc223834"
+    },
+    "jev_argmax_seed40.json.gz": {
+      "calls": 1240,
+      "bytes": 127032,
+      "sha256": "11d27ab98834f194284a457436351becf5d7eb70cecb091e8f4e8d954a4963ad"
+    },
+    "jev_argmax_seed41.json.gz": {
+      "calls": 1240,
+      "bytes": 129749,
+      "sha256": "44ec3523cfb20a8c04b5d481988910e94966ea9367ec94dbd2fe12b55b0fbcd8"
+    },
+    "jev_argmax_seed42.json.gz": {
+      "calls": 1240,
+      "bytes": 128740,
+      "sha256": "a82a31fbb701f4abf9b613b96a1d8a565cd9e7f8970f47928559378057219833"
+    },
+    "jev_argmax_seed43.json.gz": {
+      "calls": 1240,
+      "bytes": 132700,
+      "sha256": "ad325095e7c0702856813e94a5a27711a14377223e17df840377dd59c746e703"
+    },
+    "jev_sample_seed24.json.gz": {
+      "calls": 1240,
+      "bytes": 131926,
+      "sha256": "bc4832cb3124cda4ddf9c5ff7725cd783fbe0555cb8e572ffebb627cad158a14"
+    },
+    "jev_sample_seed25.json.gz": {
+      "calls": 1240,
+      "bytes": 133497,
+      "sha256": "2b343ec0978a2dad176b114bd8a46275c2a8d47113a23d923f6fc33079132da2"
+    },
+    "jev_sample_seed26.json.gz": {
+      "calls": 1240,
+      "bytes": 131662,
+      "sha256": "49744b00b11a6ac96c8d0509fe9a5994e0b47a864d2bc4318c754437d9da7a7b"
+    },
+    "jev_sample_seed27.json.gz": {
+      "calls": 1240,
+      "bytes": 132500,
+      "sha256": "35b504baa8682ced5398c33b9529c6f6e5c5c023aa3699b5b1d1fb0b820a985f"
+    },
+    "jev_sample_seed28.json.gz": {
+      "calls": 1240,
+      "bytes": 133081,
+      "sha256": "6c6408d5f8132edff5e654bc0fd0d24e615c5eb970802a6e63e732efd9659c24"
+    },
+    "jev_sample_seed29.json.gz": {
+      "calls": 1240,
+      "bytes": 131839,
+      "sha256": "79544f35ea9d9d039e7ffc4a2536a47fa5428d0182f3262d4f11c142625dcaef"
+    },
+    "jev_sample_seed30.json.gz": {
+      "calls": 1240,
+      "bytes": 132475,
+      "sha256": "9900e4b2efd8a6922cd83c52636d9f6141d2fd01575392182cbc4a7b41715e90"
+    },
+    "jev_sample_seed31.json.gz": {
+      "calls": 1240,
+      "bytes": 133473,
+      "sha256": "4d90775efe58626fc255bdd5e8af342b65f7504378179d82328bdce9dda2aefd"
+    },
+    "jev_sample_seed32.json.gz": {
+      "calls": 1240,
+      "bytes": 132231,
+      "sha256": "c841463252e4bc61a3c3128c5d3cf3ec3fb51b84ccfac8e7420dcef685580e2a"
+    },
+    "jev_sample_seed33.json.gz": {
+      "calls": 1240,
+      "bytes": 132228,
+      "sha256": "43553ebba0f9c2ffa9b5cedc57b4983256427e4ad52eadd6fa84fe4d6eba6ea1"
+    },
+    "jev_sample_seed34.json.gz": {
+      "calls": 1240,
+      "bytes": 132049,
+      "sha256": "2e39c5dc5f985507c6d5c53ab7c7a33673725e911131f4a05e0e0df7d013f5b9"
+    },
+    "jev_sample_seed35.json.gz": {
+      "calls": 1240,
+      "bytes": 132839,
+      "sha256": "2c89cdada15ed897a2572f98062cbdc319e1afdc38b1de9d9da930d598fd1996"
+    },
+    "jev_sample_seed36.json.gz": {
+      "calls": 1240,
+      "bytes": 132303,
+      "sha256": "88a8c8bf8faa6b139f5e4c0580f19a72706122ae5ce353164e93a350326c2996"
+    },
+    "jev_sample_seed37.json.gz": {
+      "calls": 1240,
+      "bytes": 133039,
+      "sha256": "4c63c2d34625ef0f45f1b0301c073b0fafb8d6c8266d8bfe5a577855381de7f1"
+    },
+    "jev_sample_seed38.json.gz": {
+      "calls": 1240,
+      "bytes": 132159,
+      "sha256": "5522d0fe83995e5226daca50aa0809ba7d8761e19c395634611790ac2c6044f5"
+    },
+    "jev_sample_seed39.json.gz": {
+      "calls": 1240,
+      "bytes": 132191,
+      "sha256": "d6bd0da78c97e7d7f0796e17ebf80cc6326e9cdb41c4569ade94d01e24cb741f"
+    },
+    "jev_sample_seed40.json.gz": {
+      "calls": 1240,
+      "bytes": 133035,
+      "sha256": "430a74aa99f488091bf9ec1a724988897d9eec49175a64fa26d093aec9735789"
+    },
+    "jev_sample_seed41.json.gz": {
+      "calls": 1240,
+      "bytes": 131642,
+      "sha256": "a867897d193ca413140a6bdc278ec47ae1143d77e87511fb2d60bf266842ac10"
+    },
+    "jev_sample_seed42.json.gz": {
+      "calls": 1240,
+      "bytes": 132549,
+      "sha256": "84d9516cfa2ed2c1a199fa81c5609cb33d7c2422b00b05aec2dbbfb5c39b4395"
+    },
+    "jev_sample_seed43.json.gz": {
+      "calls": 1240,
+      "bytes": 132809,
+      "sha256": "d849ff750546a16d016f39f41b2d207dfa662e54907b4e800fd5cdd6255fcb05"
+    }
+  },
   "result_files": {
     "asym_argmax_mirror.json": {
       "bytes": 805,
@@ -79,6 +285,10 @@
     "estimand_realigned.json": {
       "bytes": 1019,
       "sha256": "8bc6a52615646fcc7e2df665dadb78b9c452e78a5f8d049861d66e9f00feab42"
+    },
+    "independent_market.json": {
+      "bytes": 8827,
+      "sha256": "226c2a44141361ad4ae5e67cb39b8f53e67cade907df75304ad03f12cdaae016"
     },
     "lag_flow.json": {
       "bytes": 1494,

@@ -157,11 +157,17 @@ def main(argv=None) -> int:
 
     # --- the registered statistics -----------------------------------------
     gaps = {arm: {} for arm in ARMS}
+    per_seed_levels = {arm: {"up": [], "down": []} for arm in ARMS}
     diagnostics = {arm: {"up": [], "down": []} for arm in ARMS}
-    for (arm, seed), (result, _, _) in outcomes.items():
+    # Seed order, not thread-completion order, so the output file is identical
+    # whether the runs were bought live or replayed from the archives.
+    for (arm, seed) in sorted(outcomes):
+        result = outcomes[(arm, seed)][0]
         traded, one_sided = measure(result, args.window)
         if traded["up"] and traded["down"]:
             gaps[arm][seed] = statistics.fmean(traded["down"]) - statistics.fmean(traded["up"])
+            per_seed_levels[arm]["up"].append(statistics.fmean(traded["up"]))
+            per_seed_levels[arm]["down"].append(statistics.fmean(traded["down"]))
         for key in ("up", "down"):
             if one_sided[key]:
                 diagnostics[arm][key].append(statistics.fmean(one_sided[key]))
@@ -170,6 +176,13 @@ def main(argv=None) -> int:
     assert set(gaps["jev_argmax"]) == set(gaps["jev_sample"]), "cells cover different seeds"
     argmax = [gaps["jev_argmax"][s] for s in common]
     sample = [gaps["jev_sample"][s] for s in common]
+
+    # Levels as in market_size.json: mean over seeds of the per-seed mean share.
+    levels = {arm: {k: statistics.fmean(v) for k, v in per_seed_levels[arm].items()}
+              for arm in ARMS}
+    print("\n=== traded share (mean over seeds) ===")
+    for arm in ARMS:
+        print(f"  {arm:>10}  after UP {levels[arm]['up']:.1%}  after DOWN {levels[arm]['down']:.1%}")
 
     print(f"\n=== H1 (primary): independent jev_argmax gap > 0, n={len(argmax)} ===")
     m1, se1, t1, p1, lo1, hi1 = one_sided_t(argmax)
@@ -252,8 +265,8 @@ def main(argv=None) -> int:
               f"(largest {minority['max_opposite_side_share']:.0%}); "
               f"{minority['unstable_with_pass_minority_or_pass_mode']} involve pass")
 
-    sources = {f"{arm}_seed{seed}": src for (arm, seed), (_, _, src) in outcomes.items()}
-    calls = {f"{arm}_seed{seed}": n for (arm, seed), (_, n, _) in outcomes.items()}
+    sources = {f"{arm}_seed{seed}": outcomes[(arm, seed)][2] for (arm, seed) in sorted(outcomes)}
+    calls = {f"{arm}_seed{seed}": outcomes[(arm, seed)][1] for (arm, seed) in sorted(outcomes)}
     print("\n=== cost (this invocation's live calls only) ===")
     print(json.dumps(gate.summary(), indent=2))
     payload = {
@@ -261,6 +274,7 @@ def main(argv=None) -> int:
         "design": {"seeds": seeds, "traders": args.traders, "periods": args.periods,
                    "burn_in": 5, "window": args.window, "cache": "bypassed"},
         "gaps": gaps,
+        "levels": levels,
         "diagnostics": diagnostics,
         "h1": {"mean": m1, "se": se1, "t": t1, "p": p1, "ci95": [lo1, hi1],
                "seeds_positive": sum(1 for v in argmax if v > 0), "n": len(argmax)},

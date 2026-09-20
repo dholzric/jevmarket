@@ -29,6 +29,13 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 TEX = ROOT / "paper" / "main.tex"
 
+# Read provenance from the manifest rather than hard-coding it. Hard-coding
+# 118,628 here was the same transcription hole the table audit had: when the
+# archive grew, this file would have demanded the stale number.
+import json as _json
+_MANIFEST = _json.loads((ROOT / "data" / "manifest.json").read_text(encoding="utf-8"))
+ARCHIVE_COUNT = f"{_MANIFEST['unique_archived_responses']:,}".replace(",", "{,}")
+
 # (pattern, why it must not appear) -- withdrawn or superseded claims.
 # A superseded statistic may appear when the sentence is retracting it. The
 # rule is therefore "not asserted bare": the word `pooled` must be nearby,
@@ -39,11 +46,14 @@ FORBIDDEN = [
     (r"(?<!pooled \$)t=-2\.53",
      "pooled E2 statistic asserted without marking it superseded"),
     (r"was falsified", "E2 is unresolved, not falsified"),
+    (r"Both registered criteria held", "F1 does not hold; this claim is withdrawn"),
+    (r"47/50", "superseded F1 sample from the wrong population"),
     (r"standing (directional|buy) bias", "the two-component mechanism was withdrawn"),
     (r"decomposes into\s+two parts", "the two-component mechanism was withdrawn"),
     (r"in two parts", "the two-component mechanism was withdrawn"),
     (r"Nothing in its judgement was wrong", "false at the shock: 34.6% buy after a down shock"),
-    (r"110\{,\}805", "stale archive count; the manifest says 118,628"),
+    (r"110\{,\}805|118\{,\}628|118\{,\}728",
+     "a stale archive count; only the manifest's current value may appear"),
     # Backslash-eating has bitten three times: \texttt -> TAB+exttt,
     # \approx -> BEL+pprox, \ref -> CR+ef. Each produced legal plain text, so
     # the strict build passed and the PDF printed garbage. Catch the whole
@@ -65,7 +75,7 @@ REQUIRED = [
     (r"unresolved", "E2's corrected status"),
     (r"90\.0\\%", "agreement at the shock, up side"),
     (r"59\.4\\%", "agreement at the shock, down side"),
-    (r"118\{,\}628", "archive count from the manifest"),
+    (re.escape(ARCHIVE_COUNT), f"archive count matching the manifest ({ARCHIVE_COUNT})"),
     (r"Every confirmatory hypothesis test was preregistered",
      "scoped preregistration claim, replacing 'all experiments'"),
     # The registration record, by hypothesis ID. Searching for a sentence like
@@ -78,9 +88,10 @@ REQUIRED = [
      "the withdrawn mechanism identified as post-hoc, not registered"),
     (r"memoised|memoized", "the cache estimand limitation"),
     (r"one archived response per distinct state", "the estimand stated explicitly"),
-    (r"\+2\.1", "measured memoisation inflation"),
-    (r"0\.976", "measured mode stability"),
-    (r"48/50|\$48/50\$", "option-naming control result"),
+    (r"\+2\.84", "F2 upper bound on memoisation inflation"),
+    (r"0\.887", "F1 lower bound, which fails its criterion"),
+    (r"does not hold", "F1 reported as not holding"),
+    (r"60/60", "option-naming control on the registered population"),
 ]
 
 # Claims that must never be filed under the registration record.
@@ -124,8 +135,8 @@ def main() -> int:
         ("call E2 falsified", lambda s: s.replace("is \\emph{unresolved}", "was falsified")),
         ("restore the standing-bias claim",
          lambda s: s + "\nThe arm carries a standing buy bias.\n"),
-        ("restore the stale archive count",
-         lambda s: s.replace("118{,}628", "110{,}805")),
+        ("restore a stale archive count",
+         lambda s: s.replace(ARCHIVE_COUNT, "110{,}805")),
         ("break a texttt", lambda s: s.replace("\\texttt{data/manifest.json}",
                                                "\texttt{data/manifest.json}")),
         ("file a post-hoc story among registered failures",

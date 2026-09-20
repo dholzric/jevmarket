@@ -68,8 +68,8 @@ A separate post-hoc mechanism account is withdrawn and identified as such.
 
 A language model asked to choose among actions returns, in principle, a
 distribution. A common deployment choice is to discard it and take the mode.
-For a single decision that selects the most probable action, which is the right
-choice under 0--1 loss against the returned distribution. This paper
+For a single decision this selects the most probable action, which is correct
+under 0--1 loss against the returned distribution. This paper
 asks what happens when many agents driven by the same model make related
 decisions at the same time.
 
@@ -107,8 +107,9 @@ We emphasise the failures, and state the registration record exactly.
 \textbf{Three preregistered predictions failed}: C1, that the wording
 asymmetry would move pricing error (a clean null, Section~\ref{sec:wording});
 the original clause that modal decoding would be immune to the liquidity
-effect; and C2, that sampling would show the \emph{larger} wording contrast, on
-which the estimate came back the wrong sign ($+0.161$, $p=0.80$).
+effect; and C2, that the sampling arm's wording contrast would be
+\emph{smaller} than the argmax arm's, on which the estimate came back the wrong
+sign ($+0.161$, $p=0.80$).
 \textbf{One is unresolved}: E2 (Section~\ref{sec:size}). \textbf{Three were
 confirmed}: D1, D2 and E1.
 
@@ -281,7 +282,7 @@ and $2.74$ and buy probabilities of $0.98$, $0.99$, $0.99$, $0.99$. There is no
 seed parameter. Run-to-run noise is roughly $\pm 0.05$ on a $0$--$4$ urgency
 scale and $\pm 0.01$ on probabilities. \emph{Reproducibility therefore requires
 the response archive, not merely the code}: a rerun without it does not
-reproduce. All 118{,}628 archived responses are retained and every reported figure is
+reproduce. All 118{,}968 archived responses are retained and every reported figure is
 regenerable from them.
 
 \paragraph{Quantisation.} Probabilities are returned to two decimal places, so
@@ -566,14 +567,16 @@ Whatever produces the asymmetry survives making the question symmetric.
 A third candidate---the option naming in the response schema---is also ruled
 out by measurement. Our mirror wording places the above-price description on
 \texttt{option\_a}, which maps to buy, so any preference for the first option
-would appear as exactly this bias. We asked the same 50 states under two
-arrangements differing only in which label carried which description:
-$48/50$ states selected the same economic meaning under both, and the shift in
-$P(\text{buy})$ was $+4.0$ points---in the \emph{opposite} direction to a
-first-option preference, since moving buy off \texttt{option\_a} made it
-slightly more likely. At four points it can account for at most a sixth of the
-residual, and the mirror control used in Section~\ref{sec:wording} is not
-contaminated by its option naming.
+would appear as exactly this bias. We asked the same 60 registered post-shock
+states under two arrangements differing only in which label carried which
+description. \textbf{All 60/60 states selected the same economic meaning under
+both}, so the paired shift is exactly zero and equivalence holds within any
+positive margin (G1). Option naming is not the residual, and the mirror control
+used in Section~\ref{sec:wording} is not contaminated by it.
+
+On the earlier, non-registered sample this comparison gave $48/50$ with a
+$+4.0$ point shift---in the opposite direction to a first-option preference.
+The corrected figure is stronger, and both are recorded.
 
 What remains is the model itself, the task framing, or the state
 representation, which this design cannot separate. We flag it as the clearest
@@ -608,49 +611,63 @@ within-state agreement.
 
 \paragraph{How much it inflates agreement, measured.} Rather than leave this as
 a caveat we bounded it, on a preregistered test that could only hurt the
-result. We drew 50 distinct states the confirmatory runs actually visited and
-called each five times live, bypassing the cache.
+result. We drew 60 distinct states from the registered population---those
+rendered inside the fifteen-period post-shock windows of the confirmatory
+\texttt{jev\_argmax} runs, seeds 24--43---and called each five times live,
+bypassing the cache. Every raw response is archived.
 
 \begin{center}
-\begin{tabular}{lr}
+\begin{tabular}{lrr}
 \toprule
-Modal action identical across five live repeats & $47/50$ states \\
-Mean mode stability & $0.976$ \\
+& Estimate & Registered criterion \\
 \midrule
-Agreement among eight traders, memoised & $1.000$ \\
-Agreement among eight traders, each calling independently & $0.979$ \\
+F1: states fully stable over five repeats & $57/60 = 0.950$ & \\
+\quad Jeffreys one-sided 95\% lower bound & $0.887$ & must exceed $0.95$ \\
+\quad \emph{verdict} & \multicolumn{2}{r}{\textbf{does not hold}} \\
 \midrule
-Inflation attributable to memoisation & $+2.1$pp (SE $1.2$) \\
+F2: inflation in agreement from memoisation & $+1.43$pp & \\
+\quad one-sided 95\% upper bound & $+2.84$pp & must be under $10$pp \\
+\quad \emph{verdict} & \multicolumn{2}{r}{\textbf{holds}} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Both registered criteria held: mode stability at least $0.95$ (F1), and
-inflation under ten percentage points (F2). Memoisation raises within-state
-agreement by about two percentage points, against a measured liquidity effect
-of $25.8$ points. The mechanism does not depend on it, and the argmax result
-carries over to independent callers with that bound attached. Had either
-criterion failed, the preregistration required rewriting the mechanism section
-or reporting the headline number as an upper bound.
+\textbf{F1 does not hold.} The proportion of states whose modal action is
+identical across five repeats is $0.950$, but its lower confidence bound is
+$0.887$, so at this sample size we cannot certify stability above the
+registered threshold. We therefore do not claim the modal policy is effectively
+deterministic.
 
-The caveat that remains is narrower and applies to the sampling arm: our
-traders draw independently from \emph{one frozen distribution} per state,
-whereas independent callers would draw from distributions that themselves vary
-slightly. The measured variation is small---probabilities move by about
-$\pm 0.01$ between repeats---but we have not run the sampling arm under
-repeated responses.
+\textbf{F2 holds, and it is the claim that matters.} Memoisation inflates
+within-state agreement by at most $2.84$ percentage points with 95\%
+confidence, against a measured liquidity effect of $25.8$ points. The mechanism
+does not rest on memoisation. What we may assert is the bound, not the stronger
+statement that the argmax result transfers unchanged to independent callers.
+
+An earlier version of this analysis reported both criteria as holding. It
+sampled the whole response archive rather than the registered post-shock
+population, and scored F1 on mean within-state stability rather than the
+registered proportion. That deviation, and this correction, are recorded in the
+preregistration; the earlier numbers are retained there as exploratory.
+
+Two narrower caveats remain. The sampling arm draws from \emph{one frozen
+distribution} per state, and we have not run it under repeated responses.
+And F2 bounds instability conditional on the sampled states; it does not
+re-run the dynamic market with independent calls throughout.
 
 \section{Reproducibility}
 
 Because the model is non-deterministic and has no seed, code alone does not
-reproduce these numbers. Every response is archived---118{,}628 of them---and
+reproduce these numbers. Every response is archived---118{,}968 of them---and
 the analysis can be replayed against the archive with live calls disabled, in
 which case a cache miss raises rather than silently contacting the API.
 
-The archive holds $118{,}628$ \emph{unique} responses, one per distinct
+The archive holds $118{,}968$ \emph{unique} cached request/response entries, one per distinct
 request. That is a lower bound on live calls rather than a count of them:
 retries, repeated uncached requests and overwrites of the same key would not
-appear separately. Estimated spend from the archived token counts is
+appear separately. The 300 deliberately uncached calls of the estimand test are
+archived separately, in full, as \texttt{data/raw\_repeats.json}. Estimated
+spend from the archived token counts is
 \$$3.85$, consistent with the provider's reported balance. These figures, and
 SHA-256 hashes of every result file and archive bundle, are generated from disk
 into \texttt{data/manifest.json} rather than transcribed.

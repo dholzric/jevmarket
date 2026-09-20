@@ -1,14 +1,14 @@
 {
-  "unique_archived_responses": 118728,
-  "estimated_live_calls_lower_bound": 118728,
-  "responses": 118728,
-  "input_tokens": 93419912,
-  "output_tokens": 8806132,
-  "estimated_cost_usd": 3.8486,
+  "unique_archived_responses": 118968,
+  "estimated_live_calls_lower_bound": 118968,
+  "responses": 118968,
+  "input_tokens": 93531526,
+  "output_tokens": 8816212,
+  "estimated_cost_usd": 3.8532,
   "cost_basis": "summed from archived token counts at the fitted rate; not a provider invoice",
   "caches": {
     "cache": 118483,
-    "cache_naming": 100,
+    "cache_naming": 340,
     "cache_probe": 40,
     "cache_rounding": 73,
     "cache_wording": 32
@@ -17,6 +17,10 @@
     "cache.tar.gz": {
       "bytes": 19256705,
       "sha256": "3966990cb016b4218155962a44f7f3125e9a0a5a1a8aa6f87edc6c10c3a8efbe"
+    },
+    "cache_naming.tar.gz": {
+      "bytes": 38833,
+      "sha256": "003065d85db930746d016dc74bbf26e9d4358f8a7eb4088516e15e47ec93a8bb"
     },
     "cache_probe.tar.gz": {
       "bytes": 5552,
@@ -68,6 +72,10 @@
       "bytes": 30243,
       "sha256": "a1370146e24842394dc058d5a7ca7385591f0fccfed6f0fedd95d799f135f5f9"
     },
+    "estimand_corrected.json": {
+      "bytes": 16359,
+      "sha256": "2b477e00e25a6bd23a1dd9a990691724dda536f76e29214c99fff5cfca5e24c9"
+    },
     "lag_flow.json": {
       "bytes": 1494,
       "sha256": "48659ec12a56369aa3f4cfec67b9a2980094aa5dc2bb048cd0a8865a1a50deff"
@@ -95,6 +103,10 @@
     "probe.json": {
       "bytes": 4126,
       "sha256": "52f5b5a713c9409208b34cf0a12fd3c0ce8dcbe37798a2653f3101937238226f"
+    },
+    "raw_repeats.json": {
+      "bytes": 450859,
+      "sha256": "a841d79196854184c31dc9c63034b31830717bccdc6ef30306cb518c24d6bacb"
     },
     "repeated_response.json": {
       "bytes": 25605,

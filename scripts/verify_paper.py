@@ -200,13 +200,27 @@ check("Estimand", "memoisation inflation = +2.1pp", 2.1, rr["inflation"] * 100, 
 check("Estimand", "F1 holds", True, rr["F1_holds"])
 check("Estimand", "F2 holds", True, rr["F2_holds"])
 
-# --- Option-naming control (prereg 10e) --------------------------------------
-on = load("option_naming.json")
-check("Estimand", "same meaning under swapped labels = 48/50",
-      "48/50", f"{on['same_meaning']}/{on['n_states']}")
-check("Estimand", "label shift in P(buy) = +4.0pp", 4.0, on["shift"]["buy"] * 100, 0.1)
-check("Estimand", "G1 holds", True, on["G1_holds"])
-check("Estimand", "G2 holds", True, on["G2_holds"])
+# --- Corrected estimand tests (prereg 10d/10e as revised by 10f) -------------
+ec = load("estimand_corrected.json")
+check("Estimand", "F1 fully stable = 57/60",
+      "57/60", f"{ec['fully_stable']}/{ec['n_states']}")
+check("Estimand", "F1 lower bound = 0.887", 0.887, ec["f1_lower_bound"], 0.002)
+check("Estimand", "F1 DOES NOT hold", False, ec["F1_holds"])
+check("Estimand", "F2 inflation upper bound = +2.84pp", 2.84,
+      ec["inflation_upper_bound"] * 100, 0.05)
+check("Estimand", "F2 holds", True, ec["F2_holds"])
+check("Estimand", "G1 same meaning = 60/60",
+      "60/60", f"{ec['same_meaning']}/{ec['n_states']}")
+check("Estimand", "G1 holds", True, ec["G1_holds"])
+
+# SUPERSEDED: the first F/G run sampled the whole archive rather than the
+# registered post-shock population and scored an unregistered statistic for F1.
+# Pinned so the deviation stays visible; must not be cited as current.
+rr = load("repeated_response.json")
+check("Estimand [superseded]", "old F1 sample 47/50",
+      "47/50", f"{rr['fully_stable_states']}/{rr['states']}")
+check("Estimand [superseded]", "old mean stability = 0.976", 0.976,
+      rr["mean_mode_stability"], 0.002)
 
 # --- Null calibration -------------------------------------------------------
 null = load("null.json")

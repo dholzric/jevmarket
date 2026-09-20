@@ -487,3 +487,46 @@ The residual directional asymmetry -- 90.0% agreement at an up shock against
 the market's construction (symmetric baselines), our question wording (mirror),
 state rounding (rounding probe), and option naming (above). What remains is the
 model, the task framing, or the state representation.
+
+## 18. The estimand tests were not run as registered; corrected
+
+External review found that §17's F/G runs deviated from prereg 10d/10e three
+ways: they sampled the whole response archive rather than the registered
+post-shock population, scored an unregistered statistic for F1, and decided
+every flag by point estimate with no confidence bound. Logged as prereg 10f
+before any corrected run.
+
+A further bug surfaced while correcting it: the first attempt at reconstructing
+the registered population rebuilt states with an **empty order book**, because
+`DecisionRecord` never stored the book. Those states were trivially stable. The
+population is now recovered by replaying the confirmatory runs through a
+recording client that captures the real rendered state of every call.
+
+### Corrected results, 60 states from the registered post-shock windows
+
+| | Estimate | Criterion | Verdict |
+|---|---|---|---|
+| F1: states fully stable over 5 repeats | 57/60 = 0.950 | lower bound > 0.95 | **does not hold** (bound 0.887) |
+| F2: inflation from memoisation | +1.43pp | upper bound < 10pp | **holds** (bound +2.84pp) |
+| G1: same meaning under swapped labels | 60/60 | equivalence within 10pp | **holds** |
+
+**F1 fails.** At this sample size we cannot certify that the modal action is
+stable above the registered threshold, so we do not claim the modal policy is
+effectively deterministic. The earlier run reported F1 as holding only because
+it scored mean within-state stability instead of the registered proportion.
+
+**F2 holds and is the claim that matters**: memoisation inflates within-state
+agreement by at most 2.84 percentage points with 95% confidence, against a
+25.8-point liquidity effect.
+
+**G1 is stronger on the correct population** than on the flawed one: 60/60
+identical meanings against 48/50.
+
+All 300 raw responses are archived in `data/raw_repeats.json`, so the claim
+that every response is retained remains true.
+
+### Process change
+
+`scripts/check_all.py` runs every gate in dependency order, regenerating the
+provenance manifest first. A previous "all green" was reported from a run whose
+inputs changed immediately afterwards.

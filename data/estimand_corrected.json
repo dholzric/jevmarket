@@ -1,0 +1,933 @@
+{
+  "n_states": 60,
+  "repeats": 5,
+  "traders": 8,
+  "population": "post-shock windows, jev_argmax/original, seeds 24-43",
+  "fully_stable": 57,
+  "fully_stable_rate": 0.95,
+  "f1_lower_bound": 0.8871315165159521,
+  "mean_stability": 0.9833333333333333,
+  "inflation_mean": 0.014328125,
+  "inflation_upper_bound": 0.028366475027786334,
+  "label_shift_mean": 0.0,
+  "label_shift_ci90": [
+    0.0,
+    0.0
+  ],
+  "tost_p": 0.0,
+  "same_meaning": 60,
+  "F1_holds": false,
+  "F2_holds": true,
+  "G1_holds": true,
+  "cost": {
+    "live_calls": 300,
+    "cache_hits": 120,
+    "input_tokens": 238515,
+    "output_tokens": 21900,
+    "spent_usd": 0.00974442,
+    "remaining_calls": null,
+    "remaining_usd": 0.99025558
+  },
+  "rows": [
+    {
+      "seed": 36,
+      "period": 68,
+      "jump": 60,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 86,
+      "jump": 80,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 74,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 24,
+      "jump": 20,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 36,
+      "period": 21,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 41,
+      "period": 123,
+      "jump": 120,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 38,
+      "period": 102,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 32,
+      "period": 64,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 41,
+      "period": 132,
+      "jump": 120,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 42,
+      "period": 102,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 29,
+      "period": 105,
+      "jump": 100,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "pass",
+        "sell",
+        "pass"
+      ],
+      "stable": false,
+      "stability": 0.6
+    },
+    {
+      "seed": 25,
+      "period": 24,
+      "jump": 20,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 82,
+      "jump": 80,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 42,
+      "jump": 40,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 26,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 35,
+      "period": 114,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 23,
+      "jump": 20,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 42,
+      "period": 122,
+      "jump": 120,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 45,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 25,
+      "period": 67,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 130,
+      "jump": 120,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 35,
+      "period": 44,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 38,
+      "period": 110,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 32,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 24,
+      "period": 28,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 30,
+      "period": 61,
+      "jump": 60,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 54,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 91,
+      "jump": 80,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 93,
+      "jump": 80,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 41,
+      "period": 45,
+      "jump": 40,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 34,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 24,
+      "period": 105,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 25,
+      "jump": 20,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 61,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 40,
+      "period": 52,
+      "jump": 40,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 25,
+      "period": 127,
+      "jump": 120,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 33,
+      "period": 82,
+      "jump": 80,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 53,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 41,
+      "period": 108,
+      "jump": 100,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 34,
+      "period": 29,
+      "jump": 20,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 105,
+      "jump": 100,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 134,
+      "jump": 120,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 27,
+      "period": 62,
+      "jump": 60,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 32,
+      "period": 48,
+      "jump": 40,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 37,
+      "period": 73,
+      "jump": 60,
+      "direction": "up",
+      "actions": [
+        "pass",
+        "pass",
+        "sell",
+        "pass",
+        "pass"
+      ],
+      "stable": false,
+      "stability": 0.8
+    },
+    {
+      "seed": 27,
+      "period": 125,
+      "jump": 120,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 87,
+      "jump": 80,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 28,
+      "period": 71,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "pass",
+        "sell",
+        "pass",
+        "sell",
+        "sell"
+      ],
+      "stable": false,
+      "stability": 0.6
+    },
+    {
+      "seed": 43,
+      "period": 42,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 24,
+      "period": 47,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 26,
+      "period": 54,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 42,
+      "period": 82,
+      "jump": 80,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 37,
+      "period": 45,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 41,
+      "period": 65,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 37,
+      "period": 127,
+      "jump": 120,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 24,
+      "period": 54,
+      "jump": 40,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 94,
+      "jump": 80,
+      "direction": "up",
+      "actions": [
+        "sell",
+        "sell",
+        "sell",
+        "sell",
+        "sell"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 39,
+      "period": 45,
+      "jump": 40,
+      "direction": "up",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 71,
+      "jump": 60,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    },
+    {
+      "seed": 31,
+      "period": 109,
+      "jump": 100,
+      "direction": "down",
+      "actions": [
+        "buy",
+        "buy",
+        "buy",
+        "buy",
+        "buy"
+      ],
+      "stable": true,
+      "stability": 1.0
+    }
+  ]
+}

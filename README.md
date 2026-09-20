@@ -30,10 +30,7 @@ reproduce these numbers** — only the saved responses do.
 tar -xzf data/archive/cache.tar.gz -C data/
 python -m pip install -e ".[dev]"
 
-python scripts/verify_paper.py       # data-regression test over pinned statistics
-python scripts/audit_manuscript.py   # parse main.tex: tables, provenance, strict build
-python scripts/audit_prose.py        # headline claims + mutation tests
-python -m pytest                     # test suite
+python scripts/check_all.py          # every gate, in dependency order
 ```
 
 The three gates cover different things, because over three review rounds each
@@ -46,6 +43,10 @@ was caught certifying something the paper contradicted:
   its named dataset, checks that levels quoted beside a gap actually produce
   that gap, compares provenance against a disk-generated manifest, and requires
   `pdflatex -halt-on-error` to exit 0.
+- `check_all.py` runs them in dependency order and is the only command whose
+  green result should be quoted. An earlier verification reported all-clear
+  because the audits ran *before* the manifest they check against was
+  regenerated.
 - `audit_prose.py` reads the abstract, contributions, registration tally,
   discussion and limitations — which the table audit never touches. It asserts
   withdrawn claims are absent and current ones present, and runs **eight

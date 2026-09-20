@@ -489,6 +489,58 @@ built inline; the frozen schemas are not modified.
   Experiment 1 contrast. We would report both.
 - **Cost.** About 100 live calls, under \$0.01.
 
+## 10f. DEVIATION: 10d and 10e were not run as registered
+
+Logged 2026-09-19 after external review, before any corrected run.
+
+Three defects, all ours:
+
+1. **Wrong population.** 10d says "states drawn from the post-shock windows of
+   the confirmatory runs". `sampled_states()` instead shuffled every cached
+   request and kept the first 50 original-schema states with a non-null bid.
+   Cache entries carry no seed/period provenance, so the registered restriction
+   was never reconstructed. 10e inherits this, since it reuses those states.
+   This is not cosmetic: modal instability concentrates near decision
+   boundaries, and a broad cache sample skewed toward saturated states
+   understates memoisation exactly where the mechanism operates.
+
+2. **Wrong statistic for F1.** 10d registers "mode stability >= 0.95" and a
+   one-sample proportion test. The proportion of states with an identical
+   modal action across all five repeats is **47/50 = 0.940, which misses
+   0.95**. The script instead scored the mean within-state winning-action
+   frequency (0.976) and reported a pass. Under the registered reading F1
+   does not hold on that sample.
+
+3. **Point estimates, not tests.** F1, F2, G1 and G2 were decided by
+   `point estimate < threshold`. No confidence bound entered any decision,
+   despite the registrations describing proportion and paired tests.
+
+### What we do about it
+
+The original F/G results are **retained and relabelled exploratory**. They are
+not deleted and not restated as confirmations.
+
+A corrected run follows, on the registered population with the registered
+inference. Because the earlier results are known, this is a
+deviation-with-disclosure and not a fresh registration, and it is reported as
+such. Fixed in advance of the corrected run:
+
+- **Population.** States rendered during the registered post-shock windows
+  (15 periods after each jump) of the confirmatory `jev_argmax/original` runs,
+  seeds 24--43, with seed/period/jump provenance recorded per state.
+- **F1 estimand, stated unambiguously.** The proportion of sampled states whose
+  modal action is identical across all R repeats. We report the mean
+  within-state stability alongside it, and we report **both against the
+  registered 0.95**, with a Jeffreys one-sided 95% lower bound. F1 is declared
+  to hold only if that lower bound exceeds 0.95. This is strict, and we expect
+  it may fail; the failure is reported either way.
+- **F2.** Paired per-state inflation, with a one-sided 95% upper confidence
+  bound. Holds only if that bound is below 10 percentage points.
+- **G1.** Paired per-state equivalence on the buy-share shift, two one-sided
+  tests against a $\pm 10$ point margin at the 5% level.
+- **G2** is demoted. It restates G1's margin as a fraction of a fixed residual
+  and is not an independent test; it is reported as interpretation.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

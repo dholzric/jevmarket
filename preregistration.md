@@ -541,6 +541,35 @@ such. Fixed in advance of the corrected run:
 - **G2** is demoted. It restates G1's margin as a fraction of a fixed residual
   and is not an independent test; it is reported as interpretation.
 
+## 10g. Realignment of F2 and G1 to their claims — logged before the R=100 run completes
+
+Fifth-pass external review found that both corrected tests measured a quantity
+adjacent to the claim drawn from them.
+
+**F2** measured the expected largest action share among eight traders. The
+paper compared its +2.84pp bound to the 25.8pp liquidity gap. Those are
+different quantities: the mechanism turns on whether ANY trader takes the
+opposite side, i.e. `1 - sum_a p_a^8`, which is nonlinear in the share. The
+claim "the mechanism does not rest on memoisation" is therefore withdrawn.
+
+The claim-aligned quantity, P(no counterparty among 8 independent callers),
+is **not identified at small R**: with a Jeffreys posterior on p, a PERFECTLY
+stable state still shows an apparent 15.3pp gain at R=20 purely from posterior
+width (37.0pp at R=5, ~3.8pp at R=100). Decision rule fixed now, before the
+R=100 run completes: report the posterior-averaged counterparty gain with its
+95% upper bound at R=100, alongside the fully-stable count; make NO claim that
+memoisation is immaterial; claim only the measured bound, direction-split, and
+state explicitly that this is a static bound, not the dynamic liquidity effect.
+
+**G1** was registered on returned P(buy) mass but implemented as a 0/1 modal
+indicator -- the wrong test, since the project's own Experiment 1 shows wording
+moves mass while leaving the mode intact. Reanalysed on mass from the cached
+responses, restricted to the corrected population (the first, crashed run had
+contaminated the naming cache with empty-book states, silently doubling the
+pair count): mean shift +0.33pp, 90% CI [-0.33, +1.00], TOST p < 0.0001
+against a +/-10pp margin. G1 holds on its registered estimand. Modal agreement
+(60/60) is reported as secondary.
+
 ## 11. Deviation log
 
 Any departure from this document gets a dated row here, with the reason,

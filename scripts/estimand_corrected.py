@@ -172,7 +172,9 @@ def main(argv=None) -> int:
                 raw.append({"state": entry["state"], "repeat": repeat,
                             "provenance": {k: entry[k] for k in
                                            ("seed", "period", "jump", "direction")},
-                            "answers": response.answers, "model": response.model})
+                            # the complete serialised response, not a summary,
+                            # so "archived" means the full decision payload
+                            **response.to_json()})
                 actions.append(Decision.from_answers(response.answers,
                                                      schema=SCHEMA).action.value)
         except BudgetExceeded as error:

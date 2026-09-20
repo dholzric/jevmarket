@@ -35,7 +35,8 @@ same distribution reduces the gap to $3.1$ points. Two algorithmic baselines
 that are symmetric by construction show no gap.
 
 The mechanism is a single one. Every trader conditions on the same public
-signal, so a deterministic decoder makes them act identically, and a market of
+signal, so a decoder that takes the mode of one stored response makes them act
+identically, and a market of
 unanimous buyers has no counterparty. Measured at the shock itself, $90.0\%$ of
 traders take the same side after a positive shock against $59.4\%$ after a
 negative one, and $100\%$ of non-trading periods under modal decoding had one
@@ -58,10 +59,13 @@ found this does \emph{not} move pricing error, and we report that null.
 
 Every confirmatory hypothesis test was preregistered on seeds disjoint from
 those that generated it; the wording study and the order-book diagnostics are
-exploratory and labelled as such. Of seven registered predictions, three were
-confirmed (D1, D2, E1), three failed (C1, C2, and the original clause that
-modal decoding would be immune) and one is unresolved (E2); all are reported.
-A separate post-hoc mechanism account is withdrawn and identified as such.
+exploratory and labelled as such. Of ten registered predictions, four were
+confirmed (D1, D2, E1, G1), four failed (C1, C2, F1, and the original clause
+that modal decoding would be immune), one is unresolved (E2) and one is
+reported as not identified at the sample size reached (F2). A separate
+post-hoc mechanism account is withdrawn and identified as such. All are
+reported, including a disclosed deviation in which F1 and G1 were first run on
+the wrong population and reanalysed.
 \end{abstract}
 
 \section{Introduction}
@@ -104,14 +108,20 @@ Our contributions:
 \end{enumerate}
 
 We emphasise the failures, and state the registration record exactly.
-\textbf{Three preregistered predictions failed}: C1, that the wording
-asymmetry would move pricing error (a clean null, Section~\ref{sec:wording});
-the original clause that modal decoding would be immune to the liquidity
-effect; and C2, that the sampling arm's wording contrast would be
-\emph{smaller} than the argmax arm's, on which the estimate came back the wrong
-sign ($+0.161$, $p=0.80$).
-\textbf{One is unresolved}: E2 (Section~\ref{sec:size}). \textbf{Three were
-confirmed}: D1, D2 and E1.
+
+\textbf{Four preregistered predictions failed.} C1, that the wording asymmetry
+would move pricing error (a clean null, Section~\ref{sec:wording}); the
+original clause that modal decoding would be immune to the liquidity effect;
+C2, that the sampling arm's wording contrast would be \emph{smaller} than the
+argmax arm's, on which the estimate came back the wrong sign ($+0.161$,
+$p=0.80$); and F1, that the modal action is stable enough across repeated live
+calls to certify the policy as effectively deterministic
+(Section~\ref{sec:estimand}).
+
+\textbf{Four were confirmed}: D1, D2, E1 and G1. \textbf{One is unresolved}: E2
+(Section~\ref{sec:size}). \textbf{One is not identified} at the sample size we
+reached: F2, whose claim-aligned form is discussed in
+Section~\ref{sec:estimand}.
 
 Separately, and not part of the registration record, we withdraw a
 \emph{post-hoc} two-component account of the mechanism that an earlier draft
@@ -316,7 +326,10 @@ instructions, where the gap is $+0.005$ (Figure~\ref{fig:wording}).
 \includegraphics[width=0.78\textwidth]{../figures/fig2_wording.pdf}
 \caption{Probability the model places on the profitable side, against
 mispricing, under the two wordings. The model is symmetric when asked
-symmetrically. The effect is $25\times$ the model's own run-to-run noise.}
+symmetrically. One call per point ($n=1$ per edge per variant, 32 calls in
+total), hence no error bars; the contrast is roughly $25\times$ the model's
+measured run-to-run noise of $\pm 0.01$, and it replicates at a second price
+level, under reversed option order, and under neutral option names.}
 \label{fig:wording}
 \end{figure}
 
@@ -599,7 +612,9 @@ effect.
 \paragraph{Scale.} Markets of four to thirty-two traders over 160 periods. The
 extrapolation to larger markets is the fitted decay, not a measurement.
 
-\paragraph{The estimand is memoised, and this narrows the claim.} Requests are
+\paragraph{The estimand is memoised, and this narrows the claim.}
+\label{sec:estimand}
+Requests are
 content-addressed: when two traders render the same tick-rounded state, the
 second receives the stored response rather than a fresh call. Because the
 service is non-deterministic, that is not the same system as $N$ agents each
@@ -658,9 +673,12 @@ re-run the dynamic market with independent calls throughout.
 \section{Reproducibility}
 
 Because the model is non-deterministic and has no seed, code alone does not
-reproduce these numbers. Every response is archived---118{,}968 of them---and
-the analysis can be replayed against the archive with live calls disabled, in
-which case a cache miss raises rather than silently contacting the API.
+reproduce these numbers. The repository retains two response stores: the
+content-addressed cache of unique request/response entries used by every
+market run, and the raw repeated-call records of the estimand test, stored
+separately because they deliberately bypass the cache. The analysis can be
+replayed against the cache with live calls disabled, in which case a cache
+miss raises rather than silently contacting the API.
 
 The archive holds $118{,}968$ \emph{unique} cached request/response entries, one per distinct
 request. That is a lower bound on live calls rather than a count of them:

@@ -1,0 +1,39 @@
+{
+  "f2_realigned": {
+    "all": {
+      "n": 60,
+      "memoised": 1.0,
+      "independent": 0.7820165819349012,
+      "gain": 0.21798341806509874,
+      "gain_se": 0.025242637882636223,
+      "gain_upper95": 0.2601662143357166
+    },
+    "after up": {
+      "n": 30,
+      "memoised": 1.0,
+      "independent": 0.7962531888034236,
+      "gain": 0.20374681119657634,
+      "gain_se": 0.03507195916881131,
+      "gain_upper95": 0.26333852489378295
+    },
+    "after down": {
+      "n": 30,
+      "memoised": 1.0,
+      "independent": 0.7677799750663789,
+      "gain": 0.23222002493362115,
+      "gain_se": 0.036724473334801756,
+      "gain_upper95": 0.2946195701119916
+    }
+  },
+  "f2_note": "static bound on counterparty availability, not the dynamic liquidity effect",
+  "g1_realigned": {
+    "n": 60,
+    "mean_shift": 0.0033333333333333344,
+    "ci90": [
+      -0.003344741692129142,
+      0.010011408358795808
+    ],
+    "tost_p": 1.2859094621104671e-32,
+    "holds": true
+  }
+}

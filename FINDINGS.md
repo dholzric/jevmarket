@@ -374,7 +374,7 @@ market's construction (both symmetric baselines are balanced at every size) and
 our phrasing. What remains is the model, the task framing, or the state
 representation, which this design cannot separate.
 
-## 16. External review (Codex and Grok), and what it changed
+## 16. External review, and what it changed
 
 Two independent adversarial reviews at commit `74ca20f`. Both found real
 defects. Their overlapping findings were the most serious.
@@ -385,19 +385,19 @@ defects. Their overlapping findings were the most serious.
 |---|---|---|
 | Table 1 mixed exploratory levels with confirmatory gaps; 93.8 - 66.6 = 27.2, not the stated 25.8 | both | fixed; table now one dataset |
 | `verify_paper.py` checks hard-coded claims, not the manuscript, so it blessed that table | both | new `audit_manuscript.py` parses `main.tex` |
-| `pdflatex -halt-on-error` exits 1; 18 table rows ended in `\` not `\` | Codex | fixed; build gated at exit 0 |
+| `pdflatex -halt-on-error` exits 1; 18 table rows ended in `\` not `\` | Reviewer 1 | fixed; build gated at exit 0 |
 | Size sweep pooled 20 seeds x 4 sizes as 80 independent points | both | reanalysed per-seed |
 | E2 "falsified" does not survive the correct analysis | both | withdrawn; reported unresolved |
 | Provenance counts stale (110,805 vs 118,628 on disk) | both | `make_manifest.py` generates from disk |
-| "Ruled out" too strong for the symmetric-baseline and mirror evidence | Codex | softened to "not reproduced" |
-| Mechanism diagnostic presented as confirmatory | Codex | labelled exploratory |
-| "Never short of buyers in any arm" false for sampling (4-7%) | Grok | corrected |
-| D2 paired by `zip` over dict values | Codex | keyed by seed, with an assertion |
+| "Ruled out" too strong for the symmetric-baseline and mirror evidence | Reviewer 1 | softened to "not reproduced" |
+| Mechanism diagnostic presented as confirmatory | Reviewer 1 | labelled exploratory |
+| "Never short of buyers in any arm" false for sampling (4-7%) | Reviewer 2 | corrected |
+| D2 paired by `zip` over dict values | Reviewer 1 | keyed by seed, with an assertion |
 | README, `pyproject` deps, prereg placeholder stale | both | fixed |
 
 ### The substantive scientific correction
 
-Grok's second must-fix was the most valuable single item in either review. The
+Reviewer 2's second must-fix was the most valuable single item in either review. The
 paper claimed the modal arm "never reaches a sell majority", citing window
 averages while narrating the jump instant. Replaying the confirmatory runs by
 lag:
@@ -420,7 +420,7 @@ The paper is simpler for it: one mechanism, measured in the market.
 
 ### Where a reviewer was wrong
 
-Codex's top release blocker was that `JevSample` shares one RNG draw across
+Reviewer 1's top release blocker was that `JevSample` shares one RNG draw across
 traders, making the sampling arm a common-random-number treatment and
 invalidating D2. It does not: the trader index arrives inside `self.seed`,
 which the runner sets to `config.seed * 100_003 + i`. Eight traders given an
@@ -432,12 +432,12 @@ pinned it. Three regression tests now do.
 
 ### Not yet done
 
-- Grok's suggested `option_map` swap (`option_a` always maps to buy), a cheap
+- Reviewer 2's suggested `option_map` swap (`option_a` always maps to buy), a cheap
   confirmatory cell that could shrink the unexplained directional remainder.
 - Equivalence testing for E2 with a declared margin.
 - Repeated-response sensitivity: the cache memoises one response per distinct
   state, which is not the same estimand as many agents independently calling a
-  non-deterministic model. Codex is right that this should be stated and
+  non-deterministic model. Reviewer 1 is right that this should be stated and
   ideally tested.
 
 
@@ -628,13 +628,13 @@ registered, all reported.
 
 ## 21. Sixth review: the 10.1pp statistic was non-unanimity, not counterparty supply
 
-Codex, Grok and Gemini reviewed 22e21a6. No further experiment was asked for.
+Three external reviewers read 22e21a6. No further experiment was asked for.
 Three corrections, all zero-cost:
 
 1. **Naming.** Section 19's "+10.1pp counterparty gain" is `1 - sum_a p_a^8`,
    the probability that eight independent calls are not all identical. A
    buy/pass mixture satisfies it while supplying no seller. Relabelled
-   "non-unanimity gain" throughout the paper and README (Gemini applied this
+   "non-unanimity gain" throughout the paper and README (one reviewer applied this
    directly in the working tree; verified here). The claim-aligned quantity,
    P(at least one buy AND at least one sell among eight),
    `1 - (p_b+p_p)^8 - (p_s+p_p)^8 + p_p^8` with plug-in frequencies, is
@@ -657,9 +657,9 @@ Also labelled: Table 3 (silence classification) and the abstract's 90.0% /
 59.4% agreement figures are from the memoised confirmatory run, next to a
 headline from the independent-calling run; both now say so. The $1.61
 replication cost is the cost of the archived runs; the discarded 550-call
-attempt adds about $0.02. Gemini additionally added `py.typed`, tightened
+attempt adds about $0.02. One reviewer additionally added `py.typed`, tightened
 type hints, and cleared 22 ruff warnings; ruff and mypy pass.
 
-Review status: Codex "conditional go after this pass", Grok "send it after
-changing 300 to 6,000", Gemini "go". All conditions met.
+Review status: "conditional go after this pass", "send it after changing
+300 to 6,000", and "go". All conditions met.
 

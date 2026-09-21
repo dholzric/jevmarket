@@ -244,7 +244,7 @@ def main(argv=None) -> int:
         # The claim-aligned quantity, computed directly: P(at least one buy AND
         # at least one sell among eight independent draws), plug-in frequencies.
         # 1 - sum_a p_a^8 is non-unanimity, which pass satisfies without
-        # supplying a counterparty (sixth-pass review, Codex).
+        # supplying a counterparty (sixth-pass external review).
         direction_of = {}
         for record in json.loads(raw.read_text(encoding="utf-8")):
             direction_of[json.dumps(record["state"], sort_keys=True)] = record["provenance"]["direction"]

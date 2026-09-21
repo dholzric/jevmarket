@@ -77,6 +77,10 @@ class DecisionRecord:
     quoted_price: int | None
     filled_quantity: int
     rejected: bool
+    # The id of the order this decision placed, or None for a pass or a
+    # rejection. Trades carry both order ids, so a fill can be valued at each
+    # party's private value at placement, which may be a period earlier.
+    order_id: int | None = None
 
 
 @dataclass
@@ -185,6 +189,7 @@ def run(config: RunConfig) -> RunResult:
             price = None
             filled = 0
             rejected = False
+            order_id = None
 
             if decision.action is not Action.PASS:
                 side = Side.BUY if decision.action is Action.BUY else Side.SELL
@@ -201,6 +206,7 @@ def run(config: RunConfig) -> RunResult:
                             trader_id, side, price=price, quantity=config.order_size
                         )
                         filled = sum(t.quantity for t in result.trades)
+                        order_id = result.order_id
                     except OrderRejected:
                         rejections += 1
                         rejected = True
@@ -217,6 +223,7 @@ def run(config: RunConfig) -> RunResult:
                     quoted_price=price,
                     filled_quantity=filled,
                     rejected=rejected,
+                    order_id=order_id,
                 )
             )
 

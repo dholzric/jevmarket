@@ -278,3 +278,27 @@ def test_an_override_for_an_unknown_trader_or_arm_fails_before_running():
     with pytest.raises(ValueError):
         run(config(arm="jev_argmax", jev_client=_jev_client(), periods=10, n_traders=4,
                    arm_overrides={"t000": "oracle"}))
+
+
+# --- order ids on decision records (welfare study) ----------------------------
+
+
+def test_every_trade_maps_to_the_two_decisions_that_placed_its_orders():
+    """The welfare analysis values a trade at each party's private value WHEN
+    THEY PLACED THE ORDER, which can be a period before the fill. That needs
+    the decision record to carry the id of the order it placed."""
+    result = run(config(arm="zi", periods=40, n_traders=8))
+    by_order = {d.order_id: d for d in result.decisions if d.order_id is not None}
+    assert result.exchange.trade_count > 0
+    for trade in result.exchange.trades:
+        buy, sell = by_order[trade.buy_order_id], by_order[trade.sell_order_id]
+        assert buy.trader_id == trade.buyer_id and sell.trader_id == trade.seller_id
+        # the clamp: nobody buys above, or sells below, their own value at placement
+        assert trade.price <= buy.private_value + 1e-9 and trade.price >= sell.private_value - 1e-9
+
+
+def test_passes_and_rejections_carry_no_order_id():
+    result = run(config(arm="zi", periods=20, n_traders=4))
+    for d in result.decisions:
+        if d.rejected or d.quoted_price is None:
+            assert d.order_id is None

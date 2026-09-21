@@ -12,7 +12,7 @@ copies only the graphics the manuscript includes, compiles the staged copy
 twice in a scratch tree with `-halt-on-error`, fails on any missing file or
 undefined reference, and checks that the rendered text matches nothing else:
 compare `dist/arxiv/main-from-bundle.pdf` against `paper/main.pdf` by eye or
-with pypdf (they were text-identical at 4cd32cc). The bibliography is inline
+with pypdf (they were text-identical at bfb3933). The bibliography is inline
 (`thebibliography`), so no `.bbl` is needed.
 
 ## Decisions only the author can make

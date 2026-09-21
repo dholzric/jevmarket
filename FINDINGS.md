@@ -628,7 +628,7 @@ registered, all reported.
 
 ## 21. Sixth review: the 10.1pp statistic was non-unanimity, not counterparty supply
 
-Three external reviewers read 22e21a6. No further experiment was asked for.
+Three external reviewers read 1fc0d44. No further experiment was asked for.
 Three corrections, all zero-cost:
 
 1. **Naming.** Section 19's "+10.1pp counterparty gain" is `1 - sum_a p_a^8`,

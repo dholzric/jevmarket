@@ -142,7 +142,7 @@ Title:
 {title}
 
 Authors:
-D. Holzricher
+Dan Holzrichter
 
 Abstract for the form ({len(abstract)} characters; arXiv limit {ARXIV_ABSTRACT_LIMIT};
 a condensation of the paper's {len(paper_abstract)}-character abstract, every

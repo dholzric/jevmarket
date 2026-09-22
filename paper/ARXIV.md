@@ -25,7 +25,7 @@ with pypdf (they were text-identical at bfb3933). The bibliography is inline
    `econ.GN`. `cs.MA` primary is defensible if you want the multi-agent
    audience first.
 4. **Author name and affiliation** as they should appear; the tex has
-   "D. Holzricher" and an email, no affiliation.
+   "Dan Holzrichter" and an email, no affiliation.
 
 ## Form fields
 
